@@ -22,13 +22,6 @@
 				<include>LagMeterPoller.class</include>
 				<include>LagMeterStack.class</include>
 			</includes>
-			<excludes>
-				<exclude>LagMeter.java</exclude>
-				<exclude>LagMeterConfig.java</exclude>
-				<exclude>LagMeterLogger.java</exclude>
-				<exclude>LagMeterPoller.java</exclude>
-				<exclude>LagMeterStack.java</exclude>
-			</excludes>
 		</resource>
 		<!--settings.yml-->
 		<resource>
@@ -83,19 +76,4 @@
   <description>A lag and memory usage meter Minecraft Bukkit servers.</description>
   <url>http://mc.grminecraft.org:8080/jenkins/job/LagMeter/</url>
   <inceptionYear>2011</inceptionYear>
-  
-    <reporting>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jxr-plugin</artifactId>
-        <version>2.3</version>
-        <configuration>
-          <excludes>
-            <exclude>**/*.java</exclude>
-          </excludes>
-        </configuration>
-      </plugin>
-    </plugins>
-  </reporting>
 </project>
