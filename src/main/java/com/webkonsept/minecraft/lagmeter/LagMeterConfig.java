@@ -1,4 +1,4 @@
-package com.webkonsept.minecraft.lagmeter;
+package main.java.com.webkonsept.minecraft.lagmeter;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -29,7 +29,7 @@ public class LagMeterConfig {
     
     
     public static void loadConfig() {
-        configFile = new File(Bukkit.getServer().getPluginManager().getPlugin("LagMeter").getDataFolder(), "settings.yml");
+        configFile = new File(Bukkit.getServer().getPluginManager().getPlugin("LagMeter").getDataFolder(), "/main/resources/settings.yml");
         if (configFile.exists()) {
             configuration = new YamlConfiguration();
             try {
@@ -37,16 +37,20 @@ public class LagMeterConfig {
                 LagMeter.useAverage 			= configuration.getBoolean	("useAverage",				true);
                 LagMeter.averageLength 			= configuration.getInt		("averageLength", 			10);
                 LagMeter.interval 				= configuration.getInt		("interval", 				40);
+                LagMeter.AutomaticLagNotificationsEnabled = configuration.getBoolean("adminNotifications.Lag", true);
+                LagMeter.tpsNotificationThreshold = configuration.getInt("adminNotifications.tpsThreshold", 16);
+                LagMeter.AutomaticMemoryNotificationsEnabled = configuration.getBoolean("adminNotifications.Memory", true);
+                LagMeter.memoryNotificationThreshold = configuration.getInt("adminNotifications.memoryThreshold", 26);
                 LagMeter.logInterval			= configuration.getInt		("log.interval", 			150);
                 LagMeter.enableLogging			= configuration.getBoolean	("log.enable", 				true);
                 LagMeter.useLogsFolder			= configuration.getBoolean	("log.useLogsFolder",		true);
                 LagMeter.playerLoggingEnabled 	= configuration.getBoolean	("log.logPlayersOnline",	false);
             } catch (FileNotFoundException ex) {
-                // TODO Log exception
+            	ex.printStackTrace();
             } catch (IOException ex) {
-                // TODO Log exception
+            	ex.printStackTrace();
             } catch (InvalidConfigurationException ex) {
-                // TODO Log exception
+            	ex.printStackTrace();
             }
             loaded = true;
         } else {
@@ -60,16 +64,14 @@ public class LagMeterConfig {
                     configuration.load(configFile);
                     
                 } catch (FileNotFoundException ex) {
-                    // TODO: Log
+                	ex.printStackTrace();
                 } catch (IOException ex) {
-                    // TODO: Log
+                	ex.printStackTrace();
                 } catch (InvalidConfigurationException ex) {
-                    // TODO: Log
+                	ex.printStackTrace();
                 }
                 loaded = true;
-                // TODO Log
             } catch (Exception e) {
-                // TODO Log exception
             }
         }
     }

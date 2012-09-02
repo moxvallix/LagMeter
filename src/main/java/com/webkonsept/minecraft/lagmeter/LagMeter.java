@@ -1,4 +1,4 @@
-package com.webkonsept.minecraft.lagmeter;
+package main.java.com.webkonsept.minecraft.lagmeter;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -20,7 +20,11 @@ public class LagMeter extends JavaPlugin {
 	private Logger log = Logger.getLogger("Minecraft");
 	protected float ticksPerSecond = 20;
 	public static PluginDescriptionFile pdfFile;
-	protected File logsFolder = new File(this.getDataFolder()+"\\logs");
+	
+	private static final String fileSeparator = System.getProperty("file.separator");
+//	protected File logsFolder = new File(getDataFolder()+fileSeparator+"logs");
+//	protected File logsFolder = new File("plugins"+File.pathSeparator+"LagMeter"+File.pathSeparator+"logs");
+	protected File logsFolder = new File("plugins"+fileSeparator+"LagMeter"+fileSeparator+"logs");
 	
 	protected LagMeterLogger logger = new LagMeterLogger(this);
 	protected LagMeterPoller poller = new LagMeterPoller(this);
@@ -35,9 +39,10 @@ public class LagMeter extends JavaPlugin {
 	double memFree = memMax - memUsed;
 	double percentageFree = ( 100 / memMax) * memFree;
 	
-	//Configurable
-	protected static int interval = 40;
-	protected static boolean useAverage = true, enableLogging = true, useLogsFolder = true;
+	//Configurable Values
+	protected static int interval = 40, tpsNotificationThreshold, memoryNotificationThreshold;
+	protected static boolean useAverage = true, enableLogging = true, useLogsFolder = true,
+			AutomaticLagNotificationsEnabled, AutomaticMemoryNotificationsEnabled;
 	protected static int logInterval = 150;
 	protected static boolean playerLoggingEnabled;
 	PluginDescriptionFile pdf;
@@ -45,18 +50,15 @@ public class LagMeter extends JavaPlugin {
 	
 	@Override
 	public void onDisable() {
-		this.out("Disabled!");
+		info("Disabled!");
 		if(LagMeterLogger.enabled != false){
 			try {
 				logger.disable();
 			} catch (FileNotFoundException e) {
-				// TODO Log exception
 				e.printStackTrace();
 			} catch (IOException e) {
-				// TODO Log exception
 				e.printStackTrace();
 			} catch (Exception e) {
-				// TODO Log exception
 				e.printStackTrace();
 			}
 		}
@@ -67,30 +69,31 @@ public class LagMeter extends JavaPlugin {
 	public void onEnable() {
 		LagMeterConfig.loadConfig();
 		if(!logsFolder.exists() && useLogsFolder && enableLogging){
-			out("Logs folder not found. Creating one for you.");
+			info("Logs folder not found. Creating one for you.");
 			logsFolder.mkdir();
-			if(!logsFolder.exists())
-				out("Error! Couldn't create the folder!");
-			else if (logsFolder.exists())
-				out("Logs folder created.");
+			if(!logsFolder.exists()){
+				severe("Error! Couldn't create the folder!");
+			}else if (logsFolder.exists()){
+				info("Logs folder created.");
+			}
 		}
 		if (enableLogging){
 			if (!logger.enable()){
-				this.crap("Logging is disabled because: "+logger.getError());
+				severe("Logging is disabled because: "+logger.getError());
 				poller.setLogInterval(logInterval);
 			}
 		}
 		history.setMaxSize(averageLength);
 		getServer().getScheduler().scheduleSyncRepeatingTask(this,poller,0,interval);
 		if(checkCrapPermissions()){
-			this.crap("Old permissions system detected. Using it.");
+			this.info("Old permissions system detected. Using it.");
 			crapPermissions = true;
 		}
 		String loggingMessage = "";
 		if (enableLogging){
 			loggingMessage = "  Logging to "+logger.getFilename();
 		}
-		this.out("Enabled!  Polling every "+interval+" server ticks."+loggingMessage);
+		this.info("Enabled!  Polling every "+interval+" server ticks."+loggingMessage);
 	}
 	protected boolean permit(Player player,String permission){
 		boolean permit = false;
@@ -121,7 +124,6 @@ public class LagMeter extends JavaPlugin {
 		if (
 				(sender instanceof Player && this.permit((Player)sender, "lagmeter.command."+command.getName().toLowerCase()))
 				|| !(sender instanceof Player)
-				// That is, if it's a player with permission, or not a player at all (console?), then...
 		){
 			if (command.getName().equalsIgnoreCase("lag")){
 				success = true;
@@ -138,7 +140,7 @@ public class LagMeter extends JavaPlugin {
 				sendMemMeter(sender);
 			}
 		else {
-			success = true;  // Not really a success, but a valid command at least.
+			success = true;
 			sender.sendMessage(ChatColor.GOLD+"Sorry, permission lagmeter.command."+command.getName().toLowerCase()+" was denied.");
 		}
 		
@@ -232,29 +234,22 @@ public class LagMeter extends JavaPlugin {
 		}
 		sender.sendMessage(wrapColor+"["+color+lagMeter+wrapColor+"] "+tps+" TPS");
 	}
-	public void out(String message) {
+	public void info(String message) {
 		PluginDescriptionFile pdfFile = this.getDescription();
 		log.info("[" + pdfFile.getName()+ " " + pdfFile.getVersion() + "] " + message);
 	}
-	public void crap(String message){
-		PluginDescriptionFile pdfFile = this.getDescription();
-		log.info("[" + pdfFile.getName()+ " " + pdfFile.getVersion() + "] " + message);
-	}
-	public void warnMessage(String message){
+	public void warn(String message){
 		PluginDescriptionFile pdfFile = this.getDescription();
 		log.warning("[" + pdfFile.getName() + " " + pdfFile.getVersion() + "] " + message);
 	}
-	public void severeMessage(String message){
+	public void severe(String message){
 		PluginDescriptionFile pdfFile = this.getDescription();
 		log.severe(pdfFile.getName() + "" + pdfFile.getVersion() + "] " + message);
-	}
-	public static String getVersion(){
-		return pdfFile.getVersion();
 	}
 	/**
 	 * Gets the ticks per second.
 	 * 
-	 * @since 1.8-pre
+	 * @since 1.8
 	 * @return ticksPerSecond
 	 */
 	public float getTPS(){

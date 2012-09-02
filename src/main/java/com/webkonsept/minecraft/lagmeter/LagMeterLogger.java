@@ -1,4 +1,4 @@
-package com.webkonsept.minecraft.lagmeter;
+package main.java.com.webkonsept.minecraft.lagmeter;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -8,8 +8,14 @@ import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Server;
+
 public class LagMeterLogger {
 	static LagMeter plugin;
+	
+	private static final String fileSeparator = System.getProperty("file.separator");
 	
 	private String error = "*shrug* Dunno.";
 	private boolean logMemory = true;
@@ -32,7 +38,6 @@ public class LagMeterLogger {
 	}
 	
 	
-	// Getters, setters, blah blah boring.
 	public boolean enable(File logTo){
 		logfile = logTo;
 		return beginLogging();
@@ -43,7 +48,10 @@ public class LagMeterLogger {
 			return this.enable(new File(plugin.getDataFolder(),"lag.log"));
 		}else{
 			System.out.println("[LagMeter] Using logs folder. This will create a new log for each day (it might log data from tomorrow in today's file if you leave the server running without reloading/restarting).");
-			return this.enable(new File(plugin.getDataFolder()+"\\logs", "lag"+today()+".log"));
+			//return this.enable(new File(plugin.getDataFolder()+fileSeparator+"logs", "lag"+today()+".log"));
+//			return this.enable(new File(Bukkit.getServer().getPluginManager().getPlugin("LagMeter").getDataFolder()+File.pathSeparator+"logs", "lag-"+today()+".log"));
+//			return this.enable(new File("plugins"+File.pathSeparator+"LagMeter"+File.pathSeparator+"logs", "lag-"+today()+".log"));
+			return this.enable(new File("plugins"+fileSeparator+"LagMeter"+fileSeparator+"logs", "LagMeter-"+today()+".log"));
 		}
 	}
 	public boolean enabled(){
@@ -60,13 +68,10 @@ public class LagMeterLogger {
 			try {
 				this.disable();
 			} catch (FileNotFoundException e) {
-				// TODO Log exception
 				e.printStackTrace();
 			} catch (IOException e) {
-				// TODO Log exception
 				e.printStackTrace();
 			} catch (Exception e) {
-				// TODO Log exception
 				e.printStackTrace();
 			}
 			this.error("Both log outputs disabled:  Logging disabled.");
@@ -81,13 +86,10 @@ public class LagMeterLogger {
 			try {
 				this.disable();
 			} catch (FileNotFoundException e) {
-				// TODO Log exception
 				e.printStackTrace();
 			} catch (IOException e) {
-				// TODO Log exception
 				e.printStackTrace();
 			} catch (Exception e) {
-				// TODO Log exception
 				e.printStackTrace();
 			}
 			this.error("Both log outputs disabled:  Logging disabled.");
@@ -116,8 +118,7 @@ public class LagMeterLogger {
 			return "!! UNKNOWN !!";
 		}
 	}
-	// Where real stuff happens!
-	
+
 	private boolean beginLogging(){
 		boolean ret = true;
 		if (logfile == null){
@@ -158,10 +159,19 @@ public class LagMeterLogger {
 		}
 	}
 	protected void log(String message){
+		LagMeter lmm = new LagMeter(); // lmm stands for LagMeter Main Class
+		if(LagMeter.AutomaticLagNotificationsEnabled && lmm.getTPS() < LagMeter.tpsNotificationThreshold){
+			Bukkit.getServer().broadcast(ChatColor.RED.toString()+"[LagMeter] Warning: Server TPS is under the warn threshold: currently at "+lmm.getTPS()+".",Server.BROADCAST_CHANNEL_ADMINISTRATIVE);
+			System.out.println("[LagMeter] Server TPS is below warn threshold! Currently at: "+ lmm.getTPS() +" TPS");
+		}
+		if(LagMeter.AutomaticMemoryNotificationsEnabled && lmm.memFree < LagMeter.memoryNotificationThreshold){
+			Bukkit.getServer().broadcast(ChatColor.RED.toString()+"[LagMeter] Warning: Server Memory is under the warn threshold: currently at "+lmm.percentageFree+"% free.",Server.BROADCAST_CHANNEL_ADMINISTRATIVE);
+			System.out.println("[LagMeter] Server TPS is below warn threshold! Currently at: "+lmm.percentageFree+"% free.");
+		}
 		if (enabled && LagMeter.playerLoggingEnabled){
 				message = "["+now()+"] "+message;
-				log.println(message);
-				log.println("Players online: " +(plugin.getServer().getOnlinePlayers().length));
+				log.println(message
+						+"\nPlayers online: "+Bukkit.getServer().getOnlinePlayers().length);
 				log.flush();
 		}
 		else if(enabled && !LagMeter.playerLoggingEnabled){

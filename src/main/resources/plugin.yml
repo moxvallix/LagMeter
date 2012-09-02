@@ -1,14 +1,14 @@
 name: LagMeter
-main: com.webkonsept.minecraft.lagmeter.LagMeter
-version: 0.9
+main: main.java.com.webkonsept.minecraft.lagmeter.LagMeter
+version: 1.10.0-SNAPSHOT
 branch: stable
-website: http://minecraft.webkonsept.com/plugins/details/LagMeter.jar
-location: http://minecraft.webkonsept.com/plugins/download/LagMeter.jar
-thread: http://forums.bukkit.org/threads/LagMeter.25889/
+#website: http://minecraft.webkonsept.com/plugins/details/LagMeter.jar - No longer applies, new developer. Site no longer used.
+#location: http://minecraft.webkonsept.com/plugins/download/LagMeter.jar - No longer applies, new developer. Site no longer used.
+thread: http://dev.bukkit.org/server-mods/lagmeter/
 database: false
 description: Lets you check the server lag, in ticks-per-second
 commands:
-    lag:
+    lag: 
         description: Check current lag
         usage: /<command>
     mem:
@@ -17,6 +17,9 @@ commands:
     lagmem:
         description: Check both current memory usage and current lag
         usage: /<command>
+    lm:
+        description: Check both current memory usage and current lag. Shortcut of lagmem.
+        usage: /<command>
 permissions:
     lagmeter.*:
         description: Gives full access
@@ -24,23 +27,20 @@ permissions:
             lagmeter.command.lag: true
             lagmeter.command.mem: true
             lagmeter.command.lagmem: true
+            lagmeter.command.lm: true
     lagmeter.command.lag:
         description: Gives access to the /lag command
-        default: op
+        default: true
     lagmeter.command.mem:
         description: Gives access to the /mem command
         default: op
     lagmeter.command.lagmem:
-        description: gives access to the combination /lagmem command
+        description: Gives access to the combination /lagmem command
+        default: op
+    lagmeter.command.lm:
+        description: Gives access to the combination /lm command, which is a shorter version of /lagmem.
         default: op
 generators: [bukget]
 categories: [INFO]
 maintainer: marvinej
-authors: [DemmyDemon, marvinej]
-conflicts: []
-required: []
-optional: []
-engines:
-    craftbukkit:
-        min: 1337
-        max: 1337
+authors: [DemmyDemon, TheLunarFrog]

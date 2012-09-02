@@ -1,0 +1,71 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                      http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>me.thelunarfrog</groupId>
+  <artifactId>LagMeter</artifactId>
+  <version>1.10.0-SNAPSHOT</version>
+
+  <!-- Build Settings -->
+  <build>
+	<resources>
+		<!--Main-->
+		<resource>
+			<targetPath>main/java/com/webkonsept/minecraft/lagmeter</targetPath>
+			<filtering>false</filtering>
+			<directory>${basedir}/src/main/java/com/webkonsept/minecraft/lagmeter</directory>
+			<includes>
+				<include>LagMeter.java</include>
+				<include>LagMeterConfig.java</include>
+				<include>LagMeterLogger.java</include>
+				<include>LagMeterPoller.java</include>
+				<include>LagMeterStack.java</include>
+			</includes>
+			<excludes>
+			</excludes>
+		</resource>
+		<!--settings.yml-->
+		<resource>
+			<targetPath>main/resources</targetPath>
+			<filtering>false</filtering>
+			<directory>${basedir}/src/main/resources</directory>
+			<includes>
+				<include>settings.yml</include>
+			</includes>
+			<excludes>
+			</excludes>
+		</resource>
+		<!--plugin.yml-->
+		<resource>
+			<targetPath></targetPath>
+			<filtering>false</filtering>
+			<directory>${basedir}/src/main/resources</directory>
+			<includes>
+				<include>plugin.yml</include>
+			</includes>
+			<excludes>
+			</excludes>
+		</resource>
+	</resources>
+  </build>
+  
+  <dependencies>
+	<!--Bukkit-->
+	<dependency>
+		<groupId>org.bukkit</groupId>
+		<artifactId>Bukkit</artifactId>
+		<version>1.3.2-R2.0</version>
+		<type>jar</type>
+		<scope>system</scope>
+			<systemPath>C:\Program Files\Jenkins\workspace\Dependencies\Bukkit.jar</systemPath>
+		<optional>false</optional>
+	</dependency>
+  </dependencies>
+
+  <!-- More Project Information -->
+  <name>LagMeter</name>
+  <description>A lag and memory usage meter Minecraft Bukkit servers.</description>
+  <url>http://mc.grminecraft.org:8080/jenkins/job/LagMeter/</url>
+  <inceptionYear>2011</inceptionYear>
+</project>

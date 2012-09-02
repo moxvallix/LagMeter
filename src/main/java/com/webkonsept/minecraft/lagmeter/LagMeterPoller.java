@@ -1,4 +1,4 @@
-package com.webkonsept.minecraft.lagmeter;
+package main.java.com.webkonsept.minecraft.lagmeter;
 
 public class LagMeterPoller implements Runnable {
 	long lastPoll = System.currentTimeMillis() - 3000;
