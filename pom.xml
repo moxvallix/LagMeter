@@ -13,7 +13,7 @@
 		<!--Main-->
 		<resource>
 			<targetPath>main/java/com/webkonsept/minecraft/lagmeter</targetPath>
-			<filtering>false</filtering>
+			<filtering>true</filtering>
 			<directory>${basedir}/src/main/java/com/webkonsept/minecraft/lagmeter</directory>
 			<includes>
 				<include>LagMeter.class</include>
