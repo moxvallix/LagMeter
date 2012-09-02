@@ -16,18 +16,18 @@
 			<filtering>false</filtering>
 			<directory>${basedir}/src/main/java/com/webkonsept/minecraft/lagmeter</directory>
 			<includes>
-				<include>LagMeter.java</include>
+				<include>LagMeter.class</include>
 				<include>LagMeterConfig.class</include>
 				<include>LagMeterLogger.class</include>
 				<include>LagMeterPoller.class</include>
 				<include>LagMeterStack.class</include>
 			</includes>
 			<excludes>
-				<include>LagMeter.java</include>
-				<include>LagMeterConfig.java</include>
-				<include>LagMeterLogger.java</include>
-				<include>LagMeterPoller.java</include>
-				<include>LagMeterStack.java</include>
+				<exclude>LagMeter.java</exclude>
+				<exclude>LagMeterConfig.java</exclude>
+				<exclude>LagMeterLogger.java</exclude>
+				<exclude>LagMeterPoller.java</exclude>
+				<exclude>LagMeterStack.java</exclude>
 			</excludes>
 		</resource>
 		<!--settings.yml-->
