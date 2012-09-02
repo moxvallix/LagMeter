@@ -80,8 +80,8 @@ public class LagMeter extends JavaPlugin {
 		if (enableLogging){
 			if (!logger.enable()){
 				severe("Logging is disabled because: "+logger.getError());
-				poller.setLogInterval(logInterval);
 			}
+			poller.setLogInterval(logInterval);
 		}
 		history.setMaxSize(averageLength);
 		getServer().getScheduler().scheduleSyncRepeatingTask(this,poller,0,interval);
