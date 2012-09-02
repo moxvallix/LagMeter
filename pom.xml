@@ -13,7 +13,7 @@
 		<!--Main-->
 		<resource>
 			<targetPath>main/java/com/webkonsept/minecraft/lagmeter</targetPath>
-			<filtering>true</filtering>
+			<filtering>false</filtering>
 			<directory>${basedir}/src/main/java/com/webkonsept/minecraft/lagmeter</directory>
 			<includes>
 				<include>LagMeter.class</include>
@@ -83,4 +83,19 @@
   <description>A lag and memory usage meter Minecraft Bukkit servers.</description>
   <url>http://mc.grminecraft.org:8080/jenkins/job/LagMeter/</url>
   <inceptionYear>2011</inceptionYear>
+  
+    <reporting>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jxr-plugin</artifactId>
+        <version>2.3</version>
+        <configuration>
+          <excludes>
+            <exclude>**/*.java</exclude>
+          </excludes>
+        </configuration>
+      </plugin>
+    </plugins>
+  </reporting>
 </project>
