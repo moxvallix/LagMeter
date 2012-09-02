@@ -17,12 +17,17 @@
 			<directory>${basedir}/src/main/java/com/webkonsept/minecraft/lagmeter</directory>
 			<includes>
 				<include>LagMeter.java</include>
+				<include>LagMeterConfig.class</include>
+				<include>LagMeterLogger.class</include>
+				<include>LagMeterPoller.class</include>
+				<include>LagMeterStack.class</include>
+			</includes>
+			<excludes>
+				<include>LagMeter.java</include>
 				<include>LagMeterConfig.java</include>
 				<include>LagMeterLogger.java</include>
 				<include>LagMeterPoller.java</include>
 				<include>LagMeterStack.java</include>
-			</includes>
-			<excludes>
 			</excludes>
 		</resource>
 		<!--settings.yml-->
@@ -59,6 +64,16 @@
 		<type>jar</type>
 		<scope>system</scope>
 			<systemPath>C:\Program Files\Jenkins\workspace\Dependencies\Bukkit.jar</systemPath>
+		<optional>false</optional>
+	<!--Permissions-->
+	</dependency>
+		<dependency>
+		<groupId>com.nijikokun</groupId>
+		<artifactId>Permissions</artifactId>
+		<version>3</version>
+		<type>jar</type>
+		<scope>system</scope>
+			<systemPath>C:\Program Files\Jenkins\workspace\Dependencies\Permissions.jar</systemPath>
 		<optional>false</optional>
 	</dependency>
   </dependencies>
