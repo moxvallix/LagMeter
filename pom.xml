@@ -16,12 +16,19 @@
 			<filtering>false</filtering>
 			<directory>${basedir}/src/main/java/com/webkonsept/minecraft/lagmeter</directory>
 			<includes>
-				<include>LagMeter.class</include>
+				<include>LagMeter.java</include>
 				<include>LagMeterConfig.class</include>
 				<include>LagMeterLogger.class</include>
 				<include>LagMeterPoller.class</include>
 				<include>LagMeterStack.class</include>
 			</includes>
+			<excludes>
+				<include>LagMeter.java</include>
+				<include>LagMeterConfig.java</include>
+				<include>LagMeterLogger.java</include>
+				<include>LagMeterPoller.java</include>
+				<include>LagMeterStack.java</include>
+			</excludes>
 		</resource>
 		<!--settings.yml-->
 		<resource>
@@ -58,16 +65,15 @@
 		<scope>system</scope>
 			<systemPath>C:\Program Files\Jenkins\workspace\Dependencies\Bukkit.jar</systemPath>
 		<optional>false</optional>
-	<!--Permissions-->
-	</dependency>
-		<dependency>
-		<groupId>com.nijikokun</groupId>
-		<artifactId>Permissions</artifactId>
-		<version>3</version>
+	<!--Vault - Optional-->
+	<dependency>
+		<groupId>net.milkbowl</groupId>
+		<artifactId>Vault</artifactId>
+		<version>1</version>
 		<type>jar</type>
 		<scope>system</scope>
-			<systemPath>C:\Program Files\Jenkins\workspace\Dependencies\Permissions.jar</systemPath>
-		<optional>false</optional>
+			<systemPath>C:\Program Files\Jenkins\workspace\Dependencies\Vault.jar</systemPath>
+		<optional>true</optional>
 	</dependency>
   </dependencies>
 
