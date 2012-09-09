@@ -5,16 +5,16 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.logging.Logger;
 
+import net.milkbowl.vault.permission.Permission;
+
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
-
-import com.nijiko.permissions.PermissionHandler;
-import com.nijikokun.bukkit.Permissions.Permissions;
 
 public class LagMeter extends JavaPlugin {
 	private Logger log = Logger.getLogger("Minecraft");
@@ -22,8 +22,6 @@ public class LagMeter extends JavaPlugin {
 	public static PluginDescriptionFile pdfFile;
 	
 	private static final String fileSeparator = System.getProperty("file.separator");
-//	protected File logsFolder = new File(getDataFolder()+fileSeparator+"logs");
-//	protected File logsFolder = new File("plugins"+File.pathSeparator+"LagMeter"+File.pathSeparator+"logs");
 	protected File logsFolder = new File("plugins"+fileSeparator+"LagMeter"+fileSeparator+"logs");
 	
 	protected LagMeterLogger logger = new LagMeterLogger(this);
@@ -31,13 +29,15 @@ public class LagMeter extends JavaPlugin {
 	protected static int averageLength = 10;
 	protected LagMeterStack history = new LagMeterStack();
 	
-	protected boolean crapPermissions = false;
-	protected PermissionHandler pHandler;
+	protected boolean vault = false;
+	protected Permission permission;
 	
-	double memUsed = ( Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory() ) / 1048576;
+	double memUsed = (Runtime.getRuntime().totalMemory()-Runtime.getRuntime().freeMemory())/1048576;
 	double memMax = Runtime.getRuntime().maxMemory() / 1048576;
 	double memFree = memMax - memUsed;
-	double percentageFree = ( 100 / memMax) * memFree;
+	double percentageFree = (100/memMax)*memFree;
+	PluginDescriptionFile pdf;
+	LagMeter plugin;
 	
 	//Configurable Values
 	protected static int interval = 40, tpsNotificationThreshold, memoryNotificationThreshold;
@@ -45,206 +45,182 @@ public class LagMeter extends JavaPlugin {
 			AutomaticLagNotificationsEnabled, AutomaticMemoryNotificationsEnabled;
 	protected static int logInterval = 150;
 	protected static boolean playerLoggingEnabled;
-	PluginDescriptionFile pdf;
-	LagMeter plugin;
 	
 	@Override
-	public void onDisable() {
-		info("Disabled!");
-		if(LagMeterLogger.enabled != false){
-			try {
-				logger.disable();
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-		getServer().getScheduler().cancelTasks(this);
-	}
-
-	@Override
-	public void onEnable() {
+	public void onEnable(){
 		LagMeterConfig.loadConfig();
 		if(!logsFolder.exists() && useLogsFolder && enableLogging){
 			info("Logs folder not found. Creating one for you.");
 			logsFolder.mkdir();
 			if(!logsFolder.exists()){
 				severe("Error! Couldn't create the folder!");
-			}else if (logsFolder.exists()){
+			}else{
 				info("Logs folder created.");
 			}
 		}
-		if (enableLogging){
-			if (!logger.enable()){
+		if(enableLogging){
+			poller.setLogInterval(logInterval);
+			if(!logger.enable()){
 				severe("Logging is disabled because: "+logger.getError());
 			}
-			poller.setLogInterval(logInterval);
 		}
 		history.setMaxSize(averageLength);
 		getServer().getScheduler().scheduleSyncRepeatingTask(this,poller,0,interval);
-		if(checkCrapPermissions()){
-			this.info("Old permissions system detected. Using it.");
-			crapPermissions = true;
+		if(checkVault()){
+			this.info("Vault hooked successfully.");
+			vault = true;
+			setupPermissions();
+		}else{
+			this.info("You don't have Vault. Defaulting to OP/Non-OP system.");
 		}
 		String loggingMessage = "";
-		if (enableLogging){
+		if(enableLogging){
 			loggingMessage = "  Logging to "+logger.getFilename();
 		}
 		this.info("Enabled!  Polling every "+interval+" server ticks."+loggingMessage);
 	}
-	protected boolean permit(Player player,String permission){
-		boolean permit = false;
-		if (crapPermissions){
-			permit = pHandler.permission(player, permission);
+	@Override
+	public void onDisable(){
+		info("Disabled!");
+		if(LagMeterLogger.enabled != false){
+			try {
+				logger.disable();
+			}catch (FileNotFoundException e){
+				e.printStackTrace();
+			}catch (IOException e){
+				e.printStackTrace();
+			}catch (Exception e){
+				e.printStackTrace();
+			}
 		}
-		else {
-			permit = player.hasPermission(permission);
-		}
-		return permit;
+		getServer().getScheduler().cancelTasks(this);
 	}
-	private boolean checkCrapPermissions() {
-		boolean crap = false;
-		
-		Plugin test = this.getServer().getPluginManager().getPlugin("Permissions");
-		if (test != null){
-			crap = true;
-			this.pHandler = ((Permissions)test).getHandler();
-		}
-		
-		return crap;
-	}
-	public boolean onCommand(CommandSender sender, Command command, String commandLabel, String[] args) {
-		
-		if ( ! this.isEnabled() )
+	@Override
+	public boolean onCommand(CommandSender sender, Command command, String commandLabel, String[] args){
+		if(!this.isEnabled())
 			return false;
 		boolean success = false;
-		if (
-				(sender instanceof Player && this.permit((Player)sender, "lagmeter.command."+command.getName().toLowerCase()))
-				|| !(sender instanceof Player)
-		){
-			if (command.getName().equalsIgnoreCase("lag")){
+		if((sender instanceof Player && this.permit((Player)sender, "lagmeter.command."+command.getName().toLowerCase()))
+		|| !(sender instanceof Player)){
+			if(command.getName().equalsIgnoreCase("lag")){
 				success = true;
 				sendLagMeter(sender);
-			}
-			else if (command.getName().equalsIgnoreCase("mem")){
-				success = true; 			
+			}else if(command.getName().equalsIgnoreCase("mem")){
+				success = true;
 				sendMemMeter(sender);
-			}
-			else if (command.getName().equalsIgnoreCase("lagmem")
-					|| command.getName().equalsIgnoreCase("lm")){
+			}else if(command.getName().equalsIgnoreCase("lagmem")
+					||command.getName().equalsIgnoreCase("lm")){
 				success = true;
 				sendLagMeter(sender);
 				sendMemMeter(sender);
+			}else{
+				success = true;
+				sender.sendMessage(ChatColor.GOLD+"Sorry, permission lagmeter.command."+command.getName().toLowerCase()+" was denied.");
 			}
-		else {
+			return success;
+		}else{
 			success = true;
 			sender.sendMessage(ChatColor.GOLD+"Sorry, permission lagmeter.command."+command.getName().toLowerCase()+" was denied.");
 		}
-		
-		return success;
-		}
-		else{
-			success = true;
-			sender.sendMessage(ChatColor.GOLD + "Sorry, permission lagmeter.command." + command.getName().toLowerCase() + " was denied.");
-		}
 		return success;
 	}
+	protected boolean permit(Player player, String perm){
+		boolean permit = false;
+		if(vault){
+			permit = permission.has(player, perm);
+		}else{
+			permit = player.isOp();
+		}
+		return permit;
+	}
+	private boolean checkVault(){
+		boolean usingVault = false;
+		
+		Plugin v = this.getServer().getPluginManager().getPlugin("Vault");
+		if(v != null){
+			usingVault = true;
+		}
+		return usingVault;
+	}
 	protected void updateMemoryStats (){
-		memUsed = ( Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory() ) / 1048576;
-		memMax = Runtime.getRuntime().maxMemory() / 1048576;
-		memFree = memMax - memUsed;
-		percentageFree = ( 100 / memMax) * memFree;
+		memUsed = (Runtime.getRuntime().totalMemory()-Runtime.getRuntime().freeMemory())/1048576;
+		memMax = Runtime.getRuntime().maxMemory()/1048576;
+		memFree = memMax-memUsed;
+		percentageFree = (100/memMax)*memFree;
 	}
 	protected void sendMemMeter(CommandSender sender){
 		updateMemoryStats();
 		ChatColor wrapColor = ChatColor.WHITE;
-		if (sender instanceof Player){
+		if(sender instanceof Player){
 			wrapColor = ChatColor.GOLD;
 		}
 		
 		ChatColor color = ChatColor.GOLD;
-		if (percentageFree >= 60){
+		if(percentageFree >= 60){
 			color = ChatColor.GREEN;
-		}
-		else if (percentageFree >= 35){
+		}else if(percentageFree >= 35){
 			color = ChatColor.YELLOW;
-		}
-		else {
+		}else{
 			color = ChatColor.RED;
 		}
 		
 		String bar = "";
 		int looped = 0;
-		
-		while (looped++ < (percentageFree/5) ){
-			bar += '#';
+		while (looped++< (percentageFree/5)){
+			bar+= '#';
 		}
 		//bar = String.format("%-20s",bar);
-		bar += ChatColor.WHITE;
-		while (looped++ <= 20){
-			bar += '_';
+		bar+= ChatColor.WHITE;
+		while (looped++<= 20){
+			bar+= '_';
 		}
 		sender.sendMessage(wrapColor+"["+color+bar+wrapColor+"] "+memFree+"MB/"+memMax+"MB ("+(int)percentageFree+"%) free");
 	}
 	protected void sendLagMeter(CommandSender sender){
-		
 		ChatColor wrapColor = ChatColor.WHITE;
-		if (sender instanceof Player){
+		if(sender instanceof Player)
 			wrapColor = ChatColor.GOLD;
-		}
-		
 		String lagMeter = "";
 		float tps = 0f;
-		if (useAverage){
+		if(useAverage){
 			tps = history.getAverage();
-		}
-		else {
+		}else{
 			tps = ticksPerSecond;
 		}
-		if (tps < 21){
+		if(tps < 21){
 			int looped = 0;
-			while (looped++ < tps){
-				lagMeter += "#";
+			while (looped++< tps){
+				lagMeter+= "#";
 			}
 			//lagMeter = String.format("%-20s",lagMeter);
-			lagMeter += ChatColor.WHITE;
-			while (looped++ <= 20){
-				lagMeter += "_";
+			lagMeter+= ChatColor.WHITE;
+			while (looped++<= 20){
+				lagMeter+= "_";
 			}
-		}
-		else {
+		}else{
 			sender.sendMessage(wrapColor+"LagMeter just loaded, please wait for polling.");
 			return;
 		}
 		ChatColor color = wrapColor;
-		if (tps >= 20){
+		if(tps >= 20){
 			color = ChatColor.GREEN;
-		}
-		else if (tps >= 18){
+		}else if(tps >= 18){
 			color = ChatColor.GREEN;
-		}
-		else if (tps >= 15){
+		}else if(tps >= 15){
 			color = ChatColor.YELLOW;
-		}
-		else {
+		}else{
 			color = ChatColor.RED;
 		}
 		sender.sendMessage(wrapColor+"["+color+lagMeter+wrapColor+"] "+tps+" TPS");
 	}
-	public void info(String message) {
-		PluginDescriptionFile pdfFile = this.getDescription();
-		log.info("[" + pdfFile.getName()+ " " + pdfFile.getVersion() + "] " + message);
+	public void info(String message){
+		log.info("["+pdfFile.getName()+" "+pdfFile.getVersion()+"] "+message);
 	}
 	public void warn(String message){
-		PluginDescriptionFile pdfFile = this.getDescription();
-		log.warning("[" + pdfFile.getName() + " " + pdfFile.getVersion() + "] " + message);
+		log.warning("["+pdfFile.getName()+" "+pdfFile.getVersion()+"] "+message);
 	}
 	public void severe(String message){
-		PluginDescriptionFile pdfFile = this.getDescription();
-		log.severe(pdfFile.getName() + "" + pdfFile.getVersion() + "] " + message);
+		log.severe(pdfFile.getName()+""+pdfFile.getVersion()+"] "+message);
 	}
 	/**
 	 * Gets the ticks per second.
@@ -256,5 +232,12 @@ public class LagMeter extends JavaPlugin {
 		if(useAverage)
 			return history.getAverage();
 		return ticksPerSecond;
+	}
+	private boolean setupPermissions(){
+		RegisteredServiceProvider<Permission> permissionProvider = getServer().getServicesManager().getRegistration(net.milkbowl.vault.permission.Permission.class);
+		if(permissionProvider != null){
+			permission = permissionProvider.getProvider();
+		}
+		return (permission != null);
 	}
 }

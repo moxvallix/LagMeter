@@ -2,7 +2,7 @@ package main.java.com.webkonsept.minecraft.lagmeter;
 
 import java.util.LinkedList;
 
-public class LagMeterStack {
+public class LagMeterStack{
 	private int maxSize = 0;
 	private LinkedList<Float> stack = new LinkedList<Float>(); 
 	
@@ -31,11 +31,11 @@ public class LagMeterStack {
 	}
 	public float getAverage(){
 		float total = 0f;
-		for (Float f : stack){
-			if (f != null){
+		for(Float f : stack){
+			if(f != null){
 				total += f;
 			}
 		}
-		return total / stack.size();
+		return total/stack.size();
 	}
 }

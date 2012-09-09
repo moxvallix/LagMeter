@@ -44,3 +44,4 @@ generators: [bukget]
 categories: [INFO]
 maintainer: marvinej
 authors: [DemmyDemon, TheLunarFrog]
+softdepend: [Vault]
