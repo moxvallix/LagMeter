@@ -51,6 +51,7 @@
 		<scope>system</scope>
 			<systemPath>C:\Program Files\Jenkins\workspace\Dependencies\Bukkit.jar</systemPath>
 		<optional>false</optional>
+	</dependency>
 	<!--Vault - Optional-->
 	<dependency>
 		<groupId>net.milkbowl</groupId>
