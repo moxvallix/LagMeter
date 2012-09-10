@@ -7,6 +7,7 @@ import java.util.logging.Logger;
 
 import net.milkbowl.vault.permission.Permission;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -16,7 +17,7 @@ import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public class LagMeter extends JavaPlugin {
+public class LagMeter extends JavaPlugin implements ChatColourManager {
 	private Logger log = Logger.getLogger("Minecraft");
 	protected float ticksPerSecond = 20;
 	public static PluginDescriptionFile pdfFile;
@@ -33,18 +34,20 @@ public class LagMeter extends JavaPlugin {
 	protected Permission permission;
 	
 	double memUsed = (Runtime.getRuntime().totalMemory()-Runtime.getRuntime().freeMemory())/1048576;
-	double memMax = Runtime.getRuntime().maxMemory() / 1048576;
+	double memMax = Runtime.getRuntime().maxMemory()/1048576;
 	double memFree = memMax - memUsed;
 	double percentageFree = (100/memMax)*memFree;
 	PluginDescriptionFile pdf;
 	LagMeter plugin;
 	
 	//Configurable Values
-	protected static int interval = 40, tpsNotificationThreshold, memoryNotificationThreshold;
+	protected static int interval = 40;
+	protected static float tpsNotificationThreshold, memoryNotificationThreshold;
 	protected static boolean useAverage = true, enableLogging = true, useLogsFolder = true,
 			AutomaticLagNotificationsEnabled, AutomaticMemoryNotificationsEnabled;
-	protected static int logInterval = 150;
+	protected static int logInterval = 150, lagNotifyInterval, memNotifyInterval;
 	protected static boolean playerLoggingEnabled;
+	protected static String highLagCommand, lowMemCommand; 
 	
 	@Override
 	public void onEnable(){
@@ -57,6 +60,8 @@ public class LagMeter extends JavaPlugin {
 			}else{
 				info("Logs folder created.");
 			}
+			Bukkit.getServer().getScheduler().scheduleAsyncRepeatingTask(this, new LagWatcher(), lagNotifyInterval*1200, lagNotifyInterval*1200);
+			Bukkit.getServer().getScheduler().scheduleAsyncRepeatingTask(this, new MemoryWatcher(), memNotifyInterval*1200, memNotifyInterval*1200);
 		}
 		if(enableLogging){
 			poller.setLogInterval(logInterval);
@@ -67,17 +72,17 @@ public class LagMeter extends JavaPlugin {
 		history.setMaxSize(averageLength);
 		getServer().getScheduler().scheduleSyncRepeatingTask(this,poller,0,interval);
 		if(checkVault()){
-			this.info("Vault hooked successfully.");
+//			info("Vault hooked successfully.");
 			vault = true;
 			setupPermissions();
 		}else{
-			this.info("You don't have Vault. Defaulting to OP/Non-OP system.");
+			info("You don't have Vault. Defaulting to OP/Non-OP system.");
 		}
 		String loggingMessage = "";
 		if(enableLogging){
 			loggingMessage = "  Logging to "+logger.getFilename();
 		}
-		this.info("Enabled!  Polling every "+interval+" server ticks."+loggingMessage);
+//		info("Enabled! Polling every "+interval+" server ticks."+loggingMessage);
 	}
 	@Override
 	public void onDisable(){
@@ -115,12 +120,12 @@ public class LagMeter extends JavaPlugin {
 				sendMemMeter(sender);
 			}else{
 				success = true;
-				sender.sendMessage(ChatColor.GOLD+"Sorry, permission lagmeter.command."+command.getName().toLowerCase()+" was denied.");
+				sender.sendMessage(gold+"Sorry, permission lagmeter.command."+command.getName().toLowerCase()+" was denied.");
 			}
 			return success;
 		}else{
 			success = true;
-			sender.sendMessage(ChatColor.GOLD+"Sorry, permission lagmeter.command."+command.getName().toLowerCase()+" was denied.");
+			sender.sendMessage(gold+"Sorry, permission lagmeter.command."+command.getName().toLowerCase()+" was denied.");
 		}
 		return success;
 	}
@@ -150,36 +155,36 @@ public class LagMeter extends JavaPlugin {
 	}
 	protected void sendMemMeter(CommandSender sender){
 		updateMemoryStats();
-		ChatColor wrapColor = ChatColor.WHITE;
+		String wrapColor = white.toString();
 		if(sender instanceof Player){
-			wrapColor = ChatColor.GOLD;
+			wrapColor = gold;
 		}
 		
-		ChatColor color = ChatColor.GOLD;
+		String colour = gold.toString();
 		if(percentageFree >= 60){
-			color = ChatColor.GREEN;
+			colour = green.toString();
 		}else if(percentageFree >= 35){
-			color = ChatColor.YELLOW;
+			colour = yellow.toString();
 		}else{
-			color = ChatColor.RED;
+			colour = red.toString();
 		}
 		
 		String bar = "";
 		int looped = 0;
-		while (looped++< (percentageFree/5)){
+		while(looped++< (percentageFree/5)){
 			bar+= '#';
 		}
 		//bar = String.format("%-20s",bar);
-		bar+= ChatColor.WHITE;
+		bar+= white;
 		while (looped++<= 20){
 			bar+= '_';
 		}
-		sender.sendMessage(wrapColor+"["+color+bar+wrapColor+"] "+memFree+"MB/"+memMax+"MB ("+(int)percentageFree+"%) free");
+		sender.sendMessage(wrapColor+"["+colour+bar+wrapColor+"] "+memFree+"MB/"+memMax+"MB ("+(int)percentageFree+"%) free");
 	}
 	protected void sendLagMeter(CommandSender sender){
-		ChatColor wrapColor = ChatColor.WHITE;
+		String wrapColor = white.toString();
 		if(sender instanceof Player)
-			wrapColor = ChatColor.GOLD;
+			wrapColor = gold.toString();
 		String lagMeter = "";
 		float tps = 0f;
 		if(useAverage){
@@ -193,7 +198,7 @@ public class LagMeter extends JavaPlugin {
 				lagMeter+= "#";
 			}
 			//lagMeter = String.format("%-20s",lagMeter);
-			lagMeter+= ChatColor.WHITE;
+			lagMeter+= white;
 			while (looped++<= 20){
 				lagMeter+= "_";
 			}
@@ -201,15 +206,15 @@ public class LagMeter extends JavaPlugin {
 			sender.sendMessage(wrapColor+"LagMeter just loaded, please wait for polling.");
 			return;
 		}
-		ChatColor color = wrapColor;
+		String color = wrapColor;
 		if(tps >= 20){
-			color = ChatColor.GREEN;
+			color = green.toString();
 		}else if(tps >= 18){
-			color = ChatColor.GREEN;
+			color = green.toString();
 		}else if(tps >= 15){
-			color = ChatColor.YELLOW;
+			color = yellow.toString();
 		}else{
-			color = ChatColor.RED;
+			color = red.toString();
 		}
 		sender.sendMessage(wrapColor+"["+color+lagMeter+wrapColor+"] "+tps+" TPS");
 	}
@@ -239,5 +244,32 @@ public class LagMeter extends JavaPlugin {
 			permission = permissionProvider.getProvider();
 		}
 		return (permission != null);
+	}
+	class LagWatcher extends LagMeter implements Runnable{
+		LagMeter plugin;
+		@Override
+		public void run(){
+			if((tpsNotificationThreshold <= plugin.getTPS()) && AutomaticLagNotificationsEnabled){
+				Player[] players = Bukkit.getServer().getOnlinePlayers();
+				for(Player p: players){
+					if(permit(p, "lagmeter.notify.lag") || p.isOp())
+						p.sendMessage(igt+red+"The server's TPS has dropped below "+tpsNotificationThreshold+"! If you configured a server command to execute at this time, it will run now.");
+				}
+				Bukkit.getServer().dispatchCommand(null, highLagCommand);
+			}
+		}
+	}
+	class MemoryWatcher extends LagMeter implements Runnable{
+		public void run(){
+			if((memoryNotificationThreshold <= plugin.memFree) && AutomaticMemoryNotificationsEnabled){
+				Player[] players = Bukkit.getServer().getOnlinePlayers();
+				for(Player p: players){
+					if(permit(p, "lagmeter.notify.mem") || p.isOp()){
+						p.sendMessage(igt+red+"The server's free memory pool has dropped below "+memFree+"%! If you configured a server command to execute at this time, it will run now.");
+					}
+				}
+				Bukkit.getServer().dispatchCommand(null, lowMemCommand);
+			}
+		}
 	}
 }

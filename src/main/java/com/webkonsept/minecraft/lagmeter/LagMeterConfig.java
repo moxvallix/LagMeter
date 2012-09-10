@@ -10,12 +10,13 @@ import org.bukkit.Bukkit;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 
-public class LagMeterConfig{
+public class LagMeterConfig extends LagMeter{
 	private static YamlConfiguration configuration;
 	private static File configFile;
 	private static boolean loaded = false;
 	
-	public static YamlConfiguration getConfig(){
+	@Override
+	public YamlConfiguration getConfig(){
 		if(!loaded)
 			loadConfig();
 		return configuration;
@@ -32,10 +33,14 @@ public class LagMeterConfig{
 				LagMeter.useAverage 			= configuration.getBoolean	("useAverage",				true);
 				LagMeter.averageLength 			= configuration.getInt		("averageLength", 			10);
 				LagMeter.interval 				= configuration.getInt		("interval", 				40);
-				LagMeter.AutomaticLagNotificationsEnabled = configuration.getBoolean("adminNotifications.Lag", true);
-				LagMeter.tpsNotificationThreshold = configuration.getInt("adminNotifications.tpsThreshold", 16);
-				LagMeter.AutomaticMemoryNotificationsEnabled = configuration.getBoolean("adminNotifications.Memory", true);
-				LagMeter.memoryNotificationThreshold = configuration.getInt("adminNotifications.memoryThreshold", 26);
+				LagMeter.AutomaticLagNotificationsEnabled = configuration.getBoolean("Notifications.Lag.Enabled", true);
+				LagMeter.tpsNotificationThreshold = configuration.getInt("Notifications.Lag.Threshold", 15);
+				LagMeter.lagNotifyInterval = configuration.getInt("Notifications.Lag.CheckInterval", 5);
+				LagMeter.highLagCommand = configuration.getString("Notifications.Lag.ConsoleCommand", "lag");
+				LagMeter.AutomaticMemoryNotificationsEnabled = configuration.getBoolean("Notifications.Memory.Enabled", true);
+				LagMeter.memoryNotificationThreshold = configuration.getInt("Notifications.Memory.Threshold", 25);
+				LagMeter.memNotifyInterval = configuration.getInt("Notifications.Memory.CheckInterval", 10);
+				LagMeter.lowMemCommand = configuration.getString("Notifications.Memory.ConsoleCommand", "mem");
 				LagMeter.logInterval			= configuration.getInt		("log.interval", 			150);
 				LagMeter.enableLogging			= configuration.getBoolean	("log.enable", 				true);
 				LagMeter.useLogsFolder			= configuration.getBoolean	("log.useLogsFolder",		true);
