@@ -15,20 +15,6 @@
 			<targetPath>main/java/com/webkonsept/minecraft/lagmeter</targetPath>
 			<filtering>false</filtering>
 			<directory>${basedir}/src/main/java/com/webkonsept/minecraft/lagmeter</directory>
-			<includes>
-				<include>LagMeter.java</include>
-				<include>LagMeterConfig.class</include>
-				<include>LagMeterLogger.class</include>
-				<include>LagMeterPoller.class</include>
-				<include>LagMeterStack.class</include>
-			</includes>
-			<excludes>
-				<include>LagMeter.java</include>
-				<include>LagMeterConfig.java</include>
-				<include>LagMeterLogger.java</include>
-				<include>LagMeterPoller.java</include>
-				<include>LagMeterStack.java</include>
-			</excludes>
 		</resource>
 		<!--settings.yml-->
 		<resource>
