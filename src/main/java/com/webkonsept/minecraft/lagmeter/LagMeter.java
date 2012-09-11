@@ -51,6 +51,7 @@ public class LagMeter extends JavaPlugin implements ChatColourManager {
 	
 	@Override
 	public void onEnable(){
+		pdfFile = this.getDescription();
 		LagMeterConfig.loadConfig();
 		if(!logsFolder.exists() && useLogsFolder && enableLogging){
 			info("Logs folder not found. Creating one for you.");
@@ -72,7 +73,7 @@ public class LagMeter extends JavaPlugin implements ChatColourManager {
 		history.setMaxSize(averageLength);
 		getServer().getScheduler().scheduleSyncRepeatingTask(this,poller,0,interval);
 		if(checkVault()){
-//			info("Vault hooked successfully.");
+			info("Vault hooked successfully.");
 			vault = true;
 			setupPermissions();
 		}else{
@@ -82,7 +83,7 @@ public class LagMeter extends JavaPlugin implements ChatColourManager {
 		if(enableLogging){
 			loggingMessage = "  Logging to "+logger.getFilename();
 		}
-//		info("Enabled! Polling every "+interval+" server ticks."+loggingMessage);
+		info("Enabled! Polling every "+interval+" server ticks."+loggingMessage);
 	}
 	@Override
 	public void onDisable(){
