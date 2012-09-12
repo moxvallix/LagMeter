@@ -48,7 +48,7 @@ public class LagMeter extends JavaPlugin implements ChatColourManager {
 	protected static int logInterval = 150, lagNotifyInterval, memNotifyInterval;
 	protected static boolean playerLoggingEnabled;
 	protected static String highLagCommand, lowMemCommand; 
-	
+	protected static int lwTaskID, mwTaskID;
 	@Override
 	public void onEnable(){
 		pdfFile = this.getDescription();
@@ -61,8 +61,6 @@ public class LagMeter extends JavaPlugin implements ChatColourManager {
 			}else{
 				info("Logs folder created.");
 			}
-			Bukkit.getServer().getScheduler().scheduleAsyncRepeatingTask(this, new LagWatcher(), lagNotifyInterval*1200, lagNotifyInterval*1200);
-			Bukkit.getServer().getScheduler().scheduleAsyncRepeatingTask(this, new MemoryWatcher(), memNotifyInterval*1200, memNotifyInterval*1200);
 		}
 		if(enableLogging){
 			poller.setLogInterval(logInterval);
@@ -79,11 +77,10 @@ public class LagMeter extends JavaPlugin implements ChatColourManager {
 		}else{
 			info("You don't have Vault. Defaulting to OP/Non-OP system.");
 		}
-		String loggingMessage = "";
-		if(enableLogging){
-			loggingMessage = "  Logging to "+logger.getFilename();
-		}
+		String loggingMessage = enableLogging ? "Logging to "+logger.getFilename() : "";
 		info("Enabled! Polling every "+interval+" server ticks."+loggingMessage);
+		lwTaskID = Bukkit.getServer().getScheduler().scheduleAsyncRepeatingTask(this, new LagWatcher(), lagNotifyInterval*1200, lagNotifyInterval*1200);
+		mwTaskID = Bukkit.getServer().getScheduler().scheduleAsyncRepeatingTask(this, new MemoryWatcher(), memNotifyInterval*1200, memNotifyInterval*1200);
 	}
 	@Override
 	public void onDisable(){
@@ -99,6 +96,8 @@ public class LagMeter extends JavaPlugin implements ChatColourManager {
 				e.printStackTrace();
 			}
 		}
+		getServer().getScheduler().cancelTask(lwTaskID);
+		getServer().getScheduler().cancelTask(mwTaskID);
 		getServer().getScheduler().cancelTasks(this);
 	}
 	@Override
@@ -250,7 +249,7 @@ public class LagMeter extends JavaPlugin implements ChatColourManager {
 		LagMeter plugin;
 		@Override
 		public void run(){
-			if((tpsNotificationThreshold <= plugin.getTPS()) && AutomaticLagNotificationsEnabled){
+			if((tpsNotificationThreshold <= getTPS()) && AutomaticLagNotificationsEnabled){
 				Player[] players = Bukkit.getServer().getOnlinePlayers();
 				for(Player p: players){
 					if(permit(p, "lagmeter.notify.lag") || p.isOp())

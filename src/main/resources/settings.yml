@@ -6,16 +6,14 @@ log:
     enable: true
     useLogsFolder: false
     logPlayersOnline: true
-adminNotifications:
-    #Should LagMeter notify Ops and players with the permission node "bukkit.broadcast.admin"?
-    #Don't give this node to people you wouldn't like seeing administration broadcast, such as opping, de-opping, etc.
-    #Default: true
-    Lag: true
-    #After this TPS, start notifying the aforementioned groups that the tps is below this setting:
-    #(Default: 16) - This makes it notify when the TPS hits 15. It's less than, not less-than-or-equal-to.
-    tpsThreshold: 20
-    #Same deal as "Lag:" but memory notifications instead.
-    Memory: true
-    #Same deal as with tpsThreshold; however, this one is a percentage. It is not less than or equal to, it is only less than.
-    #Default: 26 (This makes it announce as the memory hits 25%, as it is < 26%, 26% wouldn't start it notifying such)
-    memoryThreshold: 99
+Notifications:
+    Lag:
+        Enabled: true
+        Threshold: 17
+        CheckInterval: 5
+        ConsoleCommand: lag
+    Memory:
+        Enabled: true
+        Threshold: 25
+        CheckInterval: 10
+        ConsoleCommand: mem

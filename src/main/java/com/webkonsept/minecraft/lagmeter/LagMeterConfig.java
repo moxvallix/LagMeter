@@ -25,7 +25,7 @@ public class LagMeterConfig extends LagMeter{
 		return configFile;
 	}
 	public static void loadConfig(){
-		configFile = new File(Bukkit.getServer().getPluginManager().getPlugin("LagMeter").getDataFolder(), "/main/resources/settings.yml");
+		configFile = new File(Bukkit.getServer().getPluginManager().getPlugin("LagMeter").getDataFolder(), "settings.yml");
 		if(configFile.exists()){
 			configuration = new YamlConfiguration();
 			try{
@@ -56,7 +56,7 @@ public class LagMeterConfig extends LagMeter{
 		}else{
 			try{
 				Bukkit.getServer().getPluginManager().getPlugin("LagMeter").getDataFolder().mkdir();
-				InputStream jarURL = LagMeterConfig.class.getResourceAsStream("/settings.yml");
+				InputStream jarURL = LagMeterConfig.class.getResourceAsStream("/main/resources/settings.yml");
 				copyFile(jarURL, configFile);
 				configuration = new YamlConfiguration();
 				configuration.load(configFile);
