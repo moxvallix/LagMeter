@@ -49,6 +49,7 @@ public class LagMeter extends JavaPlugin implements ChatColourManager {
 	protected static boolean playerLoggingEnabled;
 	protected static String highLagCommand, lowMemCommand; 
 	protected static int lwTaskID, mwTaskID;
+	
 	@Override
 	public void onEnable(){
 		pdfFile = this.getDescription();
@@ -249,7 +250,7 @@ public class LagMeter extends JavaPlugin implements ChatColourManager {
 		LagMeter plugin;
 		@Override
 		public void run(){
-			if((tpsNotificationThreshold <= getTPS()) && AutomaticLagNotificationsEnabled){
+			if((tpsNotificationThreshold >= getTPS()) && AutomaticLagNotificationsEnabled){
 				Player[] players = Bukkit.getServer().getOnlinePlayers();
 				for(Player p: players){
 					if(permit(p, "lagmeter.notify.lag") || p.isOp())
@@ -260,8 +261,9 @@ public class LagMeter extends JavaPlugin implements ChatColourManager {
 		}
 	}
 	class MemoryWatcher extends LagMeter implements Runnable{
+		@Override
 		public void run(){
-			if((memoryNotificationThreshold <= plugin.memFree) && AutomaticMemoryNotificationsEnabled){
+			if((memoryNotificationThreshold >= plugin.memFree) && AutomaticMemoryNotificationsEnabled){
 				Player[] players = Bukkit.getServer().getOnlinePlayers();
 				for(Player p: players){
 					if(permit(p, "lagmeter.notify.mem") || p.isOp()){
