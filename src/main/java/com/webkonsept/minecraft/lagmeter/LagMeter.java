@@ -8,7 +8,6 @@ import java.util.logging.Logger;
 import net.milkbowl.vault.permission.Permission;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -35,7 +34,7 @@ public class LagMeter extends JavaPlugin implements ChatColourManager {
 	
 	double memUsed = (Runtime.getRuntime().totalMemory()-Runtime.getRuntime().freeMemory())/1048576;
 	double memMax = Runtime.getRuntime().maxMemory()/1048576;
-	double memFree = memMax - memUsed;
+	double memFree = memMax-memUsed;
 	double percentageFree = (100/memMax)*memFree;
 	PluginDescriptionFile pdf;
 	LagMeter plugin;
@@ -54,6 +53,7 @@ public class LagMeter extends JavaPlugin implements ChatColourManager {
 	public void onEnable(){
 		pdfFile = this.getDescription();
 		LagMeterConfig.loadConfig();
+		vault = checkVault();
 		if(!logsFolder.exists() && useLogsFolder && enableLogging){
 			info("Logs folder not found. Creating one for you.");
 			logsFolder.mkdir();
@@ -80,8 +80,14 @@ public class LagMeter extends JavaPlugin implements ChatColourManager {
 		}
 		String loggingMessage = enableLogging ? "Logging to "+logger.getFilename() : "";
 		info("Enabled! Polling every "+interval+" server ticks."+loggingMessage);
-		lwTaskID = Bukkit.getServer().getScheduler().scheduleAsyncRepeatingTask(this, new LagWatcher(), lagNotifyInterval*1200, lagNotifyInterval*1200);
-		mwTaskID = Bukkit.getServer().getScheduler().scheduleAsyncRepeatingTask(this, new MemoryWatcher(), memNotifyInterval*1200, memNotifyInterval*1200);
+		if(AutomaticLagNotificationsEnabled)
+			lwTaskID = Bukkit.getServer().getScheduler().scheduleAsyncRepeatingTask(this, new LagWatcher(), lagNotifyInterval*1200, lagNotifyInterval*1200);
+		else
+			lwTaskID = -1;
+		if(AutomaticMemoryNotificationsEnabled)
+			mwTaskID = Bukkit.getServer().getScheduler().scheduleAsyncRepeatingTask(this, new MemoryWatcher(), memNotifyInterval*1200, memNotifyInterval*1200);
+		else
+			mwTaskID = -1;
 	}
 	@Override
 	public void onDisable(){
@@ -97,8 +103,10 @@ public class LagMeter extends JavaPlugin implements ChatColourManager {
 				e.printStackTrace();
 			}
 		}
-		getServer().getScheduler().cancelTask(lwTaskID);
-		getServer().getScheduler().cancelTask(mwTaskID);
+		if(AutomaticLagNotificationsEnabled)
+			getServer().getScheduler().cancelTask(lwTaskID);
+		if(AutomaticMemoryNotificationsEnabled)
+			getServer().getScheduler().cancelTask(mwTaskID);
 		getServer().getScheduler().cancelTasks(this);
 	}
 	@Override
@@ -106,8 +114,7 @@ public class LagMeter extends JavaPlugin implements ChatColourManager {
 		if(!this.isEnabled())
 			return false;
 		boolean success = false;
-		if((sender instanceof Player && this.permit((Player)sender, "lagmeter.command."+command.getName().toLowerCase()))
-		|| !(sender instanceof Player)){
+		if((sender instanceof Player && this.permit((Player)sender, "lagmeter.command."+command.getName().toLowerCase())) || !(sender instanceof Player)){
 			if(command.getName().equalsIgnoreCase("lag")){
 				success = true;
 				sendLagMeter(sender);
@@ -141,7 +148,6 @@ public class LagMeter extends JavaPlugin implements ChatColourManager {
 	}
 	private boolean checkVault(){
 		boolean usingVault = false;
-		
 		Plugin v = this.getServer().getPluginManager().getPlugin("Vault");
 		if(v != null){
 			usingVault = true;
@@ -250,12 +256,13 @@ public class LagMeter extends JavaPlugin implements ChatColourManager {
 		LagMeter plugin;
 		@Override
 		public void run(){
-			if((tpsNotificationThreshold >= getTPS()) && AutomaticLagNotificationsEnabled){
+			if(tpsNotificationThreshold >= getTPS()){
 				Player[] players = Bukkit.getServer().getOnlinePlayers();
 				for(Player p: players){
 					if(permit(p, "lagmeter.notify.lag") || p.isOp())
 						p.sendMessage(igt+red+"The server's TPS has dropped below "+tpsNotificationThreshold+"! If you configured a server command to execute at this time, it will run now.");
 				}
+				severe("The server's TPS has dropped below "+tpsNotificationThreshold+"! Executing command (if configured).");
 				Bukkit.getServer().dispatchCommand(null, highLagCommand);
 			}
 		}
@@ -263,13 +270,16 @@ public class LagMeter extends JavaPlugin implements ChatColourManager {
 	class MemoryWatcher extends LagMeter implements Runnable{
 		@Override
 		public void run(){
-			if((memoryNotificationThreshold >= plugin.memFree) && AutomaticMemoryNotificationsEnabled){
-				Player[] players = Bukkit.getServer().getOnlinePlayers();
+			updateMemoryStats();
+			if(memoryNotificationThreshold >= memFree){
+				Player[] players;
+				players = Bukkit.getServer().getOnlinePlayers();
 				for(Player p: players){
 					if(permit(p, "lagmeter.notify.mem") || p.isOp()){
-						p.sendMessage(igt+red+"The server's free memory pool has dropped below "+memFree+"%! If you configured a server command to execute at this time, it will run now.");
+						p.sendMessage(igt+red+"The server's free memory pool has dropped below "+memoryNotificationThreshold+"%! If you configured a server command to execute at this time, it will run now.");
 					}
 				}
+				severe("The server's free memory pool has dropped below "+memoryNotificationThreshold+"! Executing command (if configured).");
 				Bukkit.getServer().dispatchCommand(null, lowMemCommand);
 			}
 		}
