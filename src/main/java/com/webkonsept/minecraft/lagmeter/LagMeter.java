@@ -263,7 +263,7 @@ public class LagMeter extends JavaPlugin implements ChatColourManager {
 						p.sendMessage(igt+red+"The server's TPS has dropped below "+tpsNotificationThreshold+"! If you configured a server command to execute at this time, it will run now.");
 				}
 				severe("The server's TPS has dropped below "+tpsNotificationThreshold+"! Executing command (if configured).");
-				Bukkit.getServer().dispatchCommand(null, highLagCommand);
+				Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), highLagCommand);
 			}
 		}
 	}
@@ -280,7 +280,7 @@ public class LagMeter extends JavaPlugin implements ChatColourManager {
 					}
 				}
 				severe("The server's free memory pool has dropped below "+memoryNotificationThreshold+"! Executing command (if configured).");
-				Bukkit.getServer().dispatchCommand(null, lowMemCommand);
+				Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), lowMemCommand);
 			}
 		}
 	}
