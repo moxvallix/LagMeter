@@ -45,7 +45,7 @@ public class LagMeter extends JavaPlugin implements ChatColourManager {
 	protected static int interval = 40;
 	protected static float tpsNotificationThreshold, memoryNotificationThreshold;
 	protected static boolean useAverage = true, enableLogging = true, useLogsFolder = true,
-			AutomaticLagNotificationsEnabled, AutomaticMemoryNotificationsEnabled;
+			AutomaticLagNotificationsEnabled, AutomaticMemoryNotificationsEnabled, displayEntities;
 	protected static int logInterval = 150, lagNotifyInterval, memNotifyInterval;
 	protected static boolean playerLoggingEnabled;
 	protected static String highLagCommand, lowMemCommand; 
@@ -226,11 +226,16 @@ public class LagMeter extends JavaPlugin implements ChatColourManager {
 			color = red.toString();
 		}
 		sender.sendMessage(wrapColor+"["+color+lagMeter+wrapColor+"] "+tps+" TPS");
-		List<World> worlds = getServer().getWorlds();
-		for(World world: worlds){
-			String worldName = world.getName();
-			int i = getServer().getWorld(worldName).getEntities().size();
-			sender.sendMessage(wrapColor+"Entities in world \""+worldName+"\": "+i);
+		if(displayEntities){
+			int totalEntities = 0;
+			List<World> worlds = getServer().getWorlds();
+			for(World world: worlds){
+				String worldName = world.getName();
+				int i = getServer().getWorld(worldName).getEntities().size();
+				totalEntities += i;
+				sender.sendMessage(wrapColor+"Entities in world \""+worldName+"\": "+i);
+			}
+			sender.sendMessage(wrapColor+"Total entities: "+totalEntities);
 		}
 	}
 	public void info(String message){
@@ -269,7 +274,7 @@ public class LagMeter extends JavaPlugin implements ChatColourManager {
 				for(Player p: players){
 					if(permit(p, "lagmeter.notify.lag") || p.isOp())
 						p.sendMessage(igt+red+"The server's TPS has dropped below "+tpsNotificationThreshold+"! If you configured a server command to execute at this time, it will run now.");
-					
+
 				}
 				severe("The server's TPS has dropped below "+tpsNotificationThreshold+"! Executing command (if configured).");
 				Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), highLagCommand);
