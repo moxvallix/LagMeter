@@ -6,6 +6,7 @@ log:
     enable: true
     useLogsFolder: false
     logPlayersOnline: true
+    displayEntitiesInLagCmds: true
 Notifications:
     Lag:
         Enabled: true
