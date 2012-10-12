@@ -3,13 +3,16 @@ package main.java.com.webkonsept.minecraft.lagmeter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.List;
 import java.util.logging.Logger;
 
 import net.milkbowl.vault.permission.Permission;
 
 import org.bukkit.Bukkit;
+import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
@@ -20,25 +23,25 @@ public class LagMeter extends JavaPlugin implements ChatColourManager {
 	private Logger log = Logger.getLogger("Minecraft");
 	protected float ticksPerSecond = 20;
 	public static PluginDescriptionFile pdfFile;
-	
+
 	private static final String fileSeparator = System.getProperty("file.separator");
 	protected File logsFolder = new File("plugins"+fileSeparator+"LagMeter"+fileSeparator+"logs");
-	
+
 	protected LagMeterLogger logger = new LagMeterLogger(this);
 	protected LagMeterPoller poller = new LagMeterPoller(this);
 	protected static int averageLength = 10;
 	protected LagMeterStack history = new LagMeterStack();
-	
+
 	protected boolean vault = false;
 	protected Permission permission;
-	
+
 	double memUsed = (Runtime.getRuntime().totalMemory()-Runtime.getRuntime().freeMemory())/1048576;
 	double memMax = Runtime.getRuntime().maxMemory()/1048576;
 	double memFree = memMax-memUsed;
 	double percentageFree = (100/memMax)*memFree;
 	PluginDescriptionFile pdf;
 	LagMeter plugin;
-	
+
 	//Configurable Values
 	protected static int interval = 40;
 	protected static float tpsNotificationThreshold, memoryNotificationThreshold;
@@ -48,7 +51,7 @@ public class LagMeter extends JavaPlugin implements ChatColourManager {
 	protected static boolean playerLoggingEnabled;
 	protected static String highLagCommand, lowMemCommand; 
 	protected static int lwTaskID, mwTaskID;
-	
+
 	@Override
 	public void onEnable(){
 		pdfFile = this.getDescription();
@@ -166,7 +169,7 @@ public class LagMeter extends JavaPlugin implements ChatColourManager {
 		if(sender instanceof Player){
 			wrapColor = gold;
 		}
-		
+
 		String colour = gold.toString();
 		if(percentageFree >= 60){
 			colour = green.toString();
@@ -175,7 +178,7 @@ public class LagMeter extends JavaPlugin implements ChatColourManager {
 		}else{
 			colour = red.toString();
 		}
-		
+
 		String bar = "";
 		int looped = 0;
 		while(looped++< (percentageFree/5)){
@@ -224,6 +227,12 @@ public class LagMeter extends JavaPlugin implements ChatColourManager {
 			color = red.toString();
 		}
 		sender.sendMessage(wrapColor+"["+color+lagMeter+wrapColor+"] "+tps+" TPS");
+		List<World> worlds = getServer().getWorlds();
+		for(World world: worlds){
+			String worldName = world.getName();
+			int i = getServer().getWorld(worldName).getEntities().size();
+			sender.sendMessage(wrapColor+"Entities in world \""+worldName+"\": "+i);
+		}
 	}
 	public void info(String message){
 		log.info("["+pdfFile.getName()+" "+pdfFile.getVersion()+"] "+message);
@@ -261,6 +270,7 @@ public class LagMeter extends JavaPlugin implements ChatColourManager {
 				for(Player p: players){
 					if(permit(p, "lagmeter.notify.lag") || p.isOp())
 						p.sendMessage(igt+red+"The server's TPS has dropped below "+tpsNotificationThreshold+"! If you configured a server command to execute at this time, it will run now.");
+					
 				}
 				severe("The server's TPS has dropped below "+tpsNotificationThreshold+"! Executing command (if configured).");
 				Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), highLagCommand);

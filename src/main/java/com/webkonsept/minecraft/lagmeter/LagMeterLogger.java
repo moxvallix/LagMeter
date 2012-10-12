@@ -9,8 +9,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Server;
 
 public class LagMeterLogger {
 	static LagMeter plugin;
@@ -147,15 +145,6 @@ public class LagMeterLogger {
 		}
 	}
 	protected void log(String message){
-		LagMeter lmm = new LagMeter();
-		if(LagMeter.AutomaticLagNotificationsEnabled && lmm.getTPS() < LagMeter.tpsNotificationThreshold){
-			Bukkit.getServer().broadcast(ChatColor.RED.toString()+"[LagMeter] Warning: Server TPS is under the warn threshold: currently at "+lmm.getTPS()+".",Server.BROADCAST_CHANNEL_ADMINISTRATIVE);
-			System.out.println("[LagMeter] Server TPS is below warn threshold! Currently at: "+ lmm.getTPS() +" TPS");
-		}
-		if(LagMeter.AutomaticMemoryNotificationsEnabled && lmm.memFree < LagMeter.memoryNotificationThreshold){
-			Bukkit.getServer().broadcast(ChatColor.RED.toString()+"[LagMeter] Warning: Server Memory is under the warn threshold: currently at "+lmm.percentageFree+"% free.",Server.BROADCAST_CHANNEL_ADMINISTRATIVE);
-			System.out.println("[LagMeter] Server TPS is below warn threshold! Currently at: "+lmm.percentageFree+"% free.");
-		}
 		if (enabled && LagMeter.playerLoggingEnabled){
 				message = "["+now()+"] "+message;
 				log.println(message+"\nPlayers online: "+Bukkit.getServer().getOnlinePlayers().length);
