@@ -28,7 +28,7 @@ public class LagMeter extends JavaPlugin implements ChatColourManager {
 
 	protected LagMeterLogger logger = new LagMeterLogger(this);
 	protected LagMeterPoller poller = new LagMeterPoller(this);
-	protected static int averageLength = 10;
+	protected static int averageLength = 10, sustainedLagTimer;
 	protected LagMeterStack history = new LagMeterStack();
 
 	protected boolean vault = false;
@@ -47,7 +47,7 @@ public class LagMeter extends JavaPlugin implements ChatColourManager {
 	protected static boolean useAverage = true, enableLogging = true, useLogsFolder = true,
 			AutomaticLagNotificationsEnabled, AutomaticMemoryNotificationsEnabled, displayEntities;
 	protected static int logInterval = 150, lagNotifyInterval, memNotifyInterval;
-	protected static boolean playerLoggingEnabled;
+	protected static boolean playerLoggingEnabled, displayChunksOnLoad;
 	protected static String highLagCommand, lowMemCommand; 
 	protected static int lwTaskID, mwTaskID;
 
@@ -56,13 +56,26 @@ public class LagMeter extends JavaPlugin implements ChatColourManager {
 		pdfFile = this.getDescription();
 		LagMeterConfig.loadConfig();
 		vault = checkVault();
+		
 		if(!logsFolder.exists() && useLogsFolder && enableLogging){
 			info("Logs folder not found. Creating one for you.");
 			logsFolder.mkdir();
+			
 			if(!logsFolder.exists()){
 				severe("Error! Couldn't create the folder!");
 			}else{
 				info("Logs folder created.");
+			}
+			
+			if(displayChunksOnLoad){
+				info("Chunks loaded:");
+				int total = 0;
+				for(World world: getServer().getWorlds()){
+					int entities =world.getLoadedChunks().length;
+					info("World "+world.getName()+": "+entities+".");
+					total+=entities;
+				}
+				info("Total chunks loaded: "+total);
 			}
 		}
 		if(enableLogging){
@@ -116,7 +129,7 @@ public class LagMeter extends JavaPlugin implements ChatColourManager {
 		if(!this.isEnabled())
 			return false;
 		boolean success = false;
-		if((sender instanceof Player && this.permit((Player)sender, "lagmeter.command."+command.getName().toLowerCase())) || !(sender instanceof Player)){
+		if((sender instanceof Player && permit((Player)sender, "lagmeter.command."+command.getName().toLowerCase())) || !(sender instanceof Player)){
 			if(command.getName().equalsIgnoreCase("lag")){
 				success = true;
 				sendLagMeter(sender);

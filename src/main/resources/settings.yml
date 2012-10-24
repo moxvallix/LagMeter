@@ -1,20 +1,64 @@
+#################
+##   General   ##
+#################
+#Whether or not to use the average for TPS. If set to false, the server will always return the value at the last poll.
+#Default: true
 useAverage: true
+#How many polls to keep in LagMeter's memory.
+#Default: 10
 averageLength: 10
+#How often LagMeter should poll the server.
+#Default: 40
 interval: 40
+#Should the commands which show the TPS meter?
+#Default: true 
+displayEntitiesInLagCmds: true
+#Display chunks loaded on plugin load?
+#Default: true 
+LoadedChunksOnLoad: true
+#################
+##   Logging   ##
+#################
 log:
+    #How often the plugin should log information to its log file.
+    #Default: 150
     interval: 150
+    #Should LagMeter log information to a file?
+    #Default: true
     enable: true
+    #Should LagMeter use a folder called 'logs' and use 'Day-Month-Year-Lag.log' format for each day's logs?
+    #Default: false
     useLogsFolder: false
+    #Should LagMeter log how many players are online as well?
+    #Default: true
     logPlayersOnline: true
-    displayEntitiesInLagCmds: true
+#################
+# Notifications #
+#################
 Notifications:
     Lag:
+        #Enables low TPS notifications.
+        #Default: true
         Enabled: true
+        #If the server is at or below this value for memory free, it will notify OPs and anyone with the permission node lagmeter.notify.lag
+        #Default: 17
         Threshold: 17
+        #How often LagMeter should check on the TPS, in minutes.
+        #Default: 5
         CheckInterval: 5
-        ConsoleCommand: lag
+        #Specify a command to use when the plugin notices that the TPS is low. Must be usable from console.
+        #Default: /lag
+        ConsoleCommand: /lag
     Memory:
+        #Enables/disables low memory free notifications.
+        #Default: true
         Enabled: true
+        #If the server is at or below this value for memory free, it will notify OPs and anyone with the permission node lagmeter.notify.mem
+        #Default: 25
         Threshold: 25
+        #How often LagMeter should check on the free memory, in minutes.
+        #Default: 10
         CheckInterval: 10
-        ConsoleCommand: mem
+        #Specify a command to use when the plugin notices that the free memory is low. Must be usable from console.
+        #Default: /mem
+        ConsoleCommand: /mem

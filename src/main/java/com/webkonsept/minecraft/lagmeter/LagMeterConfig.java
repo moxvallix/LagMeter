@@ -33,6 +33,7 @@ public class LagMeterConfig extends LagMeter{
 				LagMeter.useAverage 			= configuration.getBoolean	("useAverage",				true);
 				LagMeter.averageLength 			= configuration.getInt		("averageLength", 			10);
 				LagMeter.interval 				= configuration.getInt		("interval", 				40);
+				LagMeter.displayChunksOnLoad	= configuration.getBoolean	("LoadedChunksOnLoad",		true);
 				LagMeter.displayEntities		= configuration.getBoolean	("displayEntitiesInLagCmds", true);
 				LagMeter.AutomaticLagNotificationsEnabled = configuration.getBoolean("Notifications.Lag.Enabled", true);
 				LagMeter.tpsNotificationThreshold = configuration.getInt("Notifications.Lag.Threshold", 15);
