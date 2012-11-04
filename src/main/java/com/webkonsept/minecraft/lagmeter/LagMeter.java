@@ -47,7 +47,7 @@ public class LagMeter extends JavaPlugin implements ChatColourManager {
 	protected static boolean useAverage = true, enableLogging = true, useLogsFolder = true,
 			AutomaticLagNotificationsEnabled, AutomaticMemoryNotificationsEnabled, displayEntities;
 	protected static int logInterval = 150, lagNotifyInterval, memNotifyInterval;
-	protected static boolean playerLoggingEnabled, displayChunksOnLoad;
+	protected static boolean playerLoggingEnabled, displayChunksOnLoad, sendChunks;
 	protected static String highLagCommand, lowMemCommand; 
 	protected static int lwTaskID, mwTaskID;
 
@@ -141,6 +141,10 @@ public class LagMeter extends JavaPlugin implements ChatColourManager {
 				success = true;
 				sendLagMeter(sender);
 				sendMemMeter(sender);
+				if(displayEntities)
+					sendEntities(sender);
+				if(sendChunks)
+					sendChunks(sender);
 			}else{
 				success = true;
 				sender.sendMessage(gold+"Sorry, permission lagmeter.command."+command.getName().toLowerCase()+" was denied.");
@@ -240,16 +244,30 @@ public class LagMeter extends JavaPlugin implements ChatColourManager {
 		}
 		sender.sendMessage(wrapColor+"["+color+lagMeter+wrapColor+"] "+tps+" TPS");
 		if(displayEntities){
-			int totalEntities = 0;
-			List<World> worlds = getServer().getWorlds();
-			for(World world: worlds){
-				String worldName = world.getName();
-				int i = getServer().getWorld(worldName).getEntities().size();
-				totalEntities += i;
-				sender.sendMessage(wrapColor+"Entities in world \""+worldName+"\": "+i);
-			}
-			sender.sendMessage(wrapColor+"Total entities: "+totalEntities);
+			
 		}
+	}
+	public void sendEntities(CommandSender sender){
+		int totalEntities = 0;
+		List<World> worlds = getServer().getWorlds();
+		for(World world: worlds){
+			String worldName = world.getName();
+			int i = getServer().getWorld(worldName).getEntities().size();
+			totalEntities += i;
+			sender.sendMessage(gold+"Entities in world \""+worldName+"\": "+i);
+		}
+		sender.sendMessage(gold+"Total entities: "+totalEntities);
+	}
+	public void sendChunks(CommandSender sender){
+		int totalChunks = 0;
+		List<World> worlds = getServer().getWorlds();
+		for(World world: worlds){
+			String s = world.getName();
+			int i = getServer().getWorld(s).getLoadedChunks().length;
+			totalChunks += i;
+			sender.sendMessage(gold+"Chunks in world "+s+": "+i);
+		}
+		sender.sendMessage(gold+"Total chunks loaded on the server: "+totalChunks);
 	}
 	public void info(String message){
 		log.info("["+pdfFile.getName()+" "+pdfFile.getVersion()+"] "+message);
@@ -278,7 +296,7 @@ public class LagMeter extends JavaPlugin implements ChatColourManager {
 		}
 		return (permission != null);
 	}
-	class LagWatcher extends LagMeter implements Runnable{
+	class LagWatcher implements Runnable{
 		LagMeter plugin;
 		@Override
 		public void run(){
@@ -294,7 +312,7 @@ public class LagMeter extends JavaPlugin implements ChatColourManager {
 			}
 		}
 	}
-	class MemoryWatcher extends LagMeter implements Runnable{
+	class MemoryWatcher implements Runnable{
 		@Override
 		public void run(){
 			updateMemoryStats();

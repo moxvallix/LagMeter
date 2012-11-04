@@ -30,23 +30,24 @@ public class LagMeterConfig extends LagMeter{
 			configuration = new YamlConfiguration();
 			try{
 				configuration.load(configFile);
-				LagMeter.useAverage 			= configuration.getBoolean	("useAverage",				true);
-				LagMeter.averageLength 			= configuration.getInt		("averageLength", 			10);
-				LagMeter.interval 				= configuration.getInt		("interval", 				40);
-				LagMeter.displayChunksOnLoad	= configuration.getBoolean	("LoadedChunksOnLoad",		true);
-				LagMeter.displayEntities		= configuration.getBoolean	("displayEntitiesInLagCmds", true);
-				LagMeter.AutomaticLagNotificationsEnabled = configuration.getBoolean("Notifications.Lag.Enabled", true);
-				LagMeter.tpsNotificationThreshold = configuration.getInt("Notifications.Lag.Threshold", 15);
-				LagMeter.lagNotifyInterval = configuration.getInt("Notifications.Lag.CheckInterval", 5);
-				LagMeter.highLagCommand = configuration.getString("Notifications.Lag.ConsoleCommand", "lag");
-				LagMeter.AutomaticMemoryNotificationsEnabled = configuration.getBoolean("Notifications.Memory.Enabled", true);
-				LagMeter.memoryNotificationThreshold = configuration.getInt("Notifications.Memory.Threshold", 25);
-				LagMeter.memNotifyInterval = configuration.getInt("Notifications.Memory.CheckInterval", 10);
-				LagMeter.lowMemCommand = configuration.getString("Notifications.Memory.ConsoleCommand", "mem");
-				LagMeter.logInterval			= configuration.getInt		("log.interval", 			150);
-				LagMeter.enableLogging			= configuration.getBoolean	("log.enable", 				true);
-				LagMeter.useLogsFolder			= configuration.getBoolean	("log.useLogsFolder",		true);
-				LagMeter.playerLoggingEnabled 	= configuration.getBoolean	("log.logPlayersOnline",	false);
+				LagMeter.useAverage 						= configuration.getBoolean	("useAverage",							true);
+				LagMeter.averageLength 						= configuration.getInt		("averageLength",						10);
+				LagMeter.interval 							= configuration.getInt		("interval", 							40);
+				LagMeter.displayChunksOnLoad				= configuration.getBoolean	("LoadedChunksOnLoad",					true);
+				LagMeter.displayEntities					= configuration.getBoolean	("displayEntitiesInLagCmds",			true);
+				LagMeter.displayEntities					= configuration.getBoolean	("chunksInLagCommands",					true);
+				LagMeter.logInterval						= configuration.getInt		("log.interval",						150);
+				LagMeter.enableLogging						= configuration.getBoolean	("log.enable",							true);
+				LagMeter.useLogsFolder						= configuration.getBoolean	("log.useLogsFolder",					true);
+				LagMeter.playerLoggingEnabled				= configuration.getBoolean	("log.logPlayersOnline",				false);
+				LagMeter.AutomaticLagNotificationsEnabled 	= configuration.getBoolean	("Notifications.Lag.Enabled",			true);
+				LagMeter.tpsNotificationThreshold 			= configuration.getInt		("Notifications.Lag.Threshold",			15);
+				LagMeter.lagNotifyInterval					= configuration.getInt		("Notifications.Lag.CheckInterval",		5);
+				LagMeter.highLagCommand 					= configuration.getString	("Notifications.Lag.ConsoleCommand",	"lag");
+				LagMeter.AutomaticMemoryNotificationsEnabled= configuration.getBoolean	("Notifications.Memory.Enabled",		true);
+				LagMeter.memoryNotificationThreshold		= configuration.getInt		("Notifications.Memory.Threshold",		25);
+				LagMeter.memNotifyInterval					= configuration.getInt		("Notifications.Memory.CheckInterval",	10);
+				LagMeter.lowMemCommand						= configuration.getString	("Notifications.Memory.ConsoleCommand",	"mem");
 			}catch (FileNotFoundException ex){
 				ex.printStackTrace();
 			}catch (IOException ex){
