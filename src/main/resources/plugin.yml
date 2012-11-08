@@ -43,5 +43,5 @@ permissions:
 generators: [bukget]
 categories: [INFO]
 maintainer: marvinej
-authors: [DemmyDemon, TheLunarFrog]
+authors: [TheLunarFrog, DemmyDemon]
 softdepend: [Vault]
