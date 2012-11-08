@@ -66,17 +66,6 @@ public class LagMeter extends JavaPlugin implements ChatColourManager {
 			}else{
 				info("Logs folder created.");
 			}
-			
-			if(displayChunksOnLoad){
-				info("Chunks loaded:");
-				int total = 0;
-				for(World world: getServer().getWorlds()){
-					int entities =world.getLoadedChunks().length;
-					info("World "+world.getName()+": "+entities+".");
-					total+=entities;
-				}
-				info("Total chunks loaded: "+total);
-			}
 		}
 		if(enableLogging){
 			poller.setLogInterval(logInterval);
@@ -103,6 +92,17 @@ public class LagMeter extends JavaPlugin implements ChatColourManager {
 			mwTaskID = Bukkit.getServer().getScheduler().scheduleAsyncRepeatingTask(this, new MemoryWatcher(), memNotifyInterval*1200, memNotifyInterval*1200);
 		else
 			mwTaskID = -1;
+		
+		if(displayChunksOnLoad){
+			info("Chunks loaded:");
+			int total = 0;
+			for(World world: getServer().getWorlds()){
+				int entities =world.getLoadedChunks().length;
+				info("World "+world.getName()+": "+entities+".");
+				total+=entities;
+			}
+			info("Total chunks loaded: "+total);
+		}
 	}
 	@Override
 	public void onDisable(){
@@ -145,6 +145,9 @@ public class LagMeter extends JavaPlugin implements ChatColourManager {
 					sendEntities(sender);
 				if(sendChunks)
 					sendChunks(sender);
+			}else if(command.getName().equalsIgnoreCase("")){
+				success = true;
+				
 			}else{
 				success = true;
 				sender.sendMessage(gold+"Sorry, permission lagmeter.command."+command.getName().toLowerCase()+" was denied.");
