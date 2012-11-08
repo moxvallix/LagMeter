@@ -145,9 +145,11 @@ public class LagMeter extends JavaPlugin implements ChatColourManager {
 					sendEntities(sender);
 				if(sendChunks)
 					sendChunks(sender);
-			}else if(command.getName().equalsIgnoreCase("")){
+			}else if(command.getName().equalsIgnoreCase("lchunks")){
 				success = true;
-				
+				sendChunks(sender);
+			}else if(command.getName().equalsIgnoreCase("lentities") || command.getName().equalsIgnoreCase("lmobs")){
+				sendEntities(sender);
 			}else{
 				success = true;
 				sender.sendMessage(gold+"Sorry, permission lagmeter.command."+command.getName().toLowerCase()+" was denied.");
