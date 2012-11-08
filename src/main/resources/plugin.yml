@@ -20,6 +20,15 @@ commands:
     lm:
         description: Check both current memory usage and current lag. Shortcut of lagmem.
         usage: /<command>
+    lchunks: Shows chunks loaded per world, along with a combined total.
+        description:
+        usage: /<command>
+    lentities:
+        description: Shows entities per world, along with a combined total.
+        usage: /<command>
+    lmobs:
+        description: Alternate command to /lentities. Shows entities per world, along with a combined total.
+        usage: /<command>
 permissions:
     lagmeter.*:
         description: Gives full access
@@ -39,6 +48,17 @@ permissions:
         default: op
     lagmeter.command.lm:
         description: Gives access to the combination /lm command, which is a shorter version of /lagmem.
+        default: op
+    lagmeter.command.lchunks:
+        description: Gives access to the /lchunks command, which shows the amount of chunks loaded per world, and the amount total.
+        default: op
+    lagmeter.command.lentities:
+        description: Node for the command for showing entities on the server.
+        children:
+            lagmeter.command.lmobs: true
+        default: op
+    lagmeter.command.lmobs:
+        description: Alternate command for showing entities on the server.
         default: op
 generators: [bukget]
 categories: [INFO]
