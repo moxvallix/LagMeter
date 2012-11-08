@@ -149,6 +149,7 @@ public class LagMeter extends JavaPlugin implements ChatColourManager {
 				success = true;
 				sendChunks(sender);
 			}else if(command.getName().equalsIgnoreCase("lentities") || command.getName().equalsIgnoreCase("lmobs")){
+				success = true;
 				sendEntities(sender);
 			}else{
 				success = true;
