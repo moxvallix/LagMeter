@@ -48,7 +48,7 @@ public class LagMeter extends JavaPlugin implements ChatColourManager {
 	protected static boolean useAverage = true, enableLogging = true, useLogsFolder = true,
 			AutomaticLagNotificationsEnabled, AutomaticMemoryNotificationsEnabled, displayEntities,
 			playerLoggingEnabled, displayChunksOnLoad, sendChunks, logChunks, logTotalChunksOnly,
-			logEntities, logTotalEntitiesOnly, newBlockPerLog;
+			logEntities, logTotalEntitiesOnly, newBlockPerLog, displayEntitiesOnLoad;
 	protected static String highLagCommand, lowMemCommand;
 
 	@Override
@@ -97,9 +97,9 @@ public class LagMeter extends JavaPlugin implements ChatColourManager {
 			info("Chunks loaded:");
 			int total = 0;
 			for(World world: getServer().getWorlds()){
-				int entities =world.getLoadedChunks().length;
-				info("World "+world.getName()+": "+entities+".");
-				total+=entities;
+				int chunks=world.getLoadedChunks().length;
+				info("World \""+world.getName()+"\": "+chunks+".");
+				total+=chunks;
 			}
 			info("Total chunks loaded: "+total);
 		}
@@ -141,10 +141,6 @@ public class LagMeter extends JavaPlugin implements ChatColourManager {
 				success = true;
 				sendLagMeter(sender);
 				sendMemMeter(sender);
-				if(displayEntities)
-					sendEntities(sender);
-				if(sendChunks)
-					sendChunks(sender);
 			}else if(command.getName().equalsIgnoreCase("lchunks")){
 				success = true;
 				sendChunks(sender);
@@ -249,9 +245,10 @@ public class LagMeter extends JavaPlugin implements ChatColourManager {
 			color = red.toString();
 		}
 		sender.sendMessage(wrapColor+"["+color+lagMeter+wrapColor+"] "+tps+" TPS");
-		if(displayEntities){
-			
-		}
+		if(displayEntities)
+			sendEntities(sender);
+		if(sendChunks)
+			sendChunks(sender);
 	}
 	public void sendEntities(CommandSender sender){
 		int totalEntities = 0;
