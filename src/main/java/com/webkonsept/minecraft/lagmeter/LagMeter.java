@@ -41,15 +41,15 @@ public class LagMeter extends JavaPlugin implements ChatColourManager {
 	PluginDescriptionFile pdf;
 	LagMeter plugin;
 
-	//Configurable Values
-	protected static int interval = 40;
+	//Configurable Values - mostly booleans
+	protected static int interval = 40, logInterval = 150, lagNotifyInterval,
+			memNotifyInterval, lwTaskID, mwTaskID;
 	protected static float tpsNotificationThreshold, memoryNotificationThreshold;
 	protected static boolean useAverage = true, enableLogging = true, useLogsFolder = true,
-			AutomaticLagNotificationsEnabled, AutomaticMemoryNotificationsEnabled, displayEntities;
-	protected static int logInterval = 150, lagNotifyInterval, memNotifyInterval;
-	protected static boolean playerLoggingEnabled, displayChunksOnLoad, sendChunks;
-	protected static String highLagCommand, lowMemCommand; 
-	protected static int lwTaskID, mwTaskID;
+			AutomaticLagNotificationsEnabled, AutomaticMemoryNotificationsEnabled, displayEntities,
+			playerLoggingEnabled, displayChunksOnLoad, sendChunks, logChunks, logTotalChunksOnly,
+			logEntities, logTotalEntitiesOnly;
+	protected static String highLagCommand, lowMemCommand;
 
 	@Override
 	public void onEnable(){
