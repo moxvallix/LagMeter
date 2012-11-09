@@ -5,7 +5,6 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
@@ -170,7 +169,6 @@ public class LagMeterLogger {
 				}
 				log.println("Total entities: "+totalEntities);
 			}
-			
 			log.flush();
 		}
 	}
