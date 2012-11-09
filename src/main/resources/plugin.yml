@@ -20,8 +20,8 @@ commands:
     lm:
         description: Check both current memory usage and current lag. Shortcut of lagmem.
         usage: /<command>
-    lchunks: Shows chunks loaded per world, along with a combined total.
-        description:
+    lchunks:
+        description: Shows chunks loaded per world, along with a combined total.
         usage: /<command>
     lentities:
         description: Shows entities per world, along with a combined total.
