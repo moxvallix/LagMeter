@@ -31,7 +31,11 @@ public class LagMeterPoller implements Runnable{
 		polls++;
 		if(plugin.logger.enabled() && polls % logInterval == 0){
 			plugin.updateMemoryStats();
-			float aTPS = plugin.history.getAverage();
+			float aTPS = 0F;
+			if(LagMeter.useAverage)
+				aTPS = plugin.history.getAverage();
+			else
+				aTPS = plugin.getTPS();
 			plugin.logger.log("TPS: "+aTPS+"  Memory free: "+plugin.memFree+"/"+plugin.memMax);
 		}
 	}
