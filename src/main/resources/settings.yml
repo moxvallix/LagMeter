@@ -10,12 +10,19 @@ averageLength: 10
 #How often LagMeter should poll the server.
 #Default: 40
 interval: 40
-#Should the commands which show the TPS meter?
-#Default: true 
-displayEntitiesInLagCmds: true
 #Display chunks loaded on plugin load?
 #Default: true 
 LoadedChunksOnLoad: true
+#################
+##   Commands  ##
+#################
+Commands:
+    Lag:
+        #Should the commands which show the TPS meter also display entities in each world?
+        #Default: false 
+        displayEntities: false
+        #Should the commands which show the TPS meter also display loaded chunks in each world?
+        displayChunks: false
 #################
 ##   Logging   ##
 #################
@@ -32,6 +39,18 @@ log:
     #Should LagMeter log how many players are online as well?
     #Default: true
     logPlayersOnline: true
+    #Should LagMeter log how many entities are present on the server?
+    #Default: true
+    logEntities: true
+    #Should LagMeter only display total entities, and not those for each world?
+    #Default: true
+    logTotalEntitiesOnly: true
+    #Should LagMeter log how many chunks are currently loaded on the server?
+    #Default: true
+    logChunks: true
+    #Should LagMeter only display total chunks, and not those for each world?
+    #Default: true
+    logTotalChunksOnly: true
 #################
 # Notifications #
 #################
