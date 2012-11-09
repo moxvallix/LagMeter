@@ -268,7 +268,7 @@ public class LagMeter extends JavaPlugin implements ChatColourManager {
 			String s = world.getName();
 			int i = getServer().getWorld(s).getLoadedChunks().length;
 			totalChunks += i;
-			sender.sendMessage(gold+"Chunks in world "+s+": "+i);
+			sender.sendMessage(gold+"Chunks in world \""+s+"\": "+i);
 		}
 		sender.sendMessage(gold+"Total chunks loaded on the server: "+totalChunks);
 	}
