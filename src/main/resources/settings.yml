@@ -10,9 +10,12 @@ averageLength: 10
 #How often LagMeter should poll the server.
 #Default: 40
 interval: 40
-#Display chunks loaded on plugin load?
+#Display chunks loaded on plugin (re)load?
 #Default: true 
 LoadedChunksOnLoad: true
+#Should LagMeter display all of the entities that exist at the time of plugin (re)load?
+#Default: true
+displayEntitiesOnLoad: true
 #################
 ##   Commands  ##
 #################
