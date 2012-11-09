@@ -170,7 +170,7 @@ public class LagMeterLogger {
 				log.println("Total entities: "+totalEntities);
 			}
 			if(LagMeter.newBlockPerLog)
-				log.println("\n");
+				log.print("\n");
 			log.flush();
 		}
 	}
