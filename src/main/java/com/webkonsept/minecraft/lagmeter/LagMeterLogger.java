@@ -149,8 +149,8 @@ public class LagMeterLogger {
 		if(enabled){
 			message = "["+now()+"] "+message;
 			if(LagMeter.playerLoggingEnabled)
-				log.println(message+"\nPlayers online: "+Bukkit.getServer().getOnlinePlayers().length);
-			
+				message += Bukkit.getServer().getOnlinePlayers().length;
+			log.println(message);
 			if(LagMeter.logChunks){
 				int totalChunks = 0;
 				for(World world: Bukkit.getServer().getWorlds()){
@@ -169,6 +169,8 @@ public class LagMeterLogger {
 				}
 				log.println("Total entities: "+totalEntities);
 			}
+			if(LagMeter.newBlockPerLog)
+				log.println("\n");
 			log.flush();
 		}
 	}

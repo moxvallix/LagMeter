@@ -48,7 +48,7 @@ public class LagMeter extends JavaPlugin implements ChatColourManager {
 	protected static boolean useAverage = true, enableLogging = true, useLogsFolder = true,
 			AutomaticLagNotificationsEnabled, AutomaticMemoryNotificationsEnabled, displayEntities,
 			playerLoggingEnabled, displayChunksOnLoad, sendChunks, logChunks, logTotalChunksOnly,
-			logEntities, logTotalEntitiesOnly;
+			logEntities, logTotalEntitiesOnly, newBlockPerLog;
 	protected static String highLagCommand, lowMemCommand;
 
 	@Override

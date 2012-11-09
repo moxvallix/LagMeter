@@ -51,6 +51,9 @@ log:
     #Should LagMeter only display total chunks, and not those for each world?
     #Default: true
     logTotalChunksOnly: true
+    #Should the plugin have an empty line between each log tick to make the log file neater?
+    #Default: true
+    newBlockPerLog: true
 #################
 # Notifications #
 #################
