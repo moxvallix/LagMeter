@@ -5,26 +5,28 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 import org.bukkit.Bukkit;
+import org.bukkit.World;
 
 public class LagMeterLogger {
 	static LagMeter plugin;
-	
+
 	private static final String fileSeparator = System.getProperty("file.separator");
-	
+
 	private String error = "*shrug* Dunno.";
 	private boolean logMemory = true;
 	private boolean logTPS = true;
 	protected static boolean enabled = false;
 	private String timeFormat = "MM-dd-yyyy HH:mm:ss";
-	
+
 	String datafolder = "LagMeter";
 	File logfile;
 	PrintWriter log;
-	
+
 	LagMeterLogger (LagMeter instance,boolean enable){
 		plugin = instance;
 		if(enable){
@@ -34,8 +36,8 @@ public class LagMeterLogger {
 	LagMeterLogger (LagMeter instance){
 		plugin = instance;
 	}
-	
-	
+
+
 	public boolean enable(File logTo){
 		logfile = logTo;
 		return beginLogging();
@@ -146,10 +148,30 @@ public class LagMeterLogger {
 	}
 	protected void log(String message){
 		if(enabled){
-				message = "["+now()+"] "+message;
-				if(LagMeter.playerLoggingEnabled)
-					log.println(message+"\nPlayers online: "+Bukkit.getServer().getOnlinePlayers().length);
-				log.flush();
+			message = "["+now()+"] "+message;
+			if(LagMeter.playerLoggingEnabled)
+				log.println(message+"\nPlayers online: "+Bukkit.getServer().getOnlinePlayers().length);
+			
+			if(LagMeter.logChunks){
+				int totalChunks = 0;
+				for(World world: Bukkit.getServer().getWorlds()){
+					totalChunks += world.getLoadedChunks().length;
+					if(!LagMeter.logTotalChunksOnly)
+						log.println("Chunks loaded in world \""+world.getName()+"\": "+world.getLoadedChunks().length);
+				}
+				log.println("Total chunks loaded: "+totalChunks);
+			}
+			if(LagMeter.logEntities){
+				int totalEntities = 0;
+				for(World world: Bukkit.getServer().getWorlds()){
+					totalEntities += world.getEntities().size();
+					if(!LagMeter.logTotalEntitiesOnly)
+						log.println("Entities in world \""+world.getName()+"\": "+world.getEntities().size());
+				}
+				log.println("Total entities: "+totalEntities);
+			}
+			
+			log.flush();
 		}
 	}
 	public String now(){
