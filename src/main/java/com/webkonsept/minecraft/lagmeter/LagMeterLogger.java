@@ -145,14 +145,11 @@ public class LagMeterLogger {
 		}
 	}
 	protected void log(String message){
-		if (enabled && LagMeter.playerLoggingEnabled){
+		if(enabled){
 				message = "["+now()+"] "+message;
-				log.println(message+"\nPlayers online: "+Bukkit.getServer().getOnlinePlayers().length);
+				if(LagMeter.playerLoggingEnabled)
+					log.println(message+"\nPlayers online: "+Bukkit.getServer().getOnlinePlayers().length);
 				log.flush();
-		}else if(enabled && !LagMeter.playerLoggingEnabled){
-			message = "["+now()+"] "+message;
-			log.println(message);
-			log.flush();
 		}
 	}
 	public String now(){
