@@ -103,6 +103,16 @@ public class LagMeter extends JavaPlugin implements ChatColourManager {
 			}
 			info("Total chunks loaded: "+total);
 		}
+		if(displayEntitiesOnLoad){
+			info("Entities:");
+			int total = 0;
+			for(World world: getServer().getWorlds()){
+				int entities=world.getLoadedChunks().length;
+				info("World \""+world.getName()+"\": "+entities+".");
+				total+=entities;
+			}
+			info("Total entities: "+total);
+		}
 	}
 	@Override
 	public void onDisable(){
