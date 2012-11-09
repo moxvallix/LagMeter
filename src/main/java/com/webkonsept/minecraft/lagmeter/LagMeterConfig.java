@@ -35,7 +35,7 @@ public class LagMeterConfig extends LagMeter{
 				LagMeter.interval 							= configuration.getInt		("interval", 							40);
 				LagMeter.displayChunksOnLoad				= configuration.getBoolean	("LoadedChunksOnLoad",					true);
 				LagMeter.displayEntities					= configuration.getBoolean	("Commands.Lag.displayEntities",		true);
-				LagMeter.displayEntities					= configuration.getBoolean	("Commands.Lag.displayChunks",			true);
+				LagMeter.sendChunks							= configuration.getBoolean	("Commands.Lag.displayChunks",			true);
 				LagMeter.logInterval						= configuration.getInt		("log.interval",						150);
 				LagMeter.enableLogging						= configuration.getBoolean	("log.enable",							true);
 				LagMeter.useLogsFolder						= configuration.getBoolean	("log.useLogsFolder",					true);
