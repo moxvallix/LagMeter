@@ -39,10 +39,10 @@ public class LagMeterConfig extends LagMeter{
 				LagMeter.logInterval						= configuration.getInt		("log.interval",						150);
 				LagMeter.enableLogging						= configuration.getBoolean	("log.enable",							true);
 				LagMeter.useLogsFolder						= configuration.getBoolean	("log.useLogsFolder",					true);
-				LagMeter.logChunks							= configuration.getBoolean	("log.logChunks",						false);
-				LagMeter.logTotalChunksOnly					= configuration.getBoolean	("log.logTotalChunksOnly",				false);
-				LagMeter.logEntities						= configuration.getBoolean	("log.logEntities",						false);
-				LagMeter.logTotalEntitiesOnly				= configuration.getBoolean	("log.logTotalEntitiesOnly",			false);
+				LagMeter.logChunks							= configuration.getBoolean	("log.logChunks",						true);
+				LagMeter.logTotalChunksOnly					= configuration.getBoolean	("log.logTotalChunksOnly",				true);
+				LagMeter.logEntities						= configuration.getBoolean	("log.logEntities",						true);
+				LagMeter.logTotalEntitiesOnly				= configuration.getBoolean	("log.logTotalEntitiesOnly",			true);
 				LagMeter.AutomaticLagNotificationsEnabled 	= configuration.getBoolean	("Notifications.Lag.Enabled",			true);
 				LagMeter.tpsNotificationThreshold 			= configuration.getInt		("Notifications.Lag.Threshold",			15);
 				LagMeter.lagNotifyInterval					= configuration.getInt		("Notifications.Lag.CheckInterval",		5);
