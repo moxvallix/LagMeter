@@ -221,6 +221,12 @@ public class LagMeter extends JavaPlugin implements ChatColourManager {
 	}
 	protected void sendLagMeter(CommandSender sender){
 		String wrapColor = white.toString();
+		
+		if(displayEntities)
+			sendEntities(sender);
+		if(sendChunks)
+			sendChunks(sender);
+		
 		if(sender instanceof Player)
 			wrapColor = gold.toString();
 		String lagMeter = "";
@@ -255,10 +261,6 @@ public class LagMeter extends JavaPlugin implements ChatColourManager {
 			color = red.toString();
 		}
 		sender.sendMessage(wrapColor+"["+color+lagMeter+wrapColor+"] "+tps+" TPS");
-		if(displayEntities)
-			sendEntities(sender);
-		if(sendChunks)
-			sendChunks(sender);
 	}
 	public void sendEntities(CommandSender sender){
 		int totalEntities = 0;
