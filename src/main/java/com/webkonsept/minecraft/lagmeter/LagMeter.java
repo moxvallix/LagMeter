@@ -13,6 +13,7 @@ import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.permissions.PermissionDefault;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.RegisteredServiceProvider;
@@ -170,7 +171,11 @@ public class LagMeter extends JavaPlugin implements ChatColourManager {
 	}
 	protected boolean permit(Player player, String perm){
 		boolean permit = false;
-		if(vault){
+		
+		if(pdf.getPermissions().get(pdf.getPermissions().indexOf(perm)).getDefault() == PermissionDefault.TRUE){
+			permit = true;
+		}
+		else if(vault){
 			permit = permission.has(player, perm);
 		}else{
 			permit = player.isOp();
@@ -312,7 +317,6 @@ public class LagMeter extends JavaPlugin implements ChatColourManager {
 		return (permission != null);
 	}
 	class LagWatcher implements Runnable{
-		LagMeter plugin;
 		@Override
 		public void run(){
 			if(tpsNotificationThreshold >= getTPS()){

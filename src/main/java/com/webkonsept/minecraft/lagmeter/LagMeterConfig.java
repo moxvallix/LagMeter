@@ -30,9 +30,9 @@ public class LagMeterConfig extends LagMeter{
 			configuration = new YamlConfiguration();
 			try{
 				configuration.load(configFile);
-				LagMeter.useAverage 						= configuration.getBoolean	("useAverage",							true);
-				LagMeter.averageLength 						= configuration.getInt		("averageLength",						10);
-				LagMeter.interval 							= configuration.getInt		("interval", 							40);
+				LagMeter.useAverage							= configuration.getBoolean	("useAverage",							true);
+				LagMeter.averageLength						= configuration.getInt		("averageLength",						10);
+				LagMeter.interval							= configuration.getInt		("interval", 							40);
 				LagMeter.displayChunksOnLoad				= configuration.getBoolean	("LoadedChunksOnLoad",					true);
 				LagMeter.displayEntitiesOnLoad				= configuration.getBoolean	("displayEntitiesOnLoad",				true);
 				LagMeter.displayEntities					= configuration.getBoolean	("Commands.Lag.displayEntities",		true);
@@ -48,7 +48,7 @@ public class LagMeterConfig extends LagMeter{
 				LagMeter.AutomaticLagNotificationsEnabled 	= configuration.getBoolean	("Notifications.Lag.Enabled",			true);
 				LagMeter.tpsNotificationThreshold 			= configuration.getInt		("Notifications.Lag.Threshold",			15);
 				LagMeter.lagNotifyInterval					= configuration.getInt		("Notifications.Lag.CheckInterval",		5);
-				LagMeter.highLagCommand 					= configuration.getString	("Notifications.Lag.ConsoleCommand",	"lag");
+				LagMeter.highLagCommand						= configuration.getString	("Notifications.Lag.ConsoleCommand",	"lag");
 				LagMeter.AutomaticMemoryNotificationsEnabled= configuration.getBoolean	("Notifications.Memory.Enabled",		true);
 				LagMeter.memoryNotificationThreshold		= configuration.getInt		("Notifications.Memory.Threshold",		25);
 				LagMeter.memNotifyInterval					= configuration.getInt		("Notifications.Memory.CheckInterval",	10);
