@@ -171,11 +171,7 @@ public class LagMeter extends JavaPlugin implements ChatColourManager {
 	}
 	protected boolean permit(Player player, String perm){
 		boolean permit = false;
-		
-		if(pdf.getPermissions().get(pdf.getPermissions().indexOf(perm)).getDefault() == PermissionDefault.TRUE){
-			permit = true;
-		}
-		else if(vault){
+		if(vault){
 			permit = permission.has(player, perm);
 		}else{
 			permit = player.isOp();

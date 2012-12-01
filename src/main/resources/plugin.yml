@@ -39,7 +39,7 @@ permissions:
             lagmeter.command.lm: true
     lagmeter.command.lag:
         description: Gives access to the /lag command
-        default: true
+        default: op
     lagmeter.command.mem:
         description: Gives access to the /mem command
         default: op
