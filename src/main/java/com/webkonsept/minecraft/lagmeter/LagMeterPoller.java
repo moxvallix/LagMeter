@@ -21,22 +21,25 @@ public class LagMeterPoller implements Runnable{
 	public void run(){
 		long now = System.currentTimeMillis();
 		long timeSpent = (now-lastPoll)/1000;
+		String players = plugin.playerLoggingEnabled?String.valueOf(plugin.getServer().getOnlinePlayers().length):"";
+		String newLine = plugin.newLineForLogStats?"\n":"  ";
 		if(timeSpent == 0)
 			timeSpent = 1;
-		@SuppressWarnings("static-access")
 		float tps = plugin.interval/timeSpent;
 		plugin.ticksPerSecond = tps;
 		plugin.history.add(tps);
+		if(plugin.history.size() > plugin.averageLength)
+			plugin.history.remove(2);
 		lastPoll = now;
 		polls++;
 		if(plugin.logger.enabled() && polls % logInterval == 0){
 			plugin.updateMemoryStats();
 			float aTPS = 0F;
-			if(LagMeter.useAverage)
+			if(plugin.useAverage)
 				aTPS = plugin.history.getAverage();
 			else
 				aTPS = plugin.getTPS();
-			plugin.logger.log("TPS: "+aTPS+"\nMemory free: "+plugin.memFree+"/"+plugin.memMax+" ("+(int)plugin.percentageFree+"%)");
+			plugin.logger.log("TPS: "+aTPS+newLine+"Memory free: "+plugin.memFree+"/"+plugin.memMax+" ("+(int)plugin.percentageFree+"%)");
 		}
 	}
 }

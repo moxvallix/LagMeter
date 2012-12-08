@@ -42,7 +42,7 @@ public class LagMeterLogger {
 		return beginLogging();
 	}
 	public boolean enable(){
-		if(!LagMeter.useLogsFolder){
+		if(!plugin.useLogsFolder){
 			System.out.println("[LagMeter] Not using logs folder.");
 			return this.enable(new File(plugin.getDataFolder(),"lag.log"));
 		}else{
@@ -54,7 +54,7 @@ public class LagMeterLogger {
 		return enabled;
 	}
 	public void disable() throws IOException, FileNotFoundException, Exception {
-		if(LagMeter.enableLogging = true)
+		if(plugin.enableLogging = true)
 			closeLog();
 	}
 	public void logMemory(boolean set){
@@ -130,7 +130,7 @@ public class LagMeterLogger {
 			}
 			catch(IOException e){
 				e.printStackTrace();
-				error("IOException opening logfile");
+				error("IOException opening logfile!");
 				ret = false;
 			}
 		}
@@ -148,28 +148,28 @@ public class LagMeterLogger {
 	protected void log(String message){
 		if(enabled){
 			message = "["+now()+"] "+message;
-			if(LagMeter.playerLoggingEnabled)
-				message += Bukkit.getServer().getOnlinePlayers().length;
-			log.println(message);
-			if(LagMeter.logChunks){
+			String newLine = plugin.newLineForLogStats?"\n":"  ";
+			String players = plugin.playerLoggingEnabled?newLine+String.valueOf(Bukkit.getServer().getOnlinePlayers().length):"";
+			log.println(message+players);
+			if(plugin.logChunks){
 				int totalChunks = 0;
 				for(World world: Bukkit.getServer().getWorlds()){
 					totalChunks += world.getLoadedChunks().length;
-					if(!LagMeter.logTotalChunksOnly)
-						log.println("Chunks loaded in world \""+world.getName()+"\": "+world.getLoadedChunks().length);
+					if(!plugin.logTotalChunksOnly)
+						log.print(newLine+"Chunks loaded in world \""+world.getName()+"\": "+world.getLoadedChunks().length);
 				}
 				log.println("Total chunks loaded: "+totalChunks);
 			}
-			if(LagMeter.logEntities){
+			if(plugin.logEntities){
 				int totalEntities = 0;
 				for(World world: Bukkit.getServer().getWorlds()){
 					totalEntities += world.getEntities().size();
-					if(!LagMeter.logTotalEntitiesOnly)
-						log.println("Entities in world \""+world.getName()+"\": "+world.getEntities().size());
+					if(!plugin.logTotalEntitiesOnly)
+						log.print(newLine+"Entities in world \""+world.getName()+"\": "+world.getEntities().size());
 				}
 				log.println("Total entities: "+totalEntities);
 			}
-			if(LagMeter.newBlockPerLog)
+			if(plugin.newBlockPerLog)
 				log.print("\n");
 			log.flush();
 		}
