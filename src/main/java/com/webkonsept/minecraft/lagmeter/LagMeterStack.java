@@ -41,4 +41,10 @@ public class LagMeterStack{
 		else
 			return 0;
 	}
+	public void remove(int i){
+		stack.remove(i);
+	}
+	public void clear(int i){
+		stack.clear();
+	}
 }
