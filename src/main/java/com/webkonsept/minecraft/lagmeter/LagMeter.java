@@ -51,10 +51,11 @@ public class LagMeter extends JavaPlugin implements ChatColourManager {
 			playerLoggingEnabled, displayChunksOnLoad, sendChunks, logChunks, logTotalChunksOnly,
 			logEntities, logTotalEntitiesOnly, newBlockPerLog, displayEntitiesOnLoad, newLineForLogStats;
 	protected String highLagCommand, lowMemCommand;
-	private LagMeterConfig conf = new LagMeterConfig(this);
+	private LagMeterConfig conf;
 
 	@Override
 	public void onEnable(){
+		conf = new LagMeterConfig(this);
 		p = this;
 		pdfFile = this.getDescription();
 		conf.loadConfig();
