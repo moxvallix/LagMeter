@@ -41,12 +41,13 @@ public class LagMeterConfig extends LagMeter{
 				plugin.logInterval							= configuration.getInt		("log.interval",						150);
 				plugin.enableLogging						= configuration.getBoolean	("log.enable",							true);
 				plugin.useLogsFolder						= configuration.getBoolean	("log.useLogsFolder",					false);
+				plugin.playerLoggingEnabled					= configuration.getBoolean	("log.logPlayersOnline",				true);
 				plugin.logChunks							= configuration.getBoolean	("log.logChunks",						false);
 				plugin.logTotalChunksOnly					= configuration.getBoolean	("log.logTotalChunksOnly",				true);
 				plugin.logEntities							= configuration.getBoolean	("log.logEntities",						false);
 				plugin.logTotalEntitiesOnly					= configuration.getBoolean	("log.logTotalEntitiesOnly",			true);
 				plugin.newBlockPerLog						= configuration.getBoolean	("log.newBlockPerLog",					true);
-				plugin.newLineForLogStats					= configuration.getBoolean	("log.NewLinePerStatistic",				true);
+				plugin.newLineForLogStats					= configuration.getBoolean	("log.newLinePerStatistic",				true);
 				plugin.AutomaticLagNotificationsEnabled		= configuration.getBoolean	("Notifications.Lag.Enabled",			true);
 				plugin.tpsNotificationThreshold				= configuration.getInt		("Notifications.Lag.Threshold",			15);
 				plugin.lagNotifyInterval					= configuration.getInt		("Notifications.Lag.CheckInterval",		5);

@@ -59,7 +59,7 @@ log:
     newBlockPerLog: true
     #Should the plugin put each statistic (TPS, memory, players) on a separate line?
     #Default: true
-    NewLinePerStatistic: true
+    newLinePerStatistic: true
 #################
 # Notifications #
 #################
