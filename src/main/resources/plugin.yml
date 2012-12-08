@@ -58,10 +58,10 @@ permissions:
             lagmeter.command.lmobs: true
         default: op
     lagmeter.notify.lag:
-        description: Alternate command for showing entities on the server.
+        description: Allows the player/group to receive lag notifications.
         default: op
     lagmeter.notify.mem:
-        description: Alternate command for showing entities on the server.
+        description: Allows the player/group to receive memory notifications.
         default: op
 generators: [bukget]
 categories: [INFO]
