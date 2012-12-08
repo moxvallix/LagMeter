@@ -39,7 +39,6 @@ public class LagMeter extends JavaPlugin {
 	double memMax = Runtime.getRuntime().maxMemory()/1048576;
 	double memFree = memMax-memUsed;
 	double percentageFree = (100/memMax)*memFree;
-	PluginDescriptionFile pdf;
 	public static LagMeter p;
 
 	//Configurable Values - mostly booleans
@@ -170,7 +169,7 @@ public class LagMeter extends JavaPlugin {
 			}else if(command.getName().equalsIgnoreCase("LagMeter")){
 				success = true;
 				if(args.length == 0){
-					sender.sendMessage(ChatColor.GOLD+"[LagMeter] Version: "+pdf.getVersion());
+					sender.sendMessage(ChatColor.GOLD+"[LagMeter] Version: "+pdfFile.getVersion());
 					sender.sendMessage(ChatColor.GOLD+"[LagMeter] Available sub-commands: </lagmeter <reload|r>|/lagmeter <help|?>>");
 				}else if(args[0].equalsIgnoreCase("reload")){
 					if(permit((Player)sender, "lagmeter.command.lagmeter.reload") || !(sender instanceof Player)){
