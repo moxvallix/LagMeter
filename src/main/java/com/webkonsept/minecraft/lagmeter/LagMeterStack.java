@@ -36,6 +36,9 @@ public class LagMeterStack{
 				total += f;
 			}
 		}
-		return total/stack.size();
+		if(total != 0)
+			return total/stack.size();
+		else
+			return 0;
 	}
 }
