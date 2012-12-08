@@ -57,6 +57,9 @@ log:
     #Should the plugin have an empty line between each log tick to make the log file neater?
     #Default: true
     newBlockPerLog: true
+    #Should the plugin put each statistic (TPS, memory, players) on a separate line?
+    #Default: true
+    newLinePerStatistic: true
 #################
 # Notifications #
 #################
