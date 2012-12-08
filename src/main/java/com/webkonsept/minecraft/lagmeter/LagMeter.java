@@ -9,11 +9,11 @@ import java.util.logging.Logger;
 import net.milkbowl.vault.permission.Permission;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.permissions.PermissionDefault;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.RegisteredServiceProvider;
@@ -152,15 +152,17 @@ public class LagMeter extends JavaPlugin implements ChatColourManager {
 				success = true;
 				sendLagMeter(sender);
 				sendMemMeter(sender);
+			}else if(command.getName().equalsIgnoreCase("lmp")){
+				success = true;
+				sendLagMeter(sender);
+				sendMemMeter(sender);
+				sender.sendMessage("Players online: "+gold+getServer().getOnlinePlayers().length);
 			}else if(command.getName().equalsIgnoreCase("lchunks")){
 				success = true;
 				sendChunks(sender);
 			}else if(command.getName().equalsIgnoreCase("lentities") || command.getName().equalsIgnoreCase("lmobs")){
 				success = true;
 				sendEntities(sender);
-			}else{
-				success = true;
-				sender.sendMessage(gold+"Sorry, permission lagmeter.command."+command.getName().toLowerCase()+" was denied.");
 			}
 			return success;
 		}else{
@@ -194,12 +196,9 @@ public class LagMeter extends JavaPlugin implements ChatColourManager {
 	}
 	protected void sendMemMeter(CommandSender sender){
 		updateMemoryStats();
-		String wrapColor = white.toString();
-		if(sender instanceof Player){
-			wrapColor = gold;
-		}
-
+		String wrapColor = sender instanceof Player?ChatColor.GOLD.toString():ChatColor.WHITE.toString();
 		String colour = gold.toString();
+		
 		if(percentageFree >= 60){
 			colour = green.toString();
 		}else if(percentageFree >= 35){
@@ -211,7 +210,7 @@ public class LagMeter extends JavaPlugin implements ChatColourManager {
 		String bar = "";
 		int looped = 0;
 		while(looped++< (percentageFree/5)){
-			bar+= '#';
+			bar+='#';
 		}
 		//bar = String.format("%-20s",bar);
 		bar+= white;
@@ -320,7 +319,6 @@ public class LagMeter extends JavaPlugin implements ChatColourManager {
 				for(Player p: players){
 					if(permit(p, "lagmeter.notify.lag") || p.isOp())
 						p.sendMessage(igt+red+"The server's TPS has dropped below "+tpsNotificationThreshold+"! If you configured a server command to execute at this time, it will run now.");
-
 				}
 				severe("The server's TPS has dropped below "+tpsNotificationThreshold+"! Executing command (if configured).");
 				Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), highLagCommand);
