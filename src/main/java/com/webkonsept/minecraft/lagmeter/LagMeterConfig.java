@@ -14,6 +14,7 @@ public class LagMeterConfig extends LagMeter{
 	private static YamlConfiguration configuration;
 	private static File configFile;
 	private static boolean loaded = false;
+	private LagMeter plugin;
 	
 	@Override
 	public YamlConfiguration getConfig(){
@@ -24,35 +25,36 @@ public class LagMeterConfig extends LagMeter{
 	public static File getConfigFile(){
 		return configFile;
 	}
-	public static void loadConfig(){
+	public void loadConfig(){
 		configFile = new File(Bukkit.getServer().getPluginManager().getPlugin("LagMeter").getDataFolder(), "settings.yml");
 		if(configFile.exists()){
 			configuration = new YamlConfiguration();
 			try{
 				configuration.load(configFile);
-				LagMeter.useAverage							= configuration.getBoolean	("useAverage",							true);
-				LagMeter.averageLength						= configuration.getInt		("averageLength",						10);
-				LagMeter.interval							= configuration.getInt		("interval", 							40);
-				LagMeter.displayChunksOnLoad				= configuration.getBoolean	("LoadedChunksOnLoad",					true);
-				LagMeter.displayEntitiesOnLoad				= configuration.getBoolean	("displayEntitiesOnLoad",				true);
-				LagMeter.displayEntities					= configuration.getBoolean	("Commands.Lag.displayEntities",		true);
-				LagMeter.sendChunks							= configuration.getBoolean	("Commands.Lag.displayChunks",			true);
-				LagMeter.logInterval						= configuration.getInt		("log.interval",						150);
-				LagMeter.enableLogging						= configuration.getBoolean	("log.enable",							true);
-				LagMeter.useLogsFolder						= configuration.getBoolean	("log.useLogsFolder",					true);
-				LagMeter.logChunks							= configuration.getBoolean	("log.logChunks",						true);
-				LagMeter.logTotalChunksOnly					= configuration.getBoolean	("log.logTotalChunksOnly",				true);
-				LagMeter.logEntities						= configuration.getBoolean	("log.logEntities",						true);
-				LagMeter.logTotalEntitiesOnly				= configuration.getBoolean	("log.logTotalEntitiesOnly",			true);
-				LagMeter.newBlockPerLog						= configuration.getBoolean	("log.newBlockPerLog",					true);
-				LagMeter.AutomaticLagNotificationsEnabled 	= configuration.getBoolean	("Notifications.Lag.Enabled",			true);
-				LagMeter.tpsNotificationThreshold 			= configuration.getInt		("Notifications.Lag.Threshold",			15);
-				LagMeter.lagNotifyInterval					= configuration.getInt		("Notifications.Lag.CheckInterval",		5);
-				LagMeter.highLagCommand						= configuration.getString	("Notifications.Lag.ConsoleCommand",	"lag");
-				LagMeter.AutomaticMemoryNotificationsEnabled= configuration.getBoolean	("Notifications.Memory.Enabled",		true);
-				LagMeter.memoryNotificationThreshold		= configuration.getInt		("Notifications.Memory.Threshold",		25);
-				LagMeter.memNotifyInterval					= configuration.getInt		("Notifications.Memory.CheckInterval",	10);
-				LagMeter.lowMemCommand						= configuration.getString	("Notifications.Memory.ConsoleCommand",	"mem");
+				plugin.useAverage							= configuration.getBoolean	("useAverage",							true);
+				plugin.averageLength						= configuration.getInt		("averageLength",						10);
+				plugin.interval								= configuration.getInt		("interval",							40);
+				plugin.displayChunksOnLoad					= configuration.getBoolean	("LoadedChunksOnLoad",					true);
+				plugin.displayEntitiesOnLoad				= configuration.getBoolean	("displayEntitiesOnLoad",				true);
+				plugin.displayEntities						= configuration.getBoolean	("Commands.Lag.displayEntities",		true);
+				plugin.sendChunks							= configuration.getBoolean	("Commands.Lag.displayChunks",			true);
+				plugin.logInterval							= configuration.getInt		("log.interval",						150);
+				plugin.enableLogging						= configuration.getBoolean	("log.enable",							true);
+				plugin.useLogsFolder						= configuration.getBoolean	("log.useLogsFolder",					true);
+				plugin.logChunks							= configuration.getBoolean	("log.logChunks",						true);
+				plugin.logTotalChunksOnly					= configuration.getBoolean	("log.logTotalChunksOnly",				true);
+				plugin.logEntities							= configuration.getBoolean	("log.logEntities",						true);
+				plugin.logTotalEntitiesOnly					= configuration.getBoolean	("log.logTotalEntitiesOnly",			true);
+				plugin.newBlockPerLog						= configuration.getBoolean	("log.newBlockPerLog",					true);
+				plugin.newLineForLogStats					= configuration.getBoolean	("log.NewLinePerStatistic",				true);
+				plugin.AutomaticLagNotificationsEnabled		= configuration.getBoolean	("Notifications.Lag.Enabled",			true);
+				plugin.tpsNotificationThreshold				= configuration.getInt		("Notifications.Lag.Threshold",			15);
+				plugin.lagNotifyInterval					= configuration.getInt		("Notifications.Lag.CheckInterval",		5);
+				plugin.highLagCommand						= configuration.getString	("Notifications.Lag.ConsoleCommand",	"lag");
+				plugin.AutomaticMemoryNotificationsEnabled	= configuration.getBoolean	("Notifications.Memory.Enabled",		true);
+				plugin.memoryNotificationThreshold			= configuration.getInt		("Notifications.Memory.Threshold",		25);
+				plugin.memNotifyInterval					= configuration.getInt		("Notifications.Memory.CheckInterval",	10);
+				plugin.lowMemCommand						= configuration.getString	("Notifications.Memory.ConsoleCommand",	"mem");
 			}catch (FileNotFoundException ex){
 				ex.printStackTrace();
 			}catch (IOException ex){
@@ -102,6 +104,7 @@ public class LagMeterConfig extends LagMeter{
 			}
 		}
 	}
-	private LagMeterConfig(){
+	protected LagMeterConfig(LagMeter l){
+		this.plugin = l;
 	}
 }
