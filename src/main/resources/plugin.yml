@@ -29,6 +29,9 @@ commands:
     lmobs:
         description: Alternate command to /lentities. Shows entities per world, along with a combined total.
         usage: /<command>
+    lmp:
+        description: Shows TPS, memory, and players online.
+        usage: /<command>
 permissions:
     lagmeter.*:
         description: Gives full access
@@ -51,6 +54,9 @@ permissions:
         default: op
     lagmeter.command.lchunks:
         description: Gives access to the /lchunks command, which shows the amount of chunks loaded per world, and the amount total.
+        default: op
+    lagmeter.command.lmp:
+        description: Gives access to the /lmp command, which shows TPS, memory, and players online.
         default: op
     lagmeter.command.lentities:
         description: Node for the command for showing entities on the server.
