@@ -27,8 +27,6 @@ public class LagMeterPoller implements Runnable{
 		float tps = plugin.interval/timeSpent;
 		plugin.ticksPerSecond = tps;
 		plugin.history.add(tps);
-		if(plugin.history.size() > plugin.averageLength)
-			plugin.history.remove(2);
 		lastPoll = now;
 		polls++;
 		if(plugin.logger.enabled() && polls % logInterval == 0){
