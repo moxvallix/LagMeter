@@ -57,7 +57,10 @@ permissions:
         children:
             lagmeter.command.lmobs: true
         default: op
-    lagmeter.command.lmobs:
+    lagmeter.notify.lag:
+        description: Alternate command for showing entities on the server.
+        default: op
+    lagmeter.notify.mem:
         description: Alternate command for showing entities on the server.
         default: op
 generators: [bukget]
