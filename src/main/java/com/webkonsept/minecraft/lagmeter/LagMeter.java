@@ -166,6 +166,40 @@ public class LagMeter extends JavaPlugin implements ChatColourManager {
 			}else if(command.getName().equalsIgnoreCase("lentities") || command.getName().equalsIgnoreCase("lmobs")){
 				success = true;
 				sendEntities(sender);
+			}else if(command.getName().equalsIgnoreCase("LagMeter")){
+				success = true;
+				if(args.length == 0){
+					sender.sendMessage(gold+"[LagMeter] Version: "+pdf.getVersion());
+					sender.sendMessage(gold+"[LagMeter] Available sub-commands: </lagmeter <reload|r>|/lagmeter <help|?>>");
+				}else if(args[0].equalsIgnoreCase("reload")){
+					if(permit((Player)sender, "lagmeter.command.lagmeter.reload") || !(sender instanceof Player)){
+						conf.loadConfig();
+						sender.sendMessage("Configuration reloaded!");
+					}
+				}else if(args[0].equalsIgnoreCase("help")){
+					sender.sendMessage(green+"*           *Help for LagMeter*           *");
+					if(permit((Player)sender, "lagmeter.command.")){
+						sender.sendMessage(gold+"[LagMeter] "+darkgreen+"/lag"+gold+" - Check the server's TPS. If configured, may also display chunks loaded and/or entities alive.");
+					}
+					if(permit((Player)sender, "lagmeter.command.")){
+						sender.sendMessage(gold+"[LagMeter] "+darkgreen+"/mem"+gold+" - Displays how much memory the server currently has free.");
+					}
+					if(permit((Player)sender, "lagmeter.command.")){
+						sender.sendMessage(gold+"[LagMeter] "+darkgreen+"/lagmem|/lm"+gold+" - A combination of both /lag and /mem.");
+					}
+					if(permit((Player)sender, "lagmeter.command.")){
+						sender.sendMessage(gold+"[LagMeter] "+darkgreen+"/lchunks"+gold+" - Shows how many chunks are currently loaded in each world, then with a total.");
+					}
+					if(permit((Player)sender, "lagmeter.command.")){
+						sender.sendMessage(gold+"[LagMeter] "+darkgreen+"/lmobs|/lentities"+gold+" - Shows how many entities are currently alive in each world, then with a total.");
+					}
+					if(permit((Player)sender, "lagmeter.command.")){
+						sender.sendMessage(gold+"[LagMeter] "+darkgreen+"/lmp"+gold+" - Has the same function as /lagmem, but includes a player count.");
+					}
+				}else{
+					sender.sendMessage(gold+"[LagMeter] Invalid sub-command. Try one of these:");
+					sender.sendMessage(gold+"[LagMeter] Available sub-commands: </lagmeter <reload|r>|/lagmeter <help|?>>");
+				}
 			}
 			return success;
 		}else{

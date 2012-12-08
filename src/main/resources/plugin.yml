@@ -32,6 +32,9 @@ commands:
     lmp:
         description: Shows TPS, memory, and players online.
         usage: /<command>
+    lagmeter:
+        description: Shows the version. Sub-commands of help and reload have obvious functions.
+        usage: /<command>
 permissions:
     lagmeter.*:
         description: Gives full access
