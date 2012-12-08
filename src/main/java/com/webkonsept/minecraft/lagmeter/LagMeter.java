@@ -22,14 +22,14 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class LagMeter extends JavaPlugin implements ChatColourManager {
 	private Logger log = Logger.getLogger("Minecraft");
 	protected float ticksPerSecond = 20;
-	public static PluginDescriptionFile pdfFile;
+	public PluginDescriptionFile pdfFile;
 
-	private static final String fileSeparator = System.getProperty("file.separator");
+	private final String fileSeparator = System.getProperty("file.separator");
 	protected File logsFolder = new File("plugins"+fileSeparator+"LagMeter"+fileSeparator+"logs");
 
 	protected LagMeterLogger logger = new LagMeterLogger(this);
 	protected LagMeterPoller poller = new LagMeterPoller(this);
-	protected static int averageLength = 10, sustainedLagTimer;
+	protected int averageLength = 10, sustainedLagTimer;
 	protected LagMeterStack history = new LagMeterStack();
 
 	protected boolean vault = false;
@@ -40,22 +40,24 @@ public class LagMeter extends JavaPlugin implements ChatColourManager {
 	double memFree = memMax-memUsed;
 	double percentageFree = (100/memMax)*memFree;
 	PluginDescriptionFile pdf;
-	LagMeter plugin;
+	public static LagMeter p;
 
 	//Configurable Values - mostly booleans
-	protected static int interval = 40, logInterval = 150, lagNotifyInterval,
+	protected int interval = 40, logInterval = 150, lagNotifyInterval,
 			memNotifyInterval, lwTaskID, mwTaskID;
-	protected static float tpsNotificationThreshold, memoryNotificationThreshold;
-	protected static boolean useAverage = true, enableLogging = true, useLogsFolder = true,
+	protected float tpsNotificationThreshold, memoryNotificationThreshold;
+	protected boolean useAverage = true, enableLogging = true, useLogsFolder = true,
 			AutomaticLagNotificationsEnabled, AutomaticMemoryNotificationsEnabled, displayEntities,
 			playerLoggingEnabled, displayChunksOnLoad, sendChunks, logChunks, logTotalChunksOnly,
-			logEntities, logTotalEntitiesOnly, newBlockPerLog, displayEntitiesOnLoad;
-	protected static String highLagCommand, lowMemCommand;
+			logEntities, logTotalEntitiesOnly, newBlockPerLog, displayEntitiesOnLoad, newLineForLogStats;
+	protected String highLagCommand, lowMemCommand;
+	private LagMeterConfig conf = new LagMeterConfig(this);
 
 	@Override
 	public void onEnable(){
+		p = this;
 		pdfFile = this.getDescription();
-		LagMeterConfig.loadConfig();
+		conf.loadConfig();
 		vault = checkVault();
 		
 		if(!logsFolder.exists() && useLogsFolder && enableLogging){
@@ -303,6 +305,22 @@ public class LagMeter extends JavaPlugin implements ChatColourManager {
 		if(useAverage)
 			return history.getAverage();
 		return ticksPerSecond;
+	}
+	/**
+	 * Gets the current memory used, maxmimum memory, memory free, and percentage of memory free. Returned in a single array of doubles.
+	 * 
+	 * @since 1.11.0-SNAPSHOT
+	 * @return memory[], which is a double array, containing four values, where:
+	 * <br /><b><i>memory[0]</i></b> is the currently used memory;<br /><b><i>memory[1]</i></b> is the current maximum memory;<br /><b><i>memory[2]</i></b> is the current free memory;<br /><b><i>memory[3]</i></b> is the percentage memory free (note this may be an irrational number, so you might want to truncate it if you use this).
+	 */
+	public double[] getMemory(){
+		double[] memory = {0D, 0D, 0D, 0D};
+		updateMemoryStats();
+		memory[0] = memUsed;
+		memory[1] = memMax;
+		memory[2] = memFree;
+		memory[3] = percentageFree;
+		return memory;
 	}
 	private boolean setupPermissions(){
 		RegisteredServiceProvider<Permission> permissionProvider = getServer().getServicesManager().getRegistration(net.milkbowl.vault.permission.Permission.class);
