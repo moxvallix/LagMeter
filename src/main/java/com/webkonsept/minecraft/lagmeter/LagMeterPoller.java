@@ -5,7 +5,7 @@ public class LagMeterPoller implements Runnable{
 	long polls = 0;
 	int logInterval = 150;
 	LagMeter plugin;
-	
+
 	LagMeterPoller(LagMeter instance){
 		plugin = instance;
 	}
@@ -13,7 +13,7 @@ public class LagMeterPoller implements Runnable{
 		this.logInterval = logInterval;
 		plugin = instance;
 	}
-	
+
 	public void setLogInterval(int interval){
 		logInterval = interval;
 	}
@@ -21,7 +21,6 @@ public class LagMeterPoller implements Runnable{
 	public void run(){
 		long now = System.currentTimeMillis();
 		long timeSpent = (now-lastPoll)/1000;
-		String players = plugin.playerLoggingEnabled?String.valueOf(plugin.getServer().getOnlinePlayers().length):"";
 		String newLine = plugin.newLineForLogStats?"\n":"  ";
 		if(timeSpent == 0)
 			timeSpent = 1;

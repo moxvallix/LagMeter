@@ -15,7 +15,7 @@ public class LagMeterConfig extends LagMeter{
 	private static File configFile;
 	private static boolean loaded = false;
 	private LagMeter plugin;
-	
+
 	@Override
 	public YamlConfiguration getConfig(){
 		if(!loaded)

@@ -5,7 +5,7 @@ import java.util.LinkedList;
 public class LagMeterStack{
 	private int maxSize = 0;
 	private LinkedList<Float> stack = new LinkedList<Float>(); 
-	
+
 	LagMeterStack(int maxSize){
 		this.maxSize = maxSize;
 	}

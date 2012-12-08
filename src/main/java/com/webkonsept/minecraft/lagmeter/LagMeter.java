@@ -19,7 +19,7 @@ import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public class LagMeter extends JavaPlugin implements ChatColourManager {
+public class LagMeter extends JavaPlugin {
 	private Logger log = Logger.getLogger("Minecraft");
 	protected float ticksPerSecond = 20;
 	public PluginDescriptionFile pdfFile;
@@ -60,11 +60,11 @@ public class LagMeter extends JavaPlugin implements ChatColourManager {
 		pdfFile = this.getDescription();
 		conf.loadConfig();
 		vault = checkVault();
-		
+
 		if(!logsFolder.exists() && useLogsFolder && enableLogging){
 			info("Logs folder not found. Creating one for you.");
 			logsFolder.mkdir();
-			
+
 			if(!logsFolder.exists()){
 				severe("Error! Couldn't create the folder!");
 			}else{
@@ -96,7 +96,7 @@ public class LagMeter extends JavaPlugin implements ChatColourManager {
 			mwTaskID = Bukkit.getServer().getScheduler().scheduleAsyncRepeatingTask(this, new MemoryWatcher(), memNotifyInterval*1200, memNotifyInterval*1200);
 		else
 			mwTaskID = -1;
-		
+
 		if(displayChunksOnLoad){
 			info("Chunks loaded:");
 			int total = 0;
@@ -159,7 +159,7 @@ public class LagMeter extends JavaPlugin implements ChatColourManager {
 				success = true;
 				sendLagMeter(sender);
 				sendMemMeter(sender);
-				sender.sendMessage("Players online: "+gold+getServer().getOnlinePlayers().length);
+				sender.sendMessage("Players online: "+ChatColor.GOLD+getServer().getOnlinePlayers().length);
 			}else if(command.getName().equalsIgnoreCase("lchunks")){
 				success = true;
 				sendChunks(sender);
@@ -169,42 +169,42 @@ public class LagMeter extends JavaPlugin implements ChatColourManager {
 			}else if(command.getName().equalsIgnoreCase("LagMeter")){
 				success = true;
 				if(args.length == 0){
-					sender.sendMessage(gold+"[LagMeter] Version: "+pdf.getVersion());
-					sender.sendMessage(gold+"[LagMeter] Available sub-commands: </lagmeter <reload|r>|/lagmeter <help|?>>");
+					sender.sendMessage(ChatColor.GOLD+"[LagMeter] Version: "+pdf.getVersion());
+					sender.sendMessage(ChatColor.GOLD+"[LagMeter] Available sub-commands: </lagmeter <reload|r>|/lagmeter <help|?>>");
 				}else if(args[0].equalsIgnoreCase("reload")){
 					if(permit((Player)sender, "lagmeter.command.lagmeter.reload") || !(sender instanceof Player)){
 						conf.loadConfig();
 						sender.sendMessage("Configuration reloaded!");
 					}
 				}else if(args[0].equalsIgnoreCase("help")){
-					sender.sendMessage(green+"*           *Help for LagMeter*           *");
+					sender.sendMessage(ChatColor.GREEN+"*           *Help for LagMeter*           *");
 					if(permit((Player)sender, "lagmeter.command.")){
-						sender.sendMessage(gold+"[LagMeter] "+darkgreen+"/lag"+gold+" - Check the server's TPS. If configured, may also display chunks loaded and/or entities alive.");
+						sender.sendMessage(ChatColor.GOLD+"[LagMeter] "+ChatColor.DARK_GREEN+"/lag"+ChatColor.GOLD+" - Check the server's TPS. If configuChatColor.RED, may also display chunks loaded and/or entities alive.");
 					}
 					if(permit((Player)sender, "lagmeter.command.")){
-						sender.sendMessage(gold+"[LagMeter] "+darkgreen+"/mem"+gold+" - Displays how much memory the server currently has free.");
+						sender.sendMessage(ChatColor.GOLD+"[LagMeter] "+ChatColor.DARK_GREEN+"/mem"+ChatColor.GOLD+" - Displays how much memory the server currently has free.");
 					}
 					if(permit((Player)sender, "lagmeter.command.")){
-						sender.sendMessage(gold+"[LagMeter] "+darkgreen+"/lagmem|/lm"+gold+" - A combination of both /lag and /mem.");
+						sender.sendMessage(ChatColor.GOLD+"[LagMeter] "+ChatColor.DARK_GREEN+"/lagmem|/lm"+ChatColor.GOLD+" - A combination of both /lag and /mem.");
 					}
 					if(permit((Player)sender, "lagmeter.command.")){
-						sender.sendMessage(gold+"[LagMeter] "+darkgreen+"/lchunks"+gold+" - Shows how many chunks are currently loaded in each world, then with a total.");
+						sender.sendMessage(ChatColor.GOLD+"[LagMeter] "+ChatColor.DARK_GREEN+"/lchunks"+ChatColor.GOLD+" - Shows how many chunks are currently loaded in each world, then with a total.");
 					}
 					if(permit((Player)sender, "lagmeter.command.")){
-						sender.sendMessage(gold+"[LagMeter] "+darkgreen+"/lmobs|/lentities"+gold+" - Shows how many entities are currently alive in each world, then with a total.");
+						sender.sendMessage(ChatColor.GOLD+"[LagMeter] "+ChatColor.DARK_GREEN+"/lmobs|/lentities"+ChatColor.GOLD+" - Shows how many entities are currently alive in each world, then with a total.");
 					}
 					if(permit((Player)sender, "lagmeter.command.")){
-						sender.sendMessage(gold+"[LagMeter] "+darkgreen+"/lmp"+gold+" - Has the same function as /lagmem, but includes a player count.");
+						sender.sendMessage(ChatColor.GOLD+"[LagMeter] "+ChatColor.DARK_GREEN+"/lmp"+ChatColor.GOLD+" - Has the same function as /lagmem, but includes a player count.");
 					}
 				}else{
-					sender.sendMessage(gold+"[LagMeter] Invalid sub-command. Try one of these:");
-					sender.sendMessage(gold+"[LagMeter] Available sub-commands: </lagmeter <reload|r>|/lagmeter <help|?>>");
+					sender.sendMessage(ChatColor.GOLD+"[LagMeter] Invalid sub-command. Try one of these:");
+					sender.sendMessage(ChatColor.GOLD+"[LagMeter] Available sub-commands: </lagmeter <reload|r>|/lagmeter <help|?>>");
 				}
 			}
 			return success;
 		}else{
 			success = true;
-			sender.sendMessage(gold+"Sorry, permission lagmeter.command."+command.getName().toLowerCase()+" was denied.");
+			sender.sendMessage(ChatColor.GOLD+"Sorry, permission lagmeter.command."+command.getName().toLowerCase()+" was denied.");
 		}
 		return success;
 	}
@@ -234,14 +234,14 @@ public class LagMeter extends JavaPlugin implements ChatColourManager {
 	protected void sendMemMeter(CommandSender sender){
 		updateMemoryStats();
 		String wrapColor = sender instanceof Player?ChatColor.GOLD.toString():ChatColor.WHITE.toString();
-		String colour = gold.toString();
-		
+		String colour = ChatColor.GOLD.toString();
+
 		if(percentageFree >= 60){
-			colour = green.toString();
+			colour = ChatColor.GREEN.toString();
 		}else if(percentageFree >= 35){
-			colour = yellow.toString();
+			colour = ChatColor.YELLOW.toString();
 		}else{
-			colour = red.toString();
+			colour = ChatColor.RED.toString();
 		}
 
 		String bar = "";
@@ -250,22 +250,22 @@ public class LagMeter extends JavaPlugin implements ChatColourManager {
 			bar+='#';
 		}
 		//bar = String.format("%-20s",bar);
-		bar+= white;
+		bar+= ChatColor.WHITE;
 		while (looped++<= 20){
 			bar+= '_';
 		}
 		sender.sendMessage(wrapColor+"["+colour+bar+wrapColor+"] "+memFree+"MB/"+memMax+"MB ("+(int)percentageFree+"%) free");
 	}
 	protected void sendLagMeter(CommandSender sender){
-		String wrapColor = white.toString();
-		
+		String wrapColor = ChatColor.WHITE.toString();
+
 		if(displayEntities)
 			sendEntities(sender);
 		if(sendChunks)
 			sendChunks(sender);
-		
+
 		if(sender instanceof Player)
-			wrapColor = gold.toString();
+			wrapColor = ChatColor.GOLD.toString();
 		String lagMeter = "";
 		float tps = 0f;
 		if(useAverage){
@@ -279,7 +279,7 @@ public class LagMeter extends JavaPlugin implements ChatColourManager {
 				lagMeter+= "#";
 			}
 			//lagMeter = String.format("%-20s",lagMeter);
-			lagMeter+= white;
+			lagMeter+= ChatColor.WHITE;
 			while (looped++<= 20){
 				lagMeter+= "_";
 			}
@@ -289,13 +289,13 @@ public class LagMeter extends JavaPlugin implements ChatColourManager {
 		}
 		String color = wrapColor;
 		if(tps >= 20){
-			color = green.toString();
+			color = ChatColor.GREEN.toString();
 		}else if(tps >= 18){
-			color = green.toString();
+			color = ChatColor.GREEN.toString();
 		}else if(tps >= 15){
-			color = yellow.toString();
+			color = ChatColor.YELLOW.toString();
 		}else{
-			color = red.toString();
+			color = ChatColor.RED.toString();
 		}
 		sender.sendMessage(wrapColor+"["+color+lagMeter+wrapColor+"] "+tps+" TPS");
 	}
@@ -306,9 +306,9 @@ public class LagMeter extends JavaPlugin implements ChatColourManager {
 			String worldName = world.getName();
 			int i = getServer().getWorld(worldName).getEntities().size();
 			totalEntities += i;
-			sender.sendMessage(gold+"Entities in world \""+worldName+"\": "+i);
+			sender.sendMessage(ChatColor.GOLD+"Entities in world \""+worldName+"\": "+i);
 		}
-		sender.sendMessage(gold+"Total entities: "+totalEntities);
+		sender.sendMessage(ChatColor.GOLD+"Total entities: "+totalEntities);
 	}
 	public void sendChunks(CommandSender sender){
 		int totalChunks = 0;
@@ -317,9 +317,9 @@ public class LagMeter extends JavaPlugin implements ChatColourManager {
 			String s = world.getName();
 			int i = getServer().getWorld(s).getLoadedChunks().length;
 			totalChunks += i;
-			sender.sendMessage(gold+"Chunks in world \""+s+"\": "+i);
+			sender.sendMessage(ChatColor.GOLD+"Chunks in world \""+s+"\": "+i);
 		}
-		sender.sendMessage(gold+"Total chunks loaded on the server: "+totalChunks);
+		sender.sendMessage(ChatColor.GOLD+"Total chunks loaded on the server: "+totalChunks);
 	}
 	public void info(String message){
 		log.info("["+pdfFile.getName()+" "+pdfFile.getVersion()+"] "+message);
@@ -371,9 +371,9 @@ public class LagMeter extends JavaPlugin implements ChatColourManager {
 				Player[] players = Bukkit.getServer().getOnlinePlayers();
 				for(Player p: players){
 					if(permit(p, "lagmeter.notify.lag") || p.isOp())
-						p.sendMessage(igt+red+"The server's TPS has dropped below "+tpsNotificationThreshold+"! If you configured a server command to execute at this time, it will run now.");
+						p.sendMessage(ChatColor.GOLD+"[LagMeter] "+ChatColor.RED+"The server's TPS has dropped below "+tpsNotificationThreshold+"! If you configuChatColor.RED a server command to execute at this time, it will run now.");
 				}
-				severe("The server's TPS has dropped below "+tpsNotificationThreshold+"! Executing command (if configured).");
+				severe("The server's TPS has dropped below "+tpsNotificationThreshold+"! Executing command (if configuChatColor.RED).");
 				Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), highLagCommand);
 			}
 		}
@@ -387,10 +387,10 @@ public class LagMeter extends JavaPlugin implements ChatColourManager {
 				players = Bukkit.getServer().getOnlinePlayers();
 				for(Player p: players){
 					if(permit(p, "lagmeter.notify.mem") || p.isOp()){
-						p.sendMessage(igt+red+"The server's free memory pool has dropped below "+memoryNotificationThreshold+"%! If you configured a server command to execute at this time, it will run now.");
+						p.sendMessage(ChatColor.GOLD+"[LagMeter] "+ChatColor.RED+"The server's free memory pool has dropped below "+memoryNotificationThreshold+"%! If you configuChatColor.RED a server command to execute at this time, it will run now.");
 					}
 				}
-				severe("The server's free memory pool has dropped below "+memoryNotificationThreshold+"! Executing command (if configured).");
+				severe("The server's free memory pool has dropped below "+memoryNotificationThreshold+"! Executing command (if configuChatColor.RED).");
 				Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), lowMemCommand);
 			}
 		}
