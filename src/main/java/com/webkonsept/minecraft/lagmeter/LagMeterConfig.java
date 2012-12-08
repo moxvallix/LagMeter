@@ -40,10 +40,10 @@ public class LagMeterConfig extends LagMeter{
 				plugin.sendChunks							= configuration.getBoolean	("Commands.Lag.displayChunks",			true);
 				plugin.logInterval							= configuration.getInt		("log.interval",						150);
 				plugin.enableLogging						= configuration.getBoolean	("log.enable",							true);
-				plugin.useLogsFolder						= configuration.getBoolean	("log.useLogsFolder",					true);
-				plugin.logChunks							= configuration.getBoolean	("log.logChunks",						true);
+				plugin.useLogsFolder						= configuration.getBoolean	("log.useLogsFolder",					false);
+				plugin.logChunks							= configuration.getBoolean	("log.logChunks",						false);
 				plugin.logTotalChunksOnly					= configuration.getBoolean	("log.logTotalChunksOnly",				true);
-				plugin.logEntities							= configuration.getBoolean	("log.logEntities",						true);
+				plugin.logEntities							= configuration.getBoolean	("log.logEntities",						false);
 				plugin.logTotalEntitiesOnly					= configuration.getBoolean	("log.logTotalEntitiesOnly",			true);
 				plugin.newBlockPerLog						= configuration.getBoolean	("log.newBlockPerLog",					true);
 				plugin.newLineForLogStats					= configuration.getBoolean	("log.NewLinePerStatistic",				true);
