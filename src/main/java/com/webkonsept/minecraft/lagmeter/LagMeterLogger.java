@@ -125,10 +125,9 @@ public class LagMeterLogger {
 				if(!logfile.exists()){
 					logfile.createNewFile();
 				}
-				log = new PrintWriter(new FileWriter(logfile,true));
+				log = new PrintWriter(new FileWriter(logfile, true));
 				log("Logging enabled.");
-			}
-			catch(IOException e){
+			}catch(IOException e){
 				e.printStackTrace();
 				error("IOException opening logfile!");
 				ret = false;

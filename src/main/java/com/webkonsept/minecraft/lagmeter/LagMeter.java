@@ -60,11 +60,12 @@ public class LagMeter extends JavaPlugin {
 		pdfFile = this.getDescription();
 		conf.loadConfig();
 		vault = checkVault();
-
+		logger = new LagMeterLogger(this);
+		poller = new LagMeterPoller(this);
+		
 		if(!logsFolder.exists() && useLogsFolder && enableLogging){
 			info("Logs folder not found. Creating one for you.");
 			logsFolder.mkdir();
-
 			if(!logsFolder.exists()){
 				severe("Error! Couldn't create the folder!");
 			}else{
@@ -86,7 +87,7 @@ public class LagMeter extends JavaPlugin {
 		}else{
 			info("You don't have Vault. Defaulting to OP/Non-OP system.");
 		}
-		String loggingMessage = enableLogging ? "Logging to "+logger.getFilename() : "";
+		String loggingMessage = enableLogging ? " Logging to "+logger.getFilename()+"." : "";
 		info("Enabled! Polling every "+interval+" server ticks."+loggingMessage);
 		if(AutomaticLagNotificationsEnabled)
 			lwTaskID = Bukkit.getServer().getScheduler().scheduleAsyncRepeatingTask(this, new LagWatcher(), lagNotifyInterval*1200, lagNotifyInterval*1200);
