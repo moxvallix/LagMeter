@@ -156,7 +156,7 @@ public class LagMeterLogger {
 					if(!plugin.logTotalChunksOnly)
 						log.print(newLine+"Chunks loaded in world \""+world.getName()+"\": "+world.getLoadedChunks().length);
 				}
-				log.print("Total chunks loaded: "+totalChunks);
+				log.print(newLine+"Total chunks loaded: "+totalChunks);
 			}
 			if(plugin.logEntities){
 				int totalEntities = 0;
@@ -165,7 +165,7 @@ public class LagMeterLogger {
 					if(!plugin.logTotalEntitiesOnly)
 						log.print(newLine+"Entities in world \""+world.getName()+"\": "+world.getEntities().size());
 				}
-				log.print("Total entities: "+totalEntities);
+				log.print(newLine+"Total entities: "+totalEntities);
 			}
 			if(plugin.newBlockPerLog)
 				log.println();
