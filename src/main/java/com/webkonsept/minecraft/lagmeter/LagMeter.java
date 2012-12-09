@@ -156,8 +156,11 @@ public class LagMeter extends JavaPlugin {
 				sendMemMeter(sender);
 			}else if(command.getName().equalsIgnoreCase("lm")){
 				success = true;
-				sendLagMeter(sender);
-				sendMemMeter(sender);
+				if(args.length == 0){
+					sendLagMeter(sender);
+					sendMemMeter(sender);
+				}else
+					handleBaseCommand(sender, args);
 			}else if(command.getName().equalsIgnoreCase("lmp")){
 				success = true;
 				sendLagMeter(sender);
@@ -173,7 +176,7 @@ public class LagMeter extends JavaPlugin {
 				success = true;
 				if(args.length == 0){
 					sender.sendMessage(ChatColor.GOLD+"[LagMeter] Version: "+pdfFile.getVersion());
-					sender.sendMessage(ChatColor.GOLD+"[LagMeter] Available sub-commands: </lagmeter <reload|r>|/lagmeter <help|?>>");
+					sender.sendMessage(ChatColor.GOLD+"[LagMeter] Available sub-commands: /lagmeter|lm <reload|r>|/lagmeter|lm <help|?>");
 				}else
 					handleBaseCommand(sender, args);
 			}
@@ -224,7 +227,7 @@ public class LagMeter extends JavaPlugin {
 				sender.sendMessage("You don't have permission for any of the commands!");
 		}else{
 			sender.sendMessage(ChatColor.GOLD+"[LagMeter] "+ChatColor.RED+"Invalid sub-command. "+ChatColor.GOLD+"Try one of these:");
-			sender.sendMessage(ChatColor.GOLD+"[LagMeter] Available sub-commands: /lagmeter <reload|r>|/lagmeter <help|?>");
+			sender.sendMessage(ChatColor.GOLD+"[LagMeter] Available sub-commands: /lagmeter|lm <reload|r>|/lagmeter|lm <help|?>");
 		}
 	}
 	private boolean checkVault(){
