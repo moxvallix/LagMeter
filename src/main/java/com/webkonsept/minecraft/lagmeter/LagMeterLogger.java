@@ -148,8 +148,7 @@ public class LagMeterLogger {
 		if(enabled){
 			message = "["+now()+"] "+message;
 			String newLine = plugin.newLineForLogStats?"\n":"  ";
-			String players = plugin.playerLoggingEnabled?newLine+String.valueOf(Bukkit.getServer().getOnlinePlayers().length):"";
-			log.println(message+players);
+			log.print(message);
 			if(plugin.logChunks){
 				int totalChunks = 0;
 				for(World world: Bukkit.getServer().getWorlds()){
@@ -157,7 +156,7 @@ public class LagMeterLogger {
 					if(!plugin.logTotalChunksOnly)
 						log.print(newLine+"Chunks loaded in world \""+world.getName()+"\": "+world.getLoadedChunks().length);
 				}
-				log.println("Total chunks loaded: "+totalChunks);
+				log.print("Total chunks loaded: "+totalChunks);
 			}
 			if(plugin.logEntities){
 				int totalEntities = 0;
@@ -166,10 +165,11 @@ public class LagMeterLogger {
 					if(!plugin.logTotalEntitiesOnly)
 						log.print(newLine+"Entities in world \""+world.getName()+"\": "+world.getEntities().size());
 				}
-				log.println("Total entities: "+totalEntities);
+				log.print("Total entities: "+totalEntities);
 			}
 			if(plugin.newBlockPerLog)
 				log.println();
+			log.println();
 			log.flush();
 		}
 	}

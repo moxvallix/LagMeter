@@ -7,11 +7,11 @@ public class LagMeterPoller implements Runnable{
 	LagMeter plugin;
 
 	LagMeterPoller(LagMeter instance){
-		plugin = instance;
+		this.plugin = instance;
 	}
 	LagMeterPoller(LagMeter instance, int logInterval){
 		this.logInterval = logInterval;
-		plugin = instance;
+		this.plugin = instance;
 	}
 
 	public void setLogInterval(int interval){
@@ -22,6 +22,7 @@ public class LagMeterPoller implements Runnable{
 		long now = System.currentTimeMillis();
 		long timeSpent = (now-lastPoll)/1000;
 		String newLine = plugin.newLineForLogStats?"\n":"  ";
+		String players = plugin.playerLoggingEnabled?newLine+"Players online: "+plugin.getServer().getOnlinePlayers().length+"/"+plugin.getServer().getMaxPlayers():"";
 		if(timeSpent == 0)
 			timeSpent = 1;
 		float tps = plugin.interval/timeSpent;
@@ -36,7 +37,7 @@ public class LagMeterPoller implements Runnable{
 				aTPS = plugin.history.getAverage();
 			else
 				aTPS = plugin.getTPS();
-			plugin.logger.log("TPS: "+aTPS+newLine+"Memory free: "+plugin.memFree+"/"+plugin.memMax+" ("+(int)plugin.percentageFree+"%)");
+			plugin.logger.log("TPS: "+aTPS+newLine+"Memory free: "+plugin.memFree+"/"+plugin.memMax+" ("+(int)plugin.percentageFree+"%)"+players);
 		}
 	}
 }
