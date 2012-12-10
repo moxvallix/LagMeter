@@ -133,9 +133,9 @@ public class LagMeter extends JavaPlugin {
 			}
 		}
 		if(AutomaticLagNotificationsEnabled)
-			getServer().getScheduler().cancelTask(lwTaskID);
+			super.getServer().getScheduler().cancelTask(lwTaskID);
 		if(AutomaticMemoryNotificationsEnabled)
-			getServer().getScheduler().cancelTask(mwTaskID);
+			super.getServer().getScheduler().cancelTask(mwTaskID);
 		getServer().getScheduler().cancelTasks(this);
 	}
 	@Override
@@ -165,7 +165,7 @@ public class LagMeter extends JavaPlugin {
 				success = true;
 				this.sendLagMeter(sender);
 				this.sendMemMeter(sender);
-				sendMessage(sender, 0, "Players online: "+ChatColor.GOLD+getServer().getOnlinePlayers().length);
+				sendMessage(sender, 0, "Players online: "+ChatColor.GOLD+super.getServer().getOnlinePlayers().length);
 			}else if(command.getName().equalsIgnoreCase("lchunks")){
 				success = true;
 				sendChunks(sender);
@@ -255,7 +255,7 @@ public class LagMeter extends JavaPlugin {
 	}
 	private boolean checkVault(){
 		boolean usingVault = false;
-		Plugin v = this.getServer().getPluginManager().getPlugin("Vault");
+		Plugin v = super.getServer().getPluginManager().getPlugin("Vault");
 		if(v != null){
 			usingVault = true;
 		}
@@ -376,10 +376,10 @@ public class LagMeter extends JavaPlugin {
 				info(ChatColor.GREEN+message);
 				break;
 			case 1:
-				info(ChatColor.RED+message);
+				warn(ChatColor.RED+message);
 				break;
 			case 2:
-				info(ChatColor.DARK_RED+message);
+				severe(ChatColor.DARK_RED+message);
 				break;
 			}
 		}
@@ -403,10 +403,10 @@ public class LagMeter extends JavaPlugin {
 				info(ChatColor.GREEN+message);
 				break;
 			case 1:
-				info(ChatColor.RED+message);
+				warn(ChatColor.RED+message);
 				break;
 			case 2:
-				info(ChatColor.DARK_RED+message);
+				severe(ChatColor.DARK_RED+message);
 				break;
 			}
 		}
