@@ -89,11 +89,11 @@ public class LagMeter extends JavaPlugin {
 		String loggingMessage = enableLogging ? " Logging to "+logger.getFilename()+"." : "";
 		info("Enabled! Polling every "+interval+" server ticks."+loggingMessage);
 		if(AutomaticLagNotificationsEnabled)
-			lwTaskID = Bukkit.getServer().getScheduler().scheduleAsyncRepeatingTask(this, new LagWatcher(), lagNotifyInterval*1200, lagNotifyInterval*1200);
+			lwTaskID = Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(this, new LagWatcher(), lagNotifyInterval*1200, lagNotifyInterval*1200);
 		else
 			lwTaskID = -1;
 		if(AutomaticMemoryNotificationsEnabled)
-			mwTaskID = Bukkit.getServer().getScheduler().scheduleAsyncRepeatingTask(this, new MemoryWatcher(), memNotifyInterval*1200, memNotifyInterval*1200);
+			mwTaskID = Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(this, new MemoryWatcher(), memNotifyInterval*1200, memNotifyInterval*1200);
 		else
 			mwTaskID = -1;
 
