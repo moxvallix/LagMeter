@@ -13,8 +13,7 @@
 			<resource>
 				<targetPath>main/java/com/webkonsept/minecraft/lagmeter</targetPath>
 				<filtering>false</filtering>
-				<directory>${basedir}/src/main/java/com/webkonsept/minecraft/lagmeter
-				</directory>
+				<directory>${basedir}/src/main/java/com/webkonsept/minecraft/lagmeter</directory>
 			</resource>
 			<!--settings.yml -->
 			<resource>
@@ -57,21 +56,12 @@
 			<type>jar</type>
 			<optional>true</optional>
 		</dependency>
-		<dependency>
-            <groupId>net.citizensnpcs</groupId>
-            <artifactId>citizensapi</artifactId>
-            <version>2.0.4-SNAPSHOT</version>
-        </dependency>
 	</dependencies>
 
 	<repositories>
 		<repository>
 			<id>bukkit-repo</id>
 			<url>http://repo.bukkit.org/content/groups/public</url>
-		</repository>
-		<repository>
-			<id>citizensapi-repo</id>
-			<url>http://ci.citizensnpcs.com/plugin/repository/everything</url>
 		</repository>
 		<repository>
 			<id>vault-repo</id>
