@@ -71,7 +71,7 @@
 		</repository>
 		<repository>
 			<id>citizensapi-repo</id>
-			<url>http://ci.citizensnpcs.com/plugin/repository/everything/net</url>
+			<url>http://ci.citizensnpcs.com/plugin/repository/everything</url>
 		</repository>
 		<repository>
 			<id>vault-repo</id>
