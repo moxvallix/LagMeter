@@ -1,72 +1,80 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
-                      http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>me.thelunarfrog</groupId>
-  <artifactId>LagMeter</artifactId>
-  <version>1.12.0-SNAPSHOT</version>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+						http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>me.thelunarfrog</groupId>
+	<artifactId>LagMeter</artifactId>
+	<version>1.12.0-SNAPSHOT</version>
 
-  <!-- Build Settings -->
-  <build>
-	<resources>
-		<!--Main-->
-		<resource>
-			<targetPath>main/java/com/webkonsept/minecraft/lagmeter</targetPath>
-			<filtering>false</filtering>
-			<directory>${basedir}/src/main/java/com/webkonsept/minecraft/lagmeter</directory>
-		</resource>
-		<!--settings.yml-->
-		<resource>
-			<targetPath>main/resources</targetPath>
-			<filtering>false</filtering>
-			<directory>${basedir}/src/main/resources</directory>
-			<includes>
-				<include>settings.yml</include>
-			</includes>
-			<excludes>
-			</excludes>
-		</resource>
-		<!--plugin.yml-->
-		<resource>
-			<targetPath></targetPath>
-			<filtering>false</filtering>
-			<directory>${basedir}/src/main/resources</directory>
-			<includes>
-				<include>plugin.yml</include>
-			</includes>
-			<excludes>
-			</excludes>
-		</resource>
-	</resources>
-  </build>
-  
-  <dependencies>
-	<!--Bukkit-->
-	<dependency>
-		<groupId>org.bukkit</groupId>
-		<artifactId>Bukkit</artifactId>
-		<version>1.4.5-R0.2</version>
-		<type>jar</type>
-		<scope>system</scope>
-			<systemPath>C:\Program Files\Jenkins\workspace\Dependencies\Bukkit.jar</systemPath>
-		<optional>false</optional>
-	</dependency>
-	<!--Vault - Optional-->
-	<dependency>
-		<groupId>net.milkbowl</groupId>
-		<artifactId>Vault</artifactId>
-		<version>1</version>
-		<type>jar</type>
-		<scope>system</scope>
-			<systemPath>C:\Program Files\Jenkins\workspace\Dependencies\Vault.jar</systemPath>
-		<optional>true</optional>
-	</dependency>
-  </dependencies>
+	<!-- Build Settings -->
+	<build>
+		<resources>
+			<!--Main -->
+			<resource>
+				<targetPath>main/java/com/webkonsept/minecraft/lagmeter</targetPath>
+				<filtering>false</filtering>
+				<directory>${basedir}/src/main/java/com/webkonsept/minecraft/lagmeter
+				</directory>
+			</resource>
+			<!--settings.yml -->
+			<resource>
+				<targetPath>main/resources</targetPath>
+				<filtering>false</filtering>
+				<directory>${basedir}/src/main/resources</directory>
+				<includes>
+					<include>settings.yml</include>
+				</includes>
+				<excludes>
+				</excludes>
+			</resource>
+			<!--plugin.yml -->
+			<resource>
+				<targetPath></targetPath>
+				<filtering>false</filtering>
+				<directory>${basedir}/src/main/resources</directory>
+				<includes>
+					<include>plugin.yml</include>
+				</includes>
+				<excludes>
+				</excludes>
+			</resource>
+		</resources>
+	</build>
 
-  <!-- More Project Information -->
-  <name>LagMeter</name>
-  <description>A lag and memory usage meter Minecraft Bukkit servers.</description>
-  <url>http://mc.grminecraft.org:8080/jenkins/job/LagMeter/</url>
-  <inceptionYear>2011</inceptionYear>
+	<dependencies>
+		<!--Bukkit -->
+		<dependency>
+			<groupId>org.bukkit</groupId>
+			<artifactId>Bukkit</artifactId>
+			<version>1.4.5-R0.2</version>
+			<type>jar</type>
+			<scope>system</scope>
+			<systemPath>C:\Program Files\Jenkins\workspace\Dependencies\Bukkit.jar
+			</systemPath>
+			<optional>false</optional>
+		</dependency>
+		<!--Vault - Optional -->
+		<dependency>
+			<groupId>net.milkbowl</groupId>
+			<artifactId>Vault</artifactId>
+			<version>1</version>
+			<type>jar</type>
+			<repository>vault-repo</repository>
+			<optional>true</optional>
+		</dependency>
+	</dependencies>
+
+	<repositories>
+		<repository>
+			<id>vault-repo</id>
+			<url>http://ci.herocraftonline.com/plugin/repository/everything</url>
+		</repository>
+	</repositories>
+
+	<!-- More Project Information -->
+	<name>LagMeter</name>
+	<description>A lag and memory usage meter Minecraft Bukkit servers.
+	</description>
+	<url>http://mc.grminecraft.org:8080/jenkins/job/LagMeter/</url>
+	<inceptionYear>2011</inceptionYear>
 </project>
