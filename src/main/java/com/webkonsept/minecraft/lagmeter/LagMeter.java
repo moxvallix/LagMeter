@@ -143,7 +143,7 @@ public class LagMeter extends JavaPlugin {
 		if(!this.isEnabled())
 			return false;
 		boolean success = false;
-		if((sender instanceof Player && permit((Player)sender, "lagmeter.command."+command.getName().toLowerCase())) || !(sender instanceof Player)){
+		if(permit((Player)sender, "lagmeter.command."+command.getName().toLowerCase()) || !(sender instanceof Player)){
 			if(command.getName().equalsIgnoreCase("lag")){
 				success = true;
 				sendLagMeter(sender);
@@ -165,7 +165,7 @@ public class LagMeter extends JavaPlugin {
 				success = true;
 				sendLagMeter(sender);
 				sendMemMeter(sender);
-				sender.sendMessage("Players online: "+ChatColor.GOLD+getServer().getOnlinePlayers().length);
+				sendMessage(sender, 0, "Players online: "+ChatColor.GOLD+getServer().getOnlinePlayers().length);
 			}else if(command.getName().equalsIgnoreCase("lchunks")){
 				success = true;
 				sendChunks(sender);
@@ -175,15 +175,15 @@ public class LagMeter extends JavaPlugin {
 			}else if(command.getName().equalsIgnoreCase("LagMeter")){
 				success = true;
 				if(args.length == 0){
-					sender.sendMessage(ChatColor.GOLD+"[LagMeter] Version: "+pdfFile.getVersion());
-					sender.sendMessage(ChatColor.GOLD+"[LagMeter] Available sub-commands: /lagmeter|lm <reload|r>|/lagmeter|lm <help|?>");
+					sendMessage(sender, 0, ChatColor.GOLD+"[LagMeter] Version: "+pdfFile.getVersion());
+					sendMessage(sender, 0, ChatColor.GOLD+"[LagMeter] Available sub-commands: /lagmeter|lm <reload|r>|/lagmeter|lm <help|?>");
 				}else
 					handleBaseCommand(sender, args);
 			}
 			return success;
 		}else{
 			success = true;
-			sender.sendMessage(ChatColor.GOLD+"Sorry, permission lagmeter.command."+command.getName().toLowerCase()+" was denied.");
+			sendMessage(sender, 1, "Sorry, permission lagmeter.command."+command.getName().toLowerCase()+" was denied.");
 		}
 		return success;
 	}
@@ -200,34 +200,43 @@ public class LagMeter extends JavaPlugin {
 		if(args[0].equalsIgnoreCase("reload")){
 			if(permit((Player)sender, "lagmeter.command.lagmeter.reload") || !(sender instanceof Player)){
 				conf.loadConfig();
-				sender.sendMessage("Configuration reloaded!");
+				sendMessage(sender, 0, "Configuration reloaded!");
 			}
 		}else if(args[0].equalsIgnoreCase("help")){
 			int doesntHave = 0;
-			sender.sendMessage(ChatColor.GREEN+"*           *Help for LagMeter*           *");
+			sendMessage(sender, 0, "*           *Help for LagMeter*           *");
 			if(permit((Player)sender, "lagmeter.command.")){
-				sender.sendMessage(ChatColor.GOLD+"[LagMeter] "+ChatColor.DARK_GREEN+"/lag"+ChatColor.GOLD+" - Check the server's TPS. If configuChatColor.RED, may also display chunks loaded and/or entities alive.");
+				sendMessage(sender, 0, ChatColor.DARK_GREEN+"/lag"+ChatColor.GOLD+" - Check the server's TPS. If configuChatColor.RED, may also display chunks loaded and/or entities alive.");
 			}else doesntHave++;
 			if(permit((Player)sender, "lagmeter.command.")){
-				sender.sendMessage(ChatColor.GOLD+"[LagMeter] "+ChatColor.DARK_GREEN+"/mem"+ChatColor.GOLD+" - Displays how much memory the server currently has free.");
+				sendMessage(sender, 0, ChatColor.DARK_GREEN+"/mem"+ChatColor.GOLD+" - Displays how much memory the server currently has free.");
 			}else doesntHave++;
 			if(permit((Player)sender, "lagmeter.command.")){
-				sender.sendMessage(ChatColor.GOLD+"[LagMeter] "+ChatColor.DARK_GREEN+"/lagmem|/lm"+ChatColor.GOLD+" - A combination of both /lag and /mem.");
+				sendMessage(sender, 0, ChatColor.DARK_GREEN+"/lagmem|/lm"+ChatColor.GOLD+" - A combination of both /lag and /mem.");
 			}else doesntHave++;
 			if(permit((Player)sender, "lagmeter.command.")){
-				sender.sendMessage(ChatColor.GOLD+"[LagMeter] "+ChatColor.DARK_GREEN+"/lchunks"+ChatColor.GOLD+" - Shows how many chunks are currently loaded in each world, then with a total.");
+				sendMessage(sender, 0, ChatColor.DARK_GREEN+"/lchunks"+ChatColor.GOLD+" - Shows how many chunks are currently loaded in each world, then with a total.");
 			}else doesntHave++;
 			if(permit((Player)sender, "lagmeter.command.")){
-				sender.sendMessage(ChatColor.GOLD+"[LagMeter] "+ChatColor.DARK_GREEN+"/lmobs|/lentities"+ChatColor.GOLD+" - Shows how many entities are currently alive in each world, then with a total.");
+				sendMessage(sender, 0, ChatColor.DARK_GREEN+"/lmobs|/lentities"+ChatColor.GOLD+" - Shows how many entities are currently alive in each world, then with a total.");
 			}else doesntHave++;
 			if(permit((Player)sender, "lagmeter.command.")){
-				sender.sendMessage(ChatColor.GOLD+"[LagMeter] "+ChatColor.DARK_GREEN+"/lmp"+ChatColor.GOLD+" - Has the same function as /lagmem, but includes a player count.");
+				sendMessage(sender, 0, ChatColor.DARK_GREEN+"/lmp"+ChatColor.GOLD+" - Has the same function as /lagmem, but includes a player count.");
 			}else doesntHave++;
-			if(doesntHave == 6)
-				sender.sendMessage("You don't have permission for any of the commands!");
+			if(permit((Player)sender, "lagmeter.command.")){
+				sendMessage(sender, 0, ChatColor.DARK_GREEN+"/lagmeter|/lm"+ChatColor.GOLD+" - Shows the current version and gives sub-commands.");
+			}else ++doesntHave;
+			if(permit((Player)sender, "lagmeter.command.")){
+				sendMessage(sender, 0, ChatColor.DARK_GREEN+"/lagmeter|/lm"+ChatColor.GREEN+" <reload|r> "+ChatColor.GOLD+" - Allows the player to reload the configuration.");
+			}else ++doesntHave;
+			if(permit((Player)sender, "lagmeter.command.")){
+				sendMessage(sender, 0, ChatColor.DARK_GREEN+"/lagmeter|/lm"+ChatColor.GREEN+" <help|?> "+ChatColor.GOLD+" - This command. Gives the user a list of commands that they are able to use in this plugin.");
+			}else ++doesntHave;
+			if(doesntHave == 7)
+				sendMessage(sender, 1, "You don't have permission for any of the commands!");
 		}else{
-			sender.sendMessage(ChatColor.GOLD+"[LagMeter] "+ChatColor.RED+"Invalid sub-command. "+ChatColor.GOLD+"Try one of these:");
-			sender.sendMessage(ChatColor.GOLD+"[LagMeter] Available sub-commands: /lagmeter|lm <reload|r>|/lagmeter|lm <help|?>");
+			sendMessage(sender, 1, ChatColor.GOLD+"[LagMeter] "+ChatColor.RED+"Invalid sub-command. "+ChatColor.GOLD+"Try one of these:");
+			sendMessage(sender, 0, ChatColor.GOLD+"[LagMeter] Available sub-commands: /lagmeter|lm <reload|r>|/lagmeter|lm <help|?>");
 		}
 	}
 	private boolean checkVault(){
@@ -238,7 +247,7 @@ public class LagMeter extends JavaPlugin {
 		}
 		return usingVault;
 	}
-	protected void updateMemoryStats (){
+	protected void updateMemoryStats(){
 		memUsed = (Runtime.getRuntime().totalMemory()-Runtime.getRuntime().freeMemory())/1048576;
 		memMax = Runtime.getRuntime().maxMemory()/1048576;
 		memFree = memMax-memUsed;
@@ -267,7 +276,7 @@ public class LagMeter extends JavaPlugin {
 		while (looped++<= 20){
 			bar+= '_';
 		}
-		sender.sendMessage(wrapColor+"["+colour+bar+wrapColor+"] "+memFree+"MB/"+memMax+"MB ("+(int)percentageFree+"%) free");
+		sendMessage(sender, 0, wrapColor+"["+colour+bar+wrapColor+"] "+memFree+"MB/"+memMax+"MB ("+(int)percentageFree+"%) free");
 	}
 	protected void sendLagMeter(CommandSender sender){
 		String wrapColor = ChatColor.WHITE.toString();
@@ -297,7 +306,7 @@ public class LagMeter extends JavaPlugin {
 				lagMeter+= "_";
 			}
 		}else{
-			sender.sendMessage(wrapColor+"LagMeter just loaded, please wait for polling.");
+			sendMessage(sender, 1, "LagMeter just loaded, please wait for polling.");
 			return;
 		}
 		String color = wrapColor;
@@ -310,7 +319,7 @@ public class LagMeter extends JavaPlugin {
 		}else{
 			color = ChatColor.RED.toString();
 		}
-		sender.sendMessage(wrapColor+"["+color+lagMeter+wrapColor+"] "+tps+" TPS");
+		sendMessage(sender, 0, wrapColor+"["+color+lagMeter+wrapColor+"] "+tps+" TPS");
 	}
 	public void sendEntities(CommandSender sender){
 		int totalEntities = 0;
@@ -319,9 +328,9 @@ public class LagMeter extends JavaPlugin {
 			String worldName = world.getName();
 			int i = getServer().getWorld(worldName).getEntities().size();
 			totalEntities += i;
-			sender.sendMessage(ChatColor.GOLD+"Entities in world \""+worldName+"\": "+i);
+			sendMessage(sender, 0, ChatColor.GOLD+"Entities in world \""+worldName+"\": "+i);
 		}
-		sender.sendMessage(ChatColor.GOLD+"Total entities: "+totalEntities);
+		sendMessage(sender, 0, ChatColor.GOLD+"Total entities: "+totalEntities);
 	}
 	public void sendChunks(CommandSender sender){
 		int totalChunks = 0;
@@ -330,9 +339,39 @@ public class LagMeter extends JavaPlugin {
 			String s = world.getName();
 			int i = getServer().getWorld(s).getLoadedChunks().length;
 			totalChunks += i;
-			sender.sendMessage(ChatColor.GOLD+"Chunks in world \""+s+"\": "+i);
+			sendMessage(sender, 0, ChatColor.GOLD+"Chunks in world \""+s+"\": "+i);
 		}
-		sender.sendMessage(ChatColor.GOLD+"Total chunks loaded on the server: "+totalChunks);
+		sendMessage(sender, 0, ChatColor.GOLD+"Total chunks loaded on the server: "+totalChunks);
+	}
+	protected void sendMessage(Player player, int severity, String message){
+		if(player != null){
+			switch(severity){
+			case 0: player.sendMessage(ChatColor.GOLD+"[LagMeter] "+ChatColor.GREEN+message);
+			case 1: player.sendMessage(ChatColor.GOLD+"[LagMeter]"+ChatColor.RED+message);
+			case 2: player.sendMessage(ChatColor.GOLD+"[LagMeter]"+ChatColor.DARK_RED+message);
+			}
+		}else{
+			switch(severity){
+			case 0: info(ChatColor.GREEN+message);
+			case 1: info(ChatColor.RED+message);
+			case 2: info(ChatColor.DARK_RED+message);
+			}
+		}
+	}
+	protected void sendMessage(CommandSender sender, int severity, String message){
+		if(sender instanceof Player){
+			switch(severity){
+			case 0: sender.sendMessage(ChatColor.GOLD+"[LagMeter] "+ChatColor.GREEN+message);
+			case 1: sender.sendMessage(ChatColor.GOLD+"[LagMeter]"+ChatColor.RED+message);
+			case 2: sender.sendMessage(ChatColor.GOLD+"[LagMeter]"+ChatColor.DARK_RED+message);
+			}
+		}else{
+			switch(severity){
+			case 0: info(ChatColor.GREEN+message);
+			case 1: info(ChatColor.RED+message);
+			case 2: info(ChatColor.DARK_RED+message);
+			}
+		}
 	}
 	public void info(String message){
 		log.info("["+pdfFile.getName()+" "+pdfFile.getVersion()+"] "+message);
@@ -341,7 +380,7 @@ public class LagMeter extends JavaPlugin {
 		log.warning("["+pdfFile.getName()+" "+pdfFile.getVersion()+"] "+message);
 	}
 	public void severe(String message){
-		log.severe(pdfFile.getName()+""+pdfFile.getVersion()+"] "+message);
+		log.severe("["+pdfFile.getName()+" "+pdfFile.getVersion()+"] "+message);
 	}
 	/**
 	 * Gets the ticks per second.
