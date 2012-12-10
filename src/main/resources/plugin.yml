@@ -1,6 +1,6 @@
 name: LagMeter
 main: main.java.com.webkonsept.minecraft.lagmeter.LagMeter
-version: 1.12.0-SNAPSHOT
+version: 1.11.1-SNAPSHOT
 branch: stable
 #website: http://minecraft.webkonsept.com/plugins/details/LagMeter.jar - No longer applies, new developer. Site no longer used.
 #location: http://minecraft.webkonsept.com/plugins/download/LagMeter.jar - No longer applies, new developer. Site no longer used.
