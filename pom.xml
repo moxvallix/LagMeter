@@ -58,7 +58,7 @@
 			<optional>true</optional>
 		</dependency>
 		        <dependency><!-- Testing for someone else. -->
-            <groupId>net.aufdemrand</groupId>
+            <groupId>net.aufdemrand.denizen.0\.76-SNAPSHOT</groupId>
             <artifactId>denizen</artifactId>
             <version>0.76-SNAPSHOT</version>
         </dependency>
@@ -71,7 +71,7 @@
 		</repository>
 		<repository>
 			<id>denizens-repo</id>
-			<url>http://ci.citizensnpcs.com/view/Characters/job/Denizen/592/maven-repository/repository/</url>
+			<url>http://ci.citizensnpcs.com/view/Characters/job/Denizen/592/maven-repository/repositoryChain</url>
 		</repository>
 		<repository>
 			<id>vault-repo</id>
