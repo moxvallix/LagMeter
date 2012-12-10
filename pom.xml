@@ -57,12 +57,21 @@
 			<type>jar</type>
 			<optional>true</optional>
 		</dependency>
+		        <dependency><!-- Testing for someone else. -->
+            <groupId>net.aufdemrand</groupId>
+            <artifactId>denizen</artifactId>
+            <version>0.76-SNAPSHOT</version>
+        </dependency>
 	</dependencies>
 
 	<repositories>
 		<repository>
 			<id>bukkit-repo</id>
 			<url>http://repo.bukkit.org/content/groups/public</url>
+		</repository>
+		<repository>
+			<id>denizens-repo</id>
+			<url>http://ci.citizensnpcs.com/view/Characters/job/Denizen/592/maven-repository/repository/</url>
 		</repository>
 		<repository>
 			<id>vault-repo</id>
