@@ -143,7 +143,7 @@ public class LagMeter extends JavaPlugin {
 		if(!this.isEnabled())
 			return false;
 		boolean success = false;
-		if(permit((Player)sender, "lagmeter.command."+command.getName().toLowerCase()) || !(sender instanceof Player)){
+		if(permit(sender, "lagmeter.command."+command.getName().toLowerCase()) || !(sender instanceof Player)){
 			if(command.getName().equalsIgnoreCase("lag")){
 				success = true;
 				this.sendLagMeter(sender);
@@ -189,48 +189,63 @@ public class LagMeter extends JavaPlugin {
 	}
 	protected boolean permit(Player player, String perm){
 		boolean permit = false;
-		if(vault){
+		if(vault)
 			permit = permission.has(player, perm);
-		}else{
-			permit = player.isOp();
+		else{
+			if(player != null && player instanceof Player)
+				permit = player.isOp();
+			else
+				permit = true;
+		}
+		return permit;
+	}
+	protected boolean permit(CommandSender sender, String perm){
+		boolean permit = false;
+		if(vault)
+			permit = permission.has(sender, perm);
+		else{
+			if(sender instanceof Player)
+				permit = sender.isOp();
+			else
+				permit = true;
 		}
 		return permit;
 	}
 	protected void handleBaseCommand(CommandSender sender, String[] args){
 		if(args[0].equalsIgnoreCase("reload")){
-			if(permit((Player)sender, "lagmeter.command.lagmeter.reload") || permit((Player)sender, "lagmeter.reload")){
+			if(permit(sender, "lagmeter.command.lagmeter.reload") || permit(sender, "lagmeter.reload")){
 				conf.loadConfig();
 				sendMessage(sender, 0, "Configuration reloaded!");
 			}
 		}else if(args[0].equalsIgnoreCase("help")){
-			if(permit((Player)sender, "lagmeter.command.lagmeter.help") || permit((Player)sender, "lagmeter.help")){
+			if(permit(sender, "lagmeter.command.lagmeter.help") || permit(sender, "lagmeter.help")){
 				int doesntHave = 0;
 				sendMessage(sender, 0, "*           *Help for LagMeter*           *");
-				if(permit((Player)sender, "lagmeter.command.lag")){
+				if(permit(sender, "lagmeter.command.lag")){
 					sendMessage(sender, 0, ChatColor.DARK_GREEN+"/lag"+ChatColor.GOLD+" - Check the server's TPS. If configuChatColor.RED, may also display chunks loaded and/or entities alive.");
 				}else doesntHave++;
-				if(permit((Player)sender, "lagmeter.command.mem")){
+				if(permit(sender, "lagmeter.command.mem")){
 					sendMessage(sender, 0, ChatColor.DARK_GREEN+"/mem"+ChatColor.GOLD+" - Displays how much memory the server currently has free.");
 				}else doesntHave++;
-				if(permit((Player)sender, "lagmeter.command.lagmem") || permit((Player)sender, "lagmeter.command.lm")){
+				if(permit(sender, "lagmeter.command.lagmem") || permit(sender, "lagmeter.command.lm")){
 					sendMessage(sender, 0, ChatColor.DARK_GREEN+"/lagmem|/lm"+ChatColor.GOLD+" - A combination of both /lag and /mem.");
 				}else doesntHave++;
-				if(permit((Player)sender, "lagmeter.command.lchunks")){
+				if(permit(sender, "lagmeter.command.lchunks")){
 					sendMessage(sender, 0, ChatColor.DARK_GREEN+"/lchunks"+ChatColor.GOLD+" - Shows how many chunks are currently loaded in each world, then with a total.");
 				}else doesntHave++;
-				if(permit((Player)sender, "lagmeter.command.lmobs") || permit((Player)sender, "lagmeter.command.lentities")){
+				if(permit(sender, "lagmeter.command.lmobs") || permit(sender, "lagmeter.command.lentities")){
 					sendMessage(sender, 0, ChatColor.DARK_GREEN+"/lmobs|/lentities"+ChatColor.GOLD+" - Shows how many entities are currently alive in each world, then with a total.");
 				}else doesntHave++;
-				if(permit((Player)sender, "lagmeter.command.lmp")){
+				if(permit(sender, "lagmeter.command.lmp")){
 					sendMessage(sender, 0, ChatColor.DARK_GREEN+"/lmp"+ChatColor.GOLD+" - Has the same function as /lagmem, but includes a player count.");
 				}else doesntHave++;
-				if(permit((Player)sender, "lagmeter.command.lagmeter")){
+				if(permit(sender, "lagmeter.command.lagmeter")){
 					sendMessage(sender, 0, ChatColor.DARK_GREEN+"/lagmeter|/lm"+ChatColor.GOLD+" - Shows the current version and gives sub-commands.");
 				}else ++doesntHave;
-				if(permit((Player)sender, "lagmeter.command.lagmeter.reload") || permit((Player)sender, "lagmeter.reload")){
+				if(permit(sender, "lagmeter.command.lagmeter.reload") || permit(sender, "lagmeter.reload")){
 					sendMessage(sender, 0, ChatColor.DARK_GREEN+"/lagmeter|/lm"+ChatColor.GREEN+" <reload|r> "+ChatColor.GOLD+" - Allows the player to reload the configuration.");
 				}else ++doesntHave;
-				if(permit((Player)sender, "lagmeter.command.lagmeter.help") || permit((Player)sender, "lagmeter.help")){
+				if(permit(sender, "lagmeter.command.lagmeter.help") || permit(sender, "lagmeter.help")){
 					sendMessage(sender, 0, ChatColor.DARK_GREEN+"/lagmeter|/lm"+ChatColor.GREEN+" <help|?> "+ChatColor.GOLD+" - This command. Gives the user a list of commands that they are able to use in this plugin.");
 				}
 				if(doesntHave == 8)
