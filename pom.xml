@@ -45,13 +45,9 @@
 		<!--Bukkit -->
 		<dependency>
 			<groupId>org.bukkit</groupId>
-			<artifactId>Bukkit</artifactId>
-			<version>1.4.5-R0.2</version>
+			<artifactId>bukkit</artifactId>
+			<version>1.4.2-R0.2</version>
 			<type>jar</type>
-			<scope>system</scope>
-			<systemPath>C:\Program Files\Jenkins\workspace\Dependencies\Bukkit.jar
-			</systemPath>
-			<optional>false</optional>
 		</dependency>
 		<!--Vault - Optional -->
 		<dependency>
@@ -64,6 +60,10 @@
 	</dependencies>
 
 	<repositories>
+		<repository>
+			<id>bukkit-repo</id>
+			<url>http://repo.bukkit.org/content/groups/public</url>
+		</repository>
 		<repository>
 			<id>vault-repo</id>
 			<url>http://ci.herocraftonline.com/plugin/repository/everything</url>
