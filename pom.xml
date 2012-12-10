@@ -55,7 +55,7 @@
 		</dependency>
 		<!--Vault - Optional -->
 		<dependency>
-			<groupId>net.milkbowl</groupId>
+			<groupId>net.milkbowl.vault</groupId>
 			<artifactId>Vault</artifactId>
 			<version>1</version>
 			<type>jar</type>
