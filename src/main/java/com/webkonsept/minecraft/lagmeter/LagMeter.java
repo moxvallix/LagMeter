@@ -464,15 +464,14 @@ public class LagMeter extends JavaPlugin {
 						p.sendMessage(ChatColor.GOLD+"[LagMeter] "+ChatColor.RED+"The server's TPS has dropped below "+tpsNotificationThreshold+"! If you configured a server command to execute at this time, it will run now.");
 				}
 				severe("The server's TPS has dropped below "+tpsNotificationThreshold+"! Executing command (if configured).");
-				Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), highLagCommand);
+				Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), highLagCommand.replaceFirst("/", ""));
 			}
 		}
 	}
 	class MemoryWatcher implements Runnable{
 		@Override
 		public void run(){
-			updateMemoryStats();
-			if(memoryNotificationThreshold >= memFree){
+			if(memoryNotificationThreshold >= getMemory()[3]){
 				Player[] players;
 				players = Bukkit.getServer().getOnlinePlayers();
 				for(Player p: players){
@@ -481,7 +480,7 @@ public class LagMeter extends JavaPlugin {
 					}
 				}
 				severe("The server's free memory pool has dropped below "+memoryNotificationThreshold+"! Executing command (if configured).");
-				Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), lowMemCommand);
+				Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), lowMemCommand.replaceFirst("/", ""));
 			}
 		}
 	}

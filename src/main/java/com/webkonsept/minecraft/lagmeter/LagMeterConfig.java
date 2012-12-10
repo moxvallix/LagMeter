@@ -51,11 +51,11 @@ public class LagMeterConfig extends LagMeter{
 				plugin.AutomaticLagNotificationsEnabled		= configuration.getBoolean	("Notifications.Lag.Enabled",			true);
 				plugin.tpsNotificationThreshold				= configuration.getInt		("Notifications.Lag.Threshold",			15);
 				plugin.lagNotifyInterval					= configuration.getInt		("Notifications.Lag.CheckInterval",		5);
-				plugin.highLagCommand						= configuration.getString	("Notifications.Lag.ConsoleCommand",	"lag");
+				plugin.highLagCommand						= configuration.getString	("Notifications.Lag.ConsoleCommand",	"/lag");
 				plugin.AutomaticMemoryNotificationsEnabled	= configuration.getBoolean	("Notifications.Memory.Enabled",		true);
 				plugin.memoryNotificationThreshold			= configuration.getInt		("Notifications.Memory.Threshold",		25);
 				plugin.memNotifyInterval					= configuration.getInt		("Notifications.Memory.CheckInterval",	10);
-				plugin.lowMemCommand						= configuration.getString	("Notifications.Memory.ConsoleCommand",	"mem");
+				plugin.lowMemCommand						= configuration.getString	("Notifications.Memory.ConsoleCommand",	"/mem");
 			}catch (FileNotFoundException ex){
 				ex.printStackTrace();
 			}catch (IOException ex){
