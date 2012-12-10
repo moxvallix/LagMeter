@@ -243,9 +243,7 @@ public class LagMeter extends JavaPlugin {
 				if(permit(sender, "lagmeter.command.lagmeter.reload") || permit(sender, "lagmeter.reload")){
 					sendMessage(sender, 0, ChatColor.DARK_GREEN+"/lagmeter|/lm"+ChatColor.GREEN+" <reload|r> "+ChatColor.GOLD+" - Allows the player to reload the configuration.");
 				}else ++doesntHave;
-				if(permit(sender, "lagmeter.command.lagmeter.help") || permit(sender, "lagmeter.help")){
-					sendMessage(sender, 0, ChatColor.DARK_GREEN+"/lagmeter|/lm"+ChatColor.GREEN+" <help|?> "+ChatColor.GOLD+" - This command. Gives the user a list of commands that they are able to use in this plugin.");
-				}
+				sendMessage(sender, 0, ChatColor.DARK_GREEN+"/lagmeter|/lm"+ChatColor.GREEN+" <help|?> "+ChatColor.GOLD+" - This command. Gives the user a list of commands that they are able to use in this plugin.");
 				if(doesntHave == 8)
 					sendMessage(sender, 1, "You don't have permission for any of the commands (besides this one)!");
 			}else
