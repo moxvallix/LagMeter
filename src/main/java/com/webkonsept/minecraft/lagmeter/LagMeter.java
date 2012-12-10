@@ -23,6 +23,7 @@ public class LagMeter extends JavaPlugin {
 	protected LagMeterLogger logger = new LagMeterLogger(this);
 	protected LagMeterPoller poller = new LagMeterPoller(this);
 	protected LagMeterStack history = new LagMeterStack();
+	private LagMeterConfig conf;
 	
 	private Logger log = Logger.getLogger("Minecraft");
 
@@ -51,7 +52,6 @@ public class LagMeter extends JavaPlugin {
 			logEntities, logTotalEntitiesOnly, newBlockPerLog, displayEntitiesOnLoad, newLineForLogStats;
 
 	protected String highLagCommand, lowMemCommand;
-	private LagMeterConfig conf;
 	
 	//Accessor
 	public static LagMeter p;
