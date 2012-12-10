@@ -189,26 +189,24 @@ public class LagMeter extends JavaPlugin {
 	}
 	protected boolean permit(Player player, String perm){
 		boolean permit = false;
-		if(vault)
-			permit = permission.has(player, perm);
-		else{
-			if(player != null && player instanceof Player)
-				permit = player.isOp();
+		if(player != null && player instanceof Player){
+			if(vault)
+				permit = permission.has(player, perm);
 			else
-				permit = true;
-		}
+				permit = player.isOp();
+		}else
+			permit = true;
 		return permit;
 	}
 	protected boolean permit(CommandSender sender, String perm){
 		boolean permit = false;
-		if(vault)
-			permit = permission.has(sender, perm);
-		else{
-			if(sender instanceof Player)
-				permit = sender.isOp();
+		if(sender instanceof Player){
+			if(vault)
+				permit = permission.has(sender, perm);
 			else
-				permit = true;
-		}
+				permit = sender.isOp();
+		}else
+			permit = true;
 		return permit;
 	}
 	protected void handleBaseCommand(CommandSender sender, String[] args){
