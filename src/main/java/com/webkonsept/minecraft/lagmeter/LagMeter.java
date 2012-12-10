@@ -461,9 +461,9 @@ public class LagMeter extends JavaPlugin {
 				Player[] players = Bukkit.getServer().getOnlinePlayers();
 				for(Player p: players){
 					if(permit(p, "lagmeter.notify.lag") || p.isOp())
-						p.sendMessage(ChatColor.GOLD+"[LagMeter] "+ChatColor.RED+"The server's TPS has dropped below "+tpsNotificationThreshold+"! If you configuChatColor.RED a server command to execute at this time, it will run now.");
+						p.sendMessage(ChatColor.GOLD+"[LagMeter] "+ChatColor.RED+"The server's TPS has dropped below "+tpsNotificationThreshold+"! If you configured a server command to execute at this time, it will run now.");
 				}
-				severe("The server's TPS has dropped below "+tpsNotificationThreshold+"! Executing command (if configuChatColor.RED).");
+				severe("The server's TPS has dropped below "+tpsNotificationThreshold+"! Executing command (if configured).");
 				Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), highLagCommand);
 			}
 		}
@@ -477,10 +477,10 @@ public class LagMeter extends JavaPlugin {
 				players = Bukkit.getServer().getOnlinePlayers();
 				for(Player p: players){
 					if(permit(p, "lagmeter.notify.mem") || p.isOp()){
-						p.sendMessage(ChatColor.GOLD+"[LagMeter] "+ChatColor.RED+"The server's free memory pool has dropped below "+memoryNotificationThreshold+"%! If you configuChatColor.RED a server command to execute at this time, it will run now.");
+						p.sendMessage(ChatColor.GOLD+"[LagMeter] "+ChatColor.RED+"The server's free memory pool has dropped below "+memoryNotificationThreshold+"%! If you configured a server command to execute at this time, it will run now.");
 					}
 				}
-				severe("The server's free memory pool has dropped below "+memoryNotificationThreshold+"! Executing command (if configuChatColor.RED).");
+				severe("The server's free memory pool has dropped below "+memoryNotificationThreshold+"! Executing command (if configured).");
 				Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), lowMemCommand);
 			}
 		}
