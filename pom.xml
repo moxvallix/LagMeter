@@ -59,7 +59,7 @@
 			<artifactId>Vault</artifactId>
 			<version>1</version>
 			<type>jar</type>
-			<repository>vault-repo</repository>
+			<repoId></repoId>
 			<optional>true</optional>
 		</dependency>
 	</dependencies>
