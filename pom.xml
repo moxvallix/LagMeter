@@ -57,10 +57,10 @@
 			<type>jar</type>
 			<optional>true</optional>
 		</dependency>
-		        <dependency><!-- Testing for someone else. -->
-            <groupId>net.aufdemrand.denizen.0\.76-SNAPSHOT</groupId>
-            <artifactId>denizen</artifactId>
-            <version>0.76-SNAPSHOT</version>
+		<dependency>
+            <groupId>net.citizensnpcs</groupId>
+            <artifactId>citizensapi</artifactId>
+            <version>2.0.4-SNAPSHOT</version>
         </dependency>
 	</dependencies>
 
@@ -70,8 +70,8 @@
 			<url>http://repo.bukkit.org/content/groups/public</url>
 		</repository>
 		<repository>
-			<id>denizens-repo</id>
-			<url>http://ci.citizensnpcs.com/view/Characters/job/Denizen/592/maven-repository/repositoryChain</url>
+			<id>citizensapi-repo</id>
+			<url>http://ci.citizensnpcs.com/plugin/repository/everything/net</url>
 		</repository>
 		<repository>
 			<id>vault-repo</id>
