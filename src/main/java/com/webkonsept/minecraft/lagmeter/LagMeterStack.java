@@ -6,20 +6,11 @@ public class LagMeterStack{
 	private int maxSize = 0;
 	private LinkedList<Float> stack = new LinkedList<Float>(); 
 
-	LagMeterStack(int maxSize){
-		this.maxSize = maxSize;
-	}
 	LagMeterStack(){
 		this.maxSize = 10;
 	}
-	public void setMaxSize(int maxSize){
+	LagMeterStack(int maxSize){
 		this.maxSize = maxSize;
-	}
-	public int getMaxSize(){
-		return this.maxSize;
-	}
-	public int size(){
-		return stack.size();
 	}
 	public void add(Float item){
 		if (item != null && item <= 20){
@@ -28,6 +19,9 @@ public class LagMeterStack{
 				stack.poll();
 			}
 		}
+	}
+	public void clear(int i){
+		stack.clear();
 	}
 	public float getAverage(){
 		float total = 0f;
@@ -41,10 +35,16 @@ public class LagMeterStack{
 		else
 			return 0;
 	}
+	public int getMaxSize(){
+		return this.maxSize;
+	}
 	public void remove(int i){
 		stack.remove(i);
 	}
-	public void clear(int i){
-		stack.clear();
+	public void setMaxSize(int maxSize){
+		this.maxSize = maxSize;
+	}
+	public int size(){
+		return stack.size();
 	}
 }

@@ -26,92 +26,17 @@ public class LagMeterLogger {
 	File logfile;
 	PrintWriter log;
 
+	LagMeterLogger (LagMeter instance){
+		plugin = instance;
+	}
 	LagMeterLogger (LagMeter instance,boolean enable){
 		plugin = instance;
 		if(enable){
 			this.enable();
 		}
 	}
-	LagMeterLogger (LagMeter instance){
-		plugin = instance;
-	}
 
 
-	public boolean enable(File logTo){
-		logfile = logTo;
-		return beginLogging();
-	}
-	public boolean enable(){
-		if(!plugin.useLogsFolder){
-			System.out.println("[LagMeter] Not using logs folder.");
-			return this.enable(new File(plugin.getDataFolder(),"lag.log"));
-		}else{
-			System.out.println("[LagMeter] Using logs folder. This will create a new log for each day (it might log data from tomorrow in today's file if you leave the server running without reloading/restarting).");
-			return this.enable(new File("plugins"+fileSeparator+"LagMeter"+fileSeparator+"logs", "LagMeter-"+today()+".log"));
-		}
-	}
-	public boolean enabled(){
-		return enabled;
-	}
-	public void disable() throws IOException, FileNotFoundException, Exception {
-		if(plugin.enableLogging = true)
-			closeLog();
-	}
-	public void logMemory(boolean set){
-		logMemory = set;
-		if(logMemory == false && logTPS == false){
-			try{
-				this.disable();
-			}catch(FileNotFoundException e){
-				e.printStackTrace();
-			}catch(IOException e){
-				e.printStackTrace();
-			}catch(Exception e){
-				e.printStackTrace();
-			}
-			this.error("Both log outputs disabled: Logging disabled.");
-		}
-	}
-	public boolean logMemory(){
-		return logMemory;
-	}
-	public void logTPS(boolean set){
-		logTPS = set;
-		if (logMemory == false && logTPS == false){
-			try {
-				this.disable();
-			}catch (FileNotFoundException e){
-				e.printStackTrace();
-			}catch (IOException e){
-				e.printStackTrace();
-			}catch (Exception e){
-				e.printStackTrace();
-			}
-			this.error("Both log outputs disabled: Logging disabled.");
-		}
-	}
-	public boolean logTPS(){
-		return logTPS;
-	}
-	public String getError(){
-		return this.error;
-	}
-	private void error(String errorMessage){
-		this.error = errorMessage;
-	}
-	public String getTimeFormat(){
-		return timeFormat;
-	}
-	public void setTimeFormat(String newFormat){
-		timeFormat = newFormat;
-	}
-	public String getFilename(){
-		if (logfile != null){
-			return logfile.getAbsolutePath();
-		}else{
-			return "!! UNKNOWN !!";
-		}
-	}
 	private boolean beginLogging(){
 		boolean ret = true;
 		if (logfile == null){
@@ -144,6 +69,42 @@ public class LagMeterLogger {
 			enabled = false;
 		}
 	}
+	public void disable() throws IOException, FileNotFoundException, Exception {
+		if(plugin.enableLogging = true)
+			closeLog();
+	}
+	public boolean enable(){
+		if(!plugin.useLogsFolder){
+			System.out.println("[LagMeter] Not using logs folder.");
+			return this.enable(new File(plugin.getDataFolder(),"lag.log"));
+		}else{
+			System.out.println("[LagMeter] Using logs folder. This will create a new log for each day (it might log data from tomorrow in today's file if you leave the server running without reloading/restarting).");
+			return this.enable(new File("plugins"+fileSeparator+"LagMeter"+fileSeparator+"logs", "LagMeter-"+today()+".log"));
+		}
+	}
+	public boolean enable(File logTo){
+		logfile = logTo;
+		return beginLogging();
+	}
+	public boolean enabled(){
+		return enabled;
+	}
+	private void error(String errorMessage){
+		this.error = errorMessage;
+	}
+	public String getError(){
+		return this.error;
+	}
+	public String getFilename(){
+		if (logfile != null){
+			return logfile.getAbsolutePath();
+		}else{
+			return "!! UNKNOWN !!";
+		}
+	}
+	public String getTimeFormat(){
+		return timeFormat;
+	}
 	protected void log(String message){
 		if(enabled){
 			message = "["+now()+"] "+message;
@@ -173,10 +134,49 @@ public class LagMeterLogger {
 			log.flush();
 		}
 	}
+	public boolean logMemory(){
+		return logMemory;
+	}
+	public void logMemory(boolean set){
+		logMemory = set;
+		if(logMemory == false && logTPS == false){
+			try{
+				this.disable();
+			}catch(FileNotFoundException e){
+				e.printStackTrace();
+			}catch(IOException e){
+				e.printStackTrace();
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+			this.error("Both log outputs disabled: Logging disabled.");
+		}
+	}
+	public boolean logTPS(){
+		return logTPS;
+	}
+	public void logTPS(boolean set){
+		logTPS = set;
+		if (logMemory == false && logTPS == false){
+			try {
+				this.disable();
+			}catch (FileNotFoundException e){
+				e.printStackTrace();
+			}catch (IOException e){
+				e.printStackTrace();
+			}catch (Exception e){
+				e.printStackTrace();
+			}
+			this.error("Both log outputs disabled: Logging disabled.");
+		}
+	}
 	public String now(){
 		Calendar cal = Calendar.getInstance();
 		SimpleDateFormat sdf = new SimpleDateFormat(timeFormat);
 		return sdf.format(cal.getTime());
+	}
+	public void setTimeFormat(String newFormat){
+		timeFormat = newFormat;
 	}
 	public String today(){
 		Calendar calendar = Calendar.getInstance();

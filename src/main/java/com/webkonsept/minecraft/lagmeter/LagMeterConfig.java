@@ -14,16 +14,39 @@ public class LagMeterConfig extends LagMeter{
 	private static YamlConfiguration configuration;
 	private static File configFile;
 	private static boolean loaded = false;
-	private LagMeter plugin;
+	static private void copyFile(InputStream in, File out) throws Exception{
+		InputStream fis = in;
+		FileOutputStream fos = new FileOutputStream(out);
+		try{
+			byte[] buf = new byte[1024];
+			int i = 0;
+			while ((i = fis.read(buf)) != -1){
+				fos.write(buf, 0, i);
+			}
+		} catch (Exception e){
+			throw e;
+		} finally{
+			if(fis != null){
+				fis.close();
+			}
+			if(fos != null){
+				fos.close();
+			}
+		}
+	}
 
+	public static File getConfigFile(){
+		return configFile;
+	}
+	private LagMeter plugin;
+	protected LagMeterConfig(LagMeter l){
+		this.plugin = l;
+	}
 	@Override
 	public YamlConfiguration getConfig(){
 		if(!loaded)
 			loadConfig();
 		return configuration;
-	}
-	public static File getConfigFile(){
-		return configFile;
 	}
 	public void loadConfig(){
 		configFile = new File(Bukkit.getServer().getPluginManager().getPlugin("LagMeter").getDataFolder(), "settings.yml");
@@ -84,28 +107,5 @@ public class LagMeterConfig extends LagMeter{
 			}catch(Exception e){
 			}
 		}
-	}
-	static private void copyFile(InputStream in, File out) throws Exception{
-		InputStream fis = in;
-		FileOutputStream fos = new FileOutputStream(out);
-		try{
-			byte[] buf = new byte[1024];
-			int i = 0;
-			while ((i = fis.read(buf)) != -1){
-				fos.write(buf, 0, i);
-			}
-		} catch (Exception e){
-			throw e;
-		} finally{
-			if(fis != null){
-				fis.close();
-			}
-			if(fos != null){
-				fos.close();
-			}
-		}
-	}
-	protected LagMeterConfig(LagMeter l){
-		this.plugin = l;
 	}
 }

@@ -14,9 +14,6 @@ public class LagMeterPoller implements Runnable{
 		this.plugin = instance;
 	}
 
-	public void setLogInterval(int interval){
-		logInterval = interval;
-	}
 	@Override
 	public void run(){
 		long now = System.currentTimeMillis();
@@ -39,5 +36,8 @@ public class LagMeterPoller implements Runnable{
 				aTPS = plugin.getTPS();
 			plugin.logger.log("TPS: "+aTPS+newLine+"Memory free: "+plugin.memFree+"/"+plugin.memMax+" ("+(int)plugin.percentageFree+"%)"+players);
 		}
+	}
+	public void setLogInterval(int interval){
+		logInterval = interval;
 	}
 }
