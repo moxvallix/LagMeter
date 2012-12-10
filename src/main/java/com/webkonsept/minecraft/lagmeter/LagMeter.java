@@ -360,30 +360,54 @@ public class LagMeter extends JavaPlugin {
 	protected void sendMessage(Player player, int severity, String message){
 		if(player != null){
 			switch(severity){
-			case 0: player.sendMessage(ChatColor.GOLD+"[LagMeter] "+ChatColor.GREEN+message);
-			case 1: player.sendMessage(ChatColor.GOLD+"[LagMeter]"+ChatColor.RED+message);
-			case 2: player.sendMessage(ChatColor.GOLD+"[LagMeter]"+ChatColor.DARK_RED+message);
+			case 0:
+				player.sendMessage(ChatColor.GOLD+"[LagMeter] "+ChatColor.GREEN+message);
+				break;
+			case 1:
+				player.sendMessage(ChatColor.GOLD+"[LagMeter]"+ChatColor.RED+message);
+				break;
+			case 2:
+				player.sendMessage(ChatColor.GOLD+"[LagMeter]"+ChatColor.DARK_RED+message);
+				break;
 			}
 		}else{
 			switch(severity){
-			case 0: info(ChatColor.GREEN+message);
-			case 1: info(ChatColor.RED+message);
-			case 2: info(ChatColor.DARK_RED+message);
+			case 0:
+				info(ChatColor.GREEN+message);
+				break;
+			case 1:
+				info(ChatColor.RED+message);
+				break;
+			case 2:
+				info(ChatColor.DARK_RED+message);
+				break;
 			}
 		}
 	}
 	protected void sendMessage(CommandSender sender, int severity, String message){
 		if(sender instanceof Player){
 			switch(severity){
-			case 0: sender.sendMessage(ChatColor.GOLD+"[LagMeter] "+ChatColor.GREEN+message);
-			case 1: sender.sendMessage(ChatColor.GOLD+"[LagMeter]"+ChatColor.RED+message);
-			case 2: sender.sendMessage(ChatColor.GOLD+"[LagMeter]"+ChatColor.DARK_RED+message);
+			case 0:
+				sender.sendMessage(ChatColor.GOLD+"[LagMeter] "+ChatColor.GREEN+message);
+				break;
+			case 1:
+				sender.sendMessage(ChatColor.GOLD+"[LagMeter]"+ChatColor.RED+message);
+				break;
+			case 2:
+				sender.sendMessage(ChatColor.GOLD+"[LagMeter]"+ChatColor.DARK_RED+message);
+				break;
 			}
 		}else{
 			switch(severity){
-			case 0: info(ChatColor.GREEN+message);
-			case 1: info(ChatColor.RED+message);
-			case 2: info(ChatColor.DARK_RED+message);
+			case 0:
+				info(ChatColor.GREEN+message);
+				break;
+			case 1:
+				info(ChatColor.RED+message);
+				break;
+			case 2:
+				info(ChatColor.DARK_RED+message);
+				break;
 			}
 		}
 	}
