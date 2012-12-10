@@ -61,7 +61,7 @@ public class LagMeter extends JavaPlugin {
 		vault = checkVault();
 		logger = new LagMeterLogger(this);
 		poller = new LagMeterPoller(this);
-		
+
 		if(!logsFolder.exists() && useLogsFolder && enableLogging){
 			info("Logs folder not found. Creating one for you.");
 			logsFolder.mkdir();
@@ -100,7 +100,7 @@ public class LagMeter extends JavaPlugin {
 		if(displayChunksOnLoad){
 			info("Chunks loaded:");
 			int total = 0;
-			for(World world: getServer().getWorlds()){
+			for(World world: super.getServer().getWorlds()){
 				int chunks=world.getLoadedChunks().length;
 				info("World \""+world.getName()+"\": "+chunks+".");
 				total+=chunks;
@@ -110,7 +110,7 @@ public class LagMeter extends JavaPlugin {
 		if(displayEntitiesOnLoad){
 			info("Entities:");
 			int total = 0;
-			for(World world: getServer().getWorlds()){
+			for(World world: super.getServer().getWorlds()){
 				int entities=world.getEntities().size();
 				info("World \""+world.getName()+"\": "+entities+".");
 				total+=entities;
@@ -146,25 +146,25 @@ public class LagMeter extends JavaPlugin {
 		if(permit((Player)sender, "lagmeter.command."+command.getName().toLowerCase()) || !(sender instanceof Player)){
 			if(command.getName().equalsIgnoreCase("lag")){
 				success = true;
-				sendLagMeter(sender);
+				this.sendLagMeter(sender);
 			}else if(command.getName().equalsIgnoreCase("mem")){
 				success = true;
-				sendMemMeter(sender);
+				this.sendMemMeter(sender);
 			}else if(command.getName().equalsIgnoreCase("lagmem")){
 				success = true;
-				sendLagMeter(sender);
-				sendMemMeter(sender);
+				this.sendLagMeter(sender);
+				this.sendMemMeter(sender);
 			}else if(command.getName().equalsIgnoreCase("lm")){
 				success = true;
 				if(args.length == 0){
-					sendLagMeter(sender);
-					sendMemMeter(sender);
+					this.sendLagMeter(sender);
+					this.sendMemMeter(sender);
 				}else
 					handleBaseCommand(sender, args);
 			}else if(command.getName().equalsIgnoreCase("lmp")){
 				success = true;
-				sendLagMeter(sender);
-				sendMemMeter(sender);
+				this.sendLagMeter(sender);
+				this.sendMemMeter(sender);
 				sendMessage(sender, 0, "Players online: "+ChatColor.GOLD+getServer().getOnlinePlayers().length);
 			}else if(command.getName().equalsIgnoreCase("lchunks")){
 				success = true;
@@ -198,42 +198,45 @@ public class LagMeter extends JavaPlugin {
 	}
 	protected void handleBaseCommand(CommandSender sender, String[] args){
 		if(args[0].equalsIgnoreCase("reload")){
-			if(permit((Player)sender, "lagmeter.command.lagmeter.reload") || !(sender instanceof Player)){
+			if(permit((Player)sender, "lagmeter.command.lagmeter.reload") || permit((Player)sender, "lagmeter.reload")){
 				conf.loadConfig();
 				sendMessage(sender, 0, "Configuration reloaded!");
 			}
 		}else if(args[0].equalsIgnoreCase("help")){
-			int doesntHave = 0;
-			sendMessage(sender, 0, "*           *Help for LagMeter*           *");
-			if(permit((Player)sender, "lagmeter.command.lag")){
-				sendMessage(sender, 0, ChatColor.DARK_GREEN+"/lag"+ChatColor.GOLD+" - Check the server's TPS. If configuChatColor.RED, may also display chunks loaded and/or entities alive.");
-			}else doesntHave++;
-			if(permit((Player)sender, "lagmeter.command.mem")){
-				sendMessage(sender, 0, ChatColor.DARK_GREEN+"/mem"+ChatColor.GOLD+" - Displays how much memory the server currently has free.");
-			}else doesntHave++;
-			if(permit((Player)sender, "lagmeter.command.lagmem") || permit((Player)sender, "lagmeter.command.lm")){
-				sendMessage(sender, 0, ChatColor.DARK_GREEN+"/lagmem|/lm"+ChatColor.GOLD+" - A combination of both /lag and /mem.");
-			}else doesntHave++;
-			if(permit((Player)sender, "lagmeter.command.lchunks")){
-				sendMessage(sender, 0, ChatColor.DARK_GREEN+"/lchunks"+ChatColor.GOLD+" - Shows how many chunks are currently loaded in each world, then with a total.");
-			}else doesntHave++;
-			if(permit((Player)sender, "lagmeter.command.lmobs") || permit((Player)sender, "lagmeter.command.lentities")){
-				sendMessage(sender, 0, ChatColor.DARK_GREEN+"/lmobs|/lentities"+ChatColor.GOLD+" - Shows how many entities are currently alive in each world, then with a total.");
-			}else doesntHave++;
-			if(permit((Player)sender, "lagmeter.command.lmp")){
-				sendMessage(sender, 0, ChatColor.DARK_GREEN+"/lmp"+ChatColor.GOLD+" - Has the same function as /lagmem, but includes a player count.");
-			}else doesntHave++;
-			if(permit((Player)sender, "lagmeter.command.lagmeter")){
-				sendMessage(sender, 0, ChatColor.DARK_GREEN+"/lagmeter|/lm"+ChatColor.GOLD+" - Shows the current version and gives sub-commands.");
-			}else ++doesntHave;
-			if(permit((Player)sender, "lagmeter.command.lagmeter.reload") || permit((Player)sender, "lagmeter.reload")){
-				sendMessage(sender, 0, ChatColor.DARK_GREEN+"/lagmeter|/lm"+ChatColor.GREEN+" <reload|r> "+ChatColor.GOLD+" - Allows the player to reload the configuration.");
-			}else ++doesntHave;
 			if(permit((Player)sender, "lagmeter.command.lagmeter.help") || permit((Player)sender, "lagmeter.help")){
-				sendMessage(sender, 0, ChatColor.DARK_GREEN+"/lagmeter|/lm"+ChatColor.GREEN+" <help|?> "+ChatColor.GOLD+" - This command. Gives the user a list of commands that they are able to use in this plugin.");
-			}else ++doesntHave;
-			if(doesntHave == 9)
-				sendMessage(sender, 1, "You don't have permission for any of the commands!");
+				int doesntHave = 0;
+				sendMessage(sender, 0, "*           *Help for LagMeter*           *");
+				if(permit((Player)sender, "lagmeter.command.lag")){
+					sendMessage(sender, 0, ChatColor.DARK_GREEN+"/lag"+ChatColor.GOLD+" - Check the server's TPS. If configuChatColor.RED, may also display chunks loaded and/or entities alive.");
+				}else doesntHave++;
+				if(permit((Player)sender, "lagmeter.command.mem")){
+					sendMessage(sender, 0, ChatColor.DARK_GREEN+"/mem"+ChatColor.GOLD+" - Displays how much memory the server currently has free.");
+				}else doesntHave++;
+				if(permit((Player)sender, "lagmeter.command.lagmem") || permit((Player)sender, "lagmeter.command.lm")){
+					sendMessage(sender, 0, ChatColor.DARK_GREEN+"/lagmem|/lm"+ChatColor.GOLD+" - A combination of both /lag and /mem.");
+				}else doesntHave++;
+				if(permit((Player)sender, "lagmeter.command.lchunks")){
+					sendMessage(sender, 0, ChatColor.DARK_GREEN+"/lchunks"+ChatColor.GOLD+" - Shows how many chunks are currently loaded in each world, then with a total.");
+				}else doesntHave++;
+				if(permit((Player)sender, "lagmeter.command.lmobs") || permit((Player)sender, "lagmeter.command.lentities")){
+					sendMessage(sender, 0, ChatColor.DARK_GREEN+"/lmobs|/lentities"+ChatColor.GOLD+" - Shows how many entities are currently alive in each world, then with a total.");
+				}else doesntHave++;
+				if(permit((Player)sender, "lagmeter.command.lmp")){
+					sendMessage(sender, 0, ChatColor.DARK_GREEN+"/lmp"+ChatColor.GOLD+" - Has the same function as /lagmem, but includes a player count.");
+				}else doesntHave++;
+				if(permit((Player)sender, "lagmeter.command.lagmeter")){
+					sendMessage(sender, 0, ChatColor.DARK_GREEN+"/lagmeter|/lm"+ChatColor.GOLD+" - Shows the current version and gives sub-commands.");
+				}else ++doesntHave;
+				if(permit((Player)sender, "lagmeter.command.lagmeter.reload") || permit((Player)sender, "lagmeter.reload")){
+					sendMessage(sender, 0, ChatColor.DARK_GREEN+"/lagmeter|/lm"+ChatColor.GREEN+" <reload|r> "+ChatColor.GOLD+" - Allows the player to reload the configuration.");
+				}else ++doesntHave;
+				if(permit((Player)sender, "lagmeter.command.lagmeter.help") || permit((Player)sender, "lagmeter.help")){
+					sendMessage(sender, 0, ChatColor.DARK_GREEN+"/lagmeter|/lm"+ChatColor.GREEN+" <help|?> "+ChatColor.GOLD+" - This command. Gives the user a list of commands that they are able to use in this plugin.");
+				}
+				if(doesntHave == 8)
+					sendMessage(sender, 1, "You don't have permission for any of the commands (besides this one)!");
+			}else
+				sendMessage(sender, 1, "Sorry, but you don't have access to the help command.");
 		}else{
 			sendMessage(sender, 1, ChatColor.GOLD+"[LagMeter] "+ChatColor.RED+"Invalid sub-command. "+ChatColor.GOLD+"Try one of these:");
 			sendMessage(sender, 0, ChatColor.GOLD+"[LagMeter] Available sub-commands: /lagmeter|lm <reload|r>|/lagmeter|lm <help|?>");
@@ -282,9 +285,9 @@ public class LagMeter extends JavaPlugin {
 		String wrapColor = ChatColor.WHITE.toString();
 
 		if(displayEntities)
-			sendEntities(sender);
+			this.sendEntities(sender);
 		if(sendChunks)
-			sendChunks(sender);
+			this.sendChunks(sender);
 
 		if(sender instanceof Player)
 			wrapColor = ChatColor.GOLD.toString();
@@ -323,10 +326,10 @@ public class LagMeter extends JavaPlugin {
 	}
 	public void sendEntities(CommandSender sender){
 		int totalEntities = 0;
-		List<World> worlds = getServer().getWorlds();
+		List<World> worlds = super.getServer().getWorlds();
 		for(World world: worlds){
 			String worldName = world.getName();
-			int i = getServer().getWorld(worldName).getEntities().size();
+			int i = super.getServer().getWorld(worldName).getEntities().size();
 			totalEntities += i;
 			sendMessage(sender, 0, ChatColor.GOLD+"Entities in world \""+worldName+"\": "+i);
 		}
@@ -334,10 +337,10 @@ public class LagMeter extends JavaPlugin {
 	}
 	public void sendChunks(CommandSender sender){
 		int totalChunks = 0;
-		List<World> worlds = getServer().getWorlds();
+		List<World> worlds = super.getServer().getWorlds();
 		for(World world: worlds){
 			String s = world.getName();
-			int i = getServer().getWorld(s).getLoadedChunks().length;
+			int i = super.getServer().getWorld(s).getLoadedChunks().length;
 			totalChunks += i;
 			sendMessage(sender, 0, ChatColor.GOLD+"Chunks in world \""+s+"\": "+i);
 		}
@@ -410,7 +413,7 @@ public class LagMeter extends JavaPlugin {
 		return memory;
 	}
 	private boolean setupPermissions(){
-		RegisteredServiceProvider<Permission> permissionProvider = getServer().getServicesManager().getRegistration(net.milkbowl.vault.permission.Permission.class);
+		RegisteredServiceProvider<Permission> permissionProvider = super.getServer().getServicesManager().getRegistration(net.milkbowl.vault.permission.Permission.class);
 		if(permissionProvider != null){
 			permission = permissionProvider.getProvider();
 		}

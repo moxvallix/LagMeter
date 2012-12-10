@@ -67,6 +67,18 @@ permissions:
         children:
             lagmeter.command.lmobs: true
         default: op
+    lagmeter.command.lagmeter.help:
+        description: Gives access to the /lm help command, which shows commands the sender has access to.
+        default: op
+    lagmeter.command.lagmeter.reload:
+        description: Gives access to the /lm reload command, which reloads the plugin configuration.
+        default: op
+    lagmeter.help:
+        description: Gives access to the /lm help command, which shows commands the sender has access to.
+        default: op
+    lagmeter.reload:
+        description: Gives access to the /lm reload command, which reloads the plugin configuration.
+        default: op
     lagmeter.notify.lag:
         description: Allows the player/group to receive lag notifications.
         default: op
