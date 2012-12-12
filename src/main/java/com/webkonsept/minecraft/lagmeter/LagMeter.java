@@ -318,7 +318,7 @@ public class LagMeter extends JavaPlugin {
 		sendMessage(sender, 0, ChatColor.GOLD+"Total entities: "+totalEntities);
 	}
 	protected void sendLagMeter(CommandSender sender){
-		String wrapColor = ChatColor.WHITE.toString();
+		ChatColor wrapColour = ChatColor.WHITE;
 
 		if(displayEntities)
 			this.sendEntities(sender);
@@ -326,7 +326,7 @@ public class LagMeter extends JavaPlugin {
 			this.sendChunks(sender);
 
 		if(sender instanceof Player)
-			wrapColor = ChatColor.GOLD.toString();
+			wrapColour = ChatColor.GOLD;
 		String lagMeter = "";
 		float tps = 0f;
 		if(useAverage){
@@ -348,17 +348,17 @@ public class LagMeter extends JavaPlugin {
 			sendMessage(sender, 1, "LagMeter just loaded, please wait for polling.");
 			return;
 		}
-		String color = wrapColor;
+		ChatColor color = wrapColour;
 		if(tps >= 20){
-			color = ChatColor.GREEN.toString();
+			color = ChatColor.GREEN;
 		}else if(tps >= 18){
-			color = ChatColor.GREEN.toString();
+			color = ChatColor.GREEN;
 		}else if(tps >= 15){
-			color = ChatColor.YELLOW.toString();
+			color = ChatColor.YELLOW;
 		}else{
-			color = ChatColor.RED.toString();
+			color = ChatColor.RED;
 		}
-		sendMessage(sender, 0, wrapColor+"["+color+lagMeter+wrapColor+"] "+tps+" TPS");
+		sendMessage(sender, 0, wrapColour+"["+color+lagMeter+wrapColour+"] "+tps+" TPS");
 	}
 	protected void sendMemMeter(CommandSender sender){
 		updateMemoryStats();
