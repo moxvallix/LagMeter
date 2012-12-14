@@ -401,13 +401,13 @@ public class LagMeter extends JavaPlugin {
 		}else{
 			switch(severity){
 			case 0:
-				info(ChatColor.GREEN+message);
+				info(ChatColor.stripColor(message));
 				break;
 			case 1:
-				warn(ChatColor.RED+message);
+				warn(ChatColor.stripColor(message));
 				break;
 			case 2:
-				severe(ChatColor.DARK_RED+message);
+				severe(ChatColor.stripColor(message));
 				break;
 			}
 		}
@@ -428,13 +428,13 @@ public class LagMeter extends JavaPlugin {
 		}else{
 			switch(severity){
 			case 0:
-				info(ChatColor.GREEN+message);
+				info(ChatColor.stripColor(message));
 				break;
 			case 1:
-				warn(ChatColor.RED+message);
+				warn(ChatColor.stripColor(message));
 				break;
 			case 2:
-				severe(ChatColor.DARK_RED+message);
+				severe(ChatColor.stripColor(message));
 				break;
 			}
 		}
