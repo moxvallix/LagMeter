@@ -24,7 +24,7 @@ public class LagMeter extends JavaPlugin {
 	protected LagMeterPoller poller = new LagMeterPoller(this);
 	protected LagMeterStack history = new LagMeterStack();
 	private LagMeterConfig conf;
-	
+
 	private Logger log = Logger.getLogger("Minecraft");
 
 	protected float ticksPerSecond = 20;
@@ -52,10 +52,10 @@ public class LagMeter extends JavaPlugin {
 			logEntities, logTotalEntitiesOnly, newBlockPerLog, displayEntitiesOnLoad, newLineForLogStats;
 
 	protected String highLagCommand, lowMemCommand;
-	
+
 	//Accessor
 	public static LagMeter p;
-	
+
 	@Override
 	public void onEnable(){
 		conf = new LagMeterConfig(this);
@@ -455,7 +455,7 @@ public class LagMeter extends JavaPlugin {
 		memFree = memMax-memUsed;
 		percentageFree = (100/memMax)*memFree;
 	}
-	
+
 	public void warn(String message){
 		log.warning("["+pdfFile.getName()+" "+pdfFile.getVersion()+"] "+message);
 	}	class LagWatcher implements Runnable{
@@ -468,7 +468,9 @@ public class LagMeter extends JavaPlugin {
 						p.sendMessage(ChatColor.GOLD+"[LagMeter] "+ChatColor.RED+"The server's TPS has dropped below "+tpsNotificationThreshold+"! If you configured a server command to execute at this time, it will run now.");
 				}
 				severe("The server's TPS has dropped below "+tpsNotificationThreshold+"! Executing command (if configured).");
-				Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), highLagCommand.replaceFirst("/", ""));
+				for(String cmd: highLagCommand.split(";")){
+					Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), cmd.replaceFirst("/", ""));
+				}
 			}
 		}
 	}
@@ -484,7 +486,9 @@ public class LagMeter extends JavaPlugin {
 					}
 				}
 				severe("The server's free memory pool has dropped below "+memoryNotificationThreshold+"! Executing command (if configured).");
-				Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), lowMemCommand.replaceFirst("/", ""));
+				for(String cmd: lowMemCommand.split(";")){
+					Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), cmd.replaceFirst("/", ""));
+				}
 			}
 		}
 	}
