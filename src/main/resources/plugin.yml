@@ -36,6 +36,9 @@ commands:
     lagmeter:
         description: Shows the version. Sub-commands of help and reload have obvious functions.
         usage: /<command>
+    uptime:
+        description: Shows how long the server has been online.
+        usage: /<command>
 permissions:
     lagmeter.*:
         description: Gives full access
@@ -61,6 +64,9 @@ permissions:
         default: op
     lagmeter.command.lmp:
         description: Gives access to the /lmp command, which shows TPS, memory, and players online.
+        default: op
+    lagmeter.command.uptime:
+        description: Gives access to the /uptime command, which shows how long the server has been online.
         default: op
     lagmeter.command.lentities:
         description: Node for the command for showing entities on the server.

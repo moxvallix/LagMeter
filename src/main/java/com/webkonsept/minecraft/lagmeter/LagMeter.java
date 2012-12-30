@@ -32,7 +32,7 @@ public class LagMeter extends JavaPlugin {
 	private final String fileSeparator = System.getProperty("file.separator");
 	protected File logsFolder = new File("plugins"+fileSeparator+"LagMeter"+fileSeparator+"logs");
 
-
+	protected long uptime;
 	protected int averageLength = 10, sustainedLagTimer;
 
 	protected boolean vault = false;
@@ -58,13 +58,14 @@ public class LagMeter extends JavaPlugin {
 
 	@Override
 	public void onEnable(){
-		conf = new LagMeterConfig(this);
 		p = this;
+		conf = new LagMeterConfig(this);
+		logger = new LagMeterLogger(this);
+		poller = new LagMeterPoller(this);
 		pdfFile = this.getDescription();
 		conf.loadConfig();
 		vault = checkVault();
-		logger = new LagMeterLogger(this);
-		poller = new LagMeterPoller(this);
+		uptime = System.currentTimeMillis();
 
 		if(!logsFolder.exists() && useLogsFolder && enableLogging){
 			info("Logs folder not found. Creating one for you.");
@@ -154,7 +155,7 @@ public class LagMeter extends JavaPlugin {
 	 * Gets the current memory used, maxmimum memory, memory free, and percentage of memory free. Returned in a single array of doubles.
 	 * 
 	 * @since 1.11.0-SNAPSHOT
-	 * @return memory[], which is a double array, containing four values, where:
+	 * @return memory[], which is an array of doubles, containing four values, where:
 	 * <br /><b><i>memory[0]</i></b> is the currently used memory;<br /><b><i>memory[1]</i></b> is the current maximum memory;<br /><b><i>memory[2]</i></b> is the current free memory;<br /><b><i>memory[3]</i></b> is the percentage memory free (note this may be an irrational number, so you might want to truncate it if you use this).
 	 */
 	public double[] getMemory(){
@@ -240,6 +241,9 @@ public class LagMeter extends JavaPlugin {
 				success = true;
 				this.sendLagMeter(sender);
 				this.sendMemMeter(sender);
+			}else if(command.getName().equalsIgnoreCase("uptime")){
+				success = true;
+				sendMessage(sender, 0, "Current server uptime: "+convertUptime());
 			}else if(command.getName().equalsIgnoreCase("lm")){
 				success = true;
 				if(args.length == 0){
@@ -348,17 +352,17 @@ public class LagMeter extends JavaPlugin {
 			sendMessage(sender, 1, "LagMeter just loaded, please wait for polling.");
 			return;
 		}
-		ChatColor color = wrapColour;
+		ChatColor colour;
 		if(tps >= 20){
-			color = ChatColor.GREEN;
+			colour = ChatColor.GREEN;
 		}else if(tps >= 18){
-			color = ChatColor.GREEN;
+			colour = ChatColor.GREEN;
 		}else if(tps >= 15){
-			color = ChatColor.YELLOW;
+			colour = ChatColor.YELLOW;
 		}else{
-			color = ChatColor.RED;
+			colour = ChatColor.RED;
 		}
-		sendMessage(sender, 0, wrapColour+"["+color+lagMeter+wrapColour+"] "+tps+" TPS");
+		sendMessage(sender, 0, wrapColour+"["+colour+lagMeter+wrapColour+"] "+tps+" TPS");
 	}
 	protected void sendMemMeter(CommandSender sender){
 		updateMemoryStats();
@@ -439,6 +443,18 @@ public class LagMeter extends JavaPlugin {
 			}
 		}
 	}
+	private String convertUptime(){
+		int days, hours, minutes, seconds;
+		long l = System.currentTimeMillis()-uptime;
+		days = (int) (l/1000L/60L/60L/24L);
+		l -= days*86400000L;
+		hours = (int) (l/1000L/60L/60L);
+		l -= hours*3600000;
+		minutes = (int) (l/1000L/60L);
+		l -= minutes*60000L;
+		seconds = (int) (l/1000L);
+		return days+" day(s), "+hours+" hour(s), "+minutes+" minute(s), and "+seconds+" second(s)";
+	}
 	private boolean setupPermissions(){
 		RegisteredServiceProvider<Permission> permissionProvider = super.getServer().getServicesManager().getRegistration(net.milkbowl.vault.permission.Permission.class);
 		if(permissionProvider != null){
@@ -458,7 +474,9 @@ public class LagMeter extends JavaPlugin {
 
 	public void warn(String message){
 		log.warning("["+pdfFile.getName()+" "+pdfFile.getVersion()+"] "+message);
-	}	class LagWatcher implements Runnable{
+	}
+
+	class LagWatcher implements Runnable{
 		@Override
 		public void run(){
 			if(tpsNotificationThreshold >= getTPS()){
