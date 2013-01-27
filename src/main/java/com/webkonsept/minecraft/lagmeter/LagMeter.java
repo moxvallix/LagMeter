@@ -6,17 +6,13 @@ import java.io.IOException;
 import java.util.List;
 import java.util.logging.Logger;
 
-import net.milkbowl.vault.permission.Permission;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
-import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class LagMeter extends JavaPlugin {
@@ -35,8 +31,6 @@ public class LagMeter extends JavaPlugin {
 	protected long uptime;
 	protected int averageLength = 10, sustainedLagTimer;
 
-	protected boolean vault = false;
-	protected Permission permission;
 	double memUsed = (Runtime.getRuntime().totalMemory()-Runtime.getRuntime().freeMemory())/1048576;
 	double memMax = Runtime.getRuntime().maxMemory()/1048576;
 	double memFree = memMax-memUsed;
@@ -53,7 +47,7 @@ public class LagMeter extends JavaPlugin {
 
 	protected String highLagCommand, lowMemCommand;
 
-	//Accessor
+	/** Static accessor */
 	public static LagMeter p;
 
 	@Override
@@ -64,7 +58,6 @@ public class LagMeter extends JavaPlugin {
 		poller = new LagMeterPoller(this);
 		pdfFile = this.getDescription();
 		conf.loadConfig();
-		vault = checkVault();
 		uptime = System.currentTimeMillis();
 
 		if(!logsFolder.exists() && useLogsFolder && enableLogging){
@@ -84,13 +77,6 @@ public class LagMeter extends JavaPlugin {
 		}
 		history.setMaxSize(averageLength);
 		super.getServer().getScheduler().scheduleSyncRepeatingTask(this, poller, 0, interval);
-		if(checkVault()){
-			info("Vault hooked successfully.");
-			vault = true;
-			setupPermissions();
-		}else{
-			info("You don't have Vault. Defaulting to OP/Non-OP system.");
-		}
 		String loggingMessage = enableLogging ? " Logging to "+logger.getFilename()+"." : "";
 		info("Enabled! Polling every "+interval+" server ticks."+loggingMessage);
 		if(AutomaticLagNotificationsEnabled)
@@ -142,14 +128,6 @@ public class LagMeter extends JavaPlugin {
 		if(AutomaticMemoryNotificationsEnabled)
 			super.getServer().getScheduler().cancelTask(mwTaskID);
 		getServer().getScheduler().cancelTasks(this);
-	}
-	private boolean checkVault(){
-		boolean usingVault = false;
-		Plugin v = super.getServer().getPluginManager().getPlugin("Vault");
-		if(v != null){
-			usingVault = true;
-		}
-		return usingVault;
 	}
 	/**
 	 * Gets the current memory used, maxmimum memory, memory free, and percentage of memory free. Returned in a single array of doubles.
@@ -278,26 +256,22 @@ public class LagMeter extends JavaPlugin {
 		return success;
 	}
 	protected boolean permit(CommandSender sender, String perm){
-		boolean permit = false;
 		if(sender instanceof Player){
-			if(vault)
-				permit = permission.has(sender, perm);
+			if(sender.hasPermission(perm))
+				return true;
 			else
-				permit = sender.isOp();
+				return sender.isOp();
 		}else
-			permit = true;
-		return permit;
+			return true;
 	}
 	protected boolean permit(Player player, String perm){
-		boolean permit = false;
 		if(player != null && player instanceof Player){
-			if(vault)
-				permit = permission.has(player, perm);
+			if(player.hasPermission(perm))
+				return true;
 			else
-				permit = player.isOp();
+				return player.isOp();
 		}else
-			permit = true;
-		return permit;
+			return true;
 	}
 	public void sendChunks(CommandSender sender){
 		int totalChunks = 0;
@@ -454,13 +428,6 @@ public class LagMeter extends JavaPlugin {
 		l -= minutes*60000L;
 		seconds = (int) (l/1000L);
 		return days+" day(s), "+hours+" hour(s), "+minutes+" minute(s), and "+seconds+" second(s)";
-	}
-	private boolean setupPermissions(){
-		RegisteredServiceProvider<Permission> permissionProvider = super.getServer().getServicesManager().getRegistration(net.milkbowl.vault.permission.Permission.class);
-		if(permissionProvider != null){
-			permission = permissionProvider.getProvider();
-		}
-		return (permission != null);
 	}
 	public void severe(String message){
 		log.severe("["+pdfFile.getName()+" "+pdfFile.getVersion()+"] "+message);
