@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.webkonsept.minecraft</groupId>
 	<artifactId>LagMeter</artifactId>
-	<version>1.12.0-SNAPSHOT</version>
+	<version>1.12.0</version>
 
 	<!-- Build Settings -->
 	<build>
@@ -13,13 +13,13 @@
 			<resource>
 				<targetPath>main/java/com/webkonsept/minecraft/lagmeter</targetPath>
 				<filtering>false</filtering>
-				<directory>${basedir}/src/main/java/com/webkonsept/minecraft/lagmeter</directory>
+				<directory>${basedir}/main/java/com/webkonsept/minecraft/lagmeter</directory>
 			</resource>
 			<!--settings.yml -->
 			<resource>
 				<targetPath>main/resources</targetPath>
 				<filtering>false</filtering>
-				<directory>${basedir}/src/main/resources</directory>
+				<directory>${basedir}/main/resources</directory>
 				<includes>
 					<include>settings.yml</include>
 				</includes>
@@ -30,7 +30,7 @@
 			<resource>
 				<targetPath></targetPath>
 				<filtering>false</filtering>
-				<directory>${basedir}/src/main/resources</directory>
+				<directory>${basedir}/main/resources</directory>
 				<includes>
 					<include>plugin.yml</include>
 				</includes>
@@ -45,16 +45,8 @@
 		<dependency>
 			<groupId>org.bukkit</groupId>
 			<artifactId>bukkit</artifactId>
-			<version>1.4.5-R0.2</version>
+			<version>1.4.7-R1.0</version>
 			<type>jar</type>
-		</dependency>
-		<!--Vault - Optional -->
-		<dependency>
-			<groupId>net.milkbowl.vault</groupId>
-			<artifactId>Vault</artifactId>
-			<version>1.2.22-SNAPSHOT</version>
-			<type>jar</type>
-			<optional>true</optional>
 		</dependency>
 	</dependencies>
 
@@ -62,10 +54,6 @@
 		<repository>
 			<id>bukkit-repo</id>
 			<url>http://repo.bukkit.org/content/groups/public</url>
-		</repository>
-		<repository>
-			<id>vault-repo</id>
-			<url>http://ci.herocraftonline.com/plugin/repository/everything</url>
 		</repository>
 	</repositories>
 
