@@ -201,7 +201,7 @@ public class LagMeter extends JavaPlugin {
 		}
 	}
 	public void info(String message){
-		log.info("["+pdfFile.getName()+" "+pdfFile.getVersion()+"] "+message);
+		getServer().getConsoleSender().sendMessage("["+pdfFile.getName()+" "+pdfFile.getVersion()+"] "+ChatColor.GREEN+message);
 	}
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String commandLabel, String[] args){
@@ -340,7 +340,7 @@ public class LagMeter extends JavaPlugin {
 	}
 	protected void sendMemMeter(CommandSender sender){
 		updateMemoryStats();
-		String wrapColor = sender instanceof Player?ChatColor.GOLD.toString():ChatColor.WHITE.toString();
+		String wrapColour = ChatColor.GOLD.toString();
 		String colour = ChatColor.GOLD.toString();
 
 		if(percentageFree >= 60){
@@ -361,7 +361,7 @@ public class LagMeter extends JavaPlugin {
 		while (looped++<= 20){
 			bar+= '_';
 		}
-		sendMessage(sender, 0, wrapColor+"["+colour+bar+wrapColor+"] "+memFree+"MB/"+memMax+"MB ("+(int)percentageFree+"%) free");
+		sendMessage(sender, 0, wrapColour+"["+colour+bar+wrapColour+"] "+memFree+"MB/"+memMax+"MB ("+(int)percentageFree+"%) free");
 	}
 	protected void sendMessage(CommandSender sender, int severity, String message){
 		if(sender instanceof Player){
@@ -379,13 +379,13 @@ public class LagMeter extends JavaPlugin {
 		}else{
 			switch(severity){
 			case 0:
-				info(ChatColor.stripColor(message));
+				info(message);
 				break;
 			case 1:
-				warn(ChatColor.stripColor(message));
+				warn(message);
 				break;
 			case 2:
-				severe(ChatColor.stripColor(message));
+				severe(message);
 				break;
 			}
 		}
@@ -406,13 +406,13 @@ public class LagMeter extends JavaPlugin {
 		}else{
 			switch(severity){
 			case 0:
-				info(ChatColor.stripColor(message));
+				info(message);
 				break;
 			case 1:
-				warn(ChatColor.stripColor(message));
+				warn(message);
 				break;
 			case 2:
-				severe(ChatColor.stripColor(message));
+				severe(message);
 				break;
 			}
 		}
@@ -430,7 +430,7 @@ public class LagMeter extends JavaPlugin {
 		return days+" day(s), "+hours+" hour(s), "+minutes+" minute(s), and "+seconds+" second(s)";
 	}
 	public void severe(String message){
-		log.severe("["+pdfFile.getName()+" "+pdfFile.getVersion()+"] "+message);
+		getServer().getConsoleSender().sendMessage("["+pdfFile.getName()+" "+pdfFile.getVersion()+"] "+ChatColor.DARK_RED+message);
 	}
 	protected void updateMemoryStats(){
 		memUsed = (Runtime.getRuntime().totalMemory()-Runtime.getRuntime().freeMemory())/1048576;
@@ -440,7 +440,7 @@ public class LagMeter extends JavaPlugin {
 	}
 
 	public void warn(String message){
-		log.warning("["+pdfFile.getName()+" "+pdfFile.getVersion()+"] "+message);
+		log.warning("["+pdfFile.getName()+" "+pdfFile.getVersion()+"] "+ChatColor.RED+message);
 	}
 
 	class LagWatcher implements Runnable{
@@ -454,9 +454,9 @@ public class LagMeter extends JavaPlugin {
 				}
 				severe("The server's TPS has dropped below "+tpsNotificationThreshold+"! Executing command (if configured).");
 				if(highLagCommand.contains(";"))
-					for(String cmd: highLagCommand.split(";")){
-						Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), cmd.replaceFirst("/", ""));
-					}
+				for(String cmd: highLagCommand.split(";")){
+					Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), cmd.replaceFirst("/", ""));
+				}
 				else
 					Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), highLagCommand.replaceFirst("/", ""));
 			}
