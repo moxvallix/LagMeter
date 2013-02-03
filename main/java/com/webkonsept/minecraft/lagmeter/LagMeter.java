@@ -453,9 +453,12 @@ public class LagMeter extends JavaPlugin {
 						p.sendMessage(ChatColor.GOLD+"[LagMeter] "+ChatColor.RED+"The server's TPS has dropped below "+tpsNotificationThreshold+"! If you configured a server command to execute at this time, it will run now.");
 				}
 				severe("The server's TPS has dropped below "+tpsNotificationThreshold+"! Executing command (if configured).");
-				for(String cmd: highLagCommand.split(";")){
-					Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), cmd.replaceFirst("/", ""));
-				}
+				if(highLagCommand.contains(";"))
+					for(String cmd: highLagCommand.split(";")){
+						Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), cmd.replaceFirst("/", ""));
+					}
+				else
+					Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), highLagCommand.replaceFirst("/", ""));
 			}
 		}
 	}
@@ -471,9 +474,12 @@ public class LagMeter extends JavaPlugin {
 					}
 				}
 				severe("The server's free memory pool has dropped below "+memoryNotificationThreshold+"! Executing command (if configured).");
-				for(String cmd: lowMemCommand.split(";")){
-					Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), cmd.replaceFirst("/", ""));
-				}
+				if(lowMemCommand.contains(";"))
+					for(String cmd: lowMemCommand.split(";")){
+						Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), cmd.replaceFirst("/", ""));
+					}
+				else
+					Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), lowMemCommand.replaceFirst("/", ""));
 			}
 		}
 	}
