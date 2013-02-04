@@ -436,7 +436,7 @@ public class LagMeter extends JavaPlugin {
 	}
 
 	public void warn(String message){
-		log.warning("["+pdfFile.getName()+" "+pdfFile.getVersion()+"] "+ChatColor.RED+message);
+		getServer().getConsoleSender().sendMessage("["+pdfFile.getName()+" "+pdfFile.getVersion()+"] "+ChatColor.RED+message);
 	}
 
 	class LagWatcher implements Runnable{
