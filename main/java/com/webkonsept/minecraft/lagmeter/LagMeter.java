@@ -16,17 +16,17 @@ import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class LagMeter extends JavaPlugin {
-	protected LagMeterLogger logger = new LagMeterLogger(this);
-	protected LagMeterPoller poller = new LagMeterPoller(this);
-	protected LagMeterStack history = new LagMeterStack();
+	protected LagMeterLogger logger;
+	protected LagMeterPoller poller ;
+	protected LagMeterStack history;
 	private LagMeterConfig conf;
 
-	private Logger log = Logger.getLogger("Minecraft");
+	private final Logger log = Logger.getLogger("Minecraft");
 
 	protected float ticksPerSecond = 20;
 	public PluginDescriptionFile pdfFile;
 	private final String fileSeparator = System.getProperty("file.separator");
-	protected File logsFolder = new File("plugins"+fileSeparator+"LagMeter"+fileSeparator+"logs");
+	protected final File logsFolder = new File("plugins"+fileSeparator+"LagMeter"+fileSeparator+"logs");
 
 	protected long uptime;
 	protected int averageLength = 10, sustainedLagTimer;
@@ -53,62 +53,58 @@ public class LagMeter extends JavaPlugin {
 	@Override
 	public void onEnable(){
 		p = this;
-		conf = new LagMeterConfig(this);
-		logger = new LagMeterLogger(this);
-		poller = new LagMeterPoller(this);
-		pdfFile = this.getDescription();
-		conf.loadConfig();
-		uptime = System.currentTimeMillis();
+		this.conf = new LagMeterConfig(this);
+		this.logger = new LagMeterLogger(this);
+		this.poller = new LagMeterPoller(this);
+		this.history = new LagMeterStack();
+		this.pdfFile = this.getDescription();
+		this.conf.loadConfig();
+		this.uptime = System.currentTimeMillis();
 
 		if(!logsFolder.exists() && useLogsFolder && enableLogging){
-			info("Logs folder not found. Creating one for you.");
-			logsFolder.mkdir();
+			this.info("Logs folder not found. Creating one for you.");
+			this.logsFolder.mkdir();
 			if(!logsFolder.exists()){
-				severe("Error! Couldn't create the folder!");
+				this.severe("Error! Couldn't create the folder!");
 			}else{
-				info("Logs folder created.");
+				this.info("Logs folder created.");
 			}
 		}
 		if(enableLogging){
-			poller.setLogInterval(logInterval);
+			this.poller.setLogInterval(logInterval);
 			if(!logger.enable()){
-				severe("Logging is disabled because: "+logger.getError());
+				this.severe("Logging is disabled because: "+logger.getError());
 			}
 		}
 		history.setMaxSize(averageLength);
 		super.getServer().getScheduler().scheduleSyncRepeatingTask(this, poller, 0, interval);
 		String loggingMessage = enableLogging ? " Logging to "+logger.getFilename()+"." : "";
-		info("Enabled! Polling every "+interval+" server ticks."+loggingMessage);
-		if(AutomaticLagNotificationsEnabled)
-			lwTaskID = super.getServer().getScheduler().scheduleSyncRepeatingTask(this, new LagWatcher(), lagNotifyInterval*1200, lagNotifyInterval*1200);
-		else
-			lwTaskID = -1;
-		if(AutomaticMemoryNotificationsEnabled)
-			mwTaskID = super.getServer().getScheduler().scheduleSyncRepeatingTask(this, new MemoryWatcher(), memNotifyInterval*1200, memNotifyInterval*1200);
-		else
-			mwTaskID = -1;
+		this.info("Enabled! Polling every "+interval+" server ticks."+loggingMessage);
+		this.lwTaskID = this.AutomaticLagNotificationsEnabled ? super.getServer().getScheduler().scheduleSyncRepeatingTask(this, new LagWatcher(), lagNotifyInterval*1200, lagNotifyInterval*1200) : -1;
+		this.mwTaskID = this.AutomaticMemoryNotificationsEnabled ? super.getServer().getScheduler().scheduleSyncRepeatingTask(this, new MemoryWatcher(), memNotifyInterval*1200, memNotifyInterval*1200) : -1;
 
-		if(displayChunksOnLoad){
-			info("Chunks loaded:");
+		if(this.displayChunksOnLoad){
+			this.info("Chunks loaded:");
 			int total = 0;
 			for(World world: super.getServer().getWorlds()){
 				int chunks=world.getLoadedChunks().length;
-				info("World \""+world.getName()+"\": "+chunks+".");
+				this.info("World \""+world.getName()+"\": "+chunks+".");
 				total+=chunks;
 			}
-			info("Total chunks loaded: "+total);
+			this.info("Total chunks loaded: "+total);
 		}
-		if(displayEntitiesOnLoad){
-			info("Entities:");
+		if(this.displayEntitiesOnLoad){
+			this.info("Entities:");
 			int total = 0;
 			for(World world: super.getServer().getWorlds()){
 				int entities=world.getEntities().size();
-				info("World \""+world.getName()+"\": "+entities+".");
+				this.info("World \""+world.getName()+"\": "+entities+".");
 				total+=entities;
 			}
-			info("Total entities: "+total);
+			this.info("Total entities: "+total);
 		}
 	}
+	
 	@Override
 	public void onDisable(){
 		info("Disabled!");
