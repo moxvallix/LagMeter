@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
-import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -20,8 +19,6 @@ public class LagMeter extends JavaPlugin {
 	protected LagMeterPoller poller ;
 	protected LagMeterStack history;
 	private LagMeterConfig conf;
-
-	private final Logger log = Logger.getLogger("Minecraft");
 
 	protected float ticksPerSecond = 20;
 	public PluginDescriptionFile pdfFile;
@@ -197,7 +194,7 @@ public class LagMeter extends JavaPlugin {
 		}
 	}
 	public void info(String message){
-		getServer().getConsoleSender().sendMessage("["+pdfFile.getName()+" "+pdfFile.getVersion()+"] "+ChatColor.GREEN+message);
+		getServer().getConsoleSender().sendMessage(ChatColor.GOLD+"["+pdfFile.getName()+" "+pdfFile.getVersion()+"] "+ChatColor.GREEN+message);
 	}
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String commandLabel, String[] args){
@@ -426,7 +423,7 @@ public class LagMeter extends JavaPlugin {
 		return days+" day(s), "+hours+" hour(s), "+minutes+" minute(s), and "+seconds+" second(s)";
 	}
 	public void severe(String message){
-		getServer().getConsoleSender().sendMessage("["+pdfFile.getName()+" "+pdfFile.getVersion()+"] "+ChatColor.DARK_RED+message);
+		getServer().getConsoleSender().sendMessage(ChatColor.GOLD+"["+pdfFile.getName()+" "+pdfFile.getVersion()+"] "+ChatColor.DARK_RED+message);
 	}
 	protected void updateMemoryStats(){
 		memUsed = (Runtime.getRuntime().totalMemory()-Runtime.getRuntime().freeMemory())/1048576;
@@ -436,7 +433,7 @@ public class LagMeter extends JavaPlugin {
 	}
 
 	public void warn(String message){
-		getServer().getConsoleSender().sendMessage("["+pdfFile.getName()+" "+pdfFile.getVersion()+"] "+ChatColor.RED+message);
+		getServer().getConsoleSender().sendMessage(ChatColor.GOLD+"["+pdfFile.getName()+" "+pdfFile.getVersion()+"] "+ChatColor.RED+message);
 	}
 
 	class LagWatcher implements Runnable{
