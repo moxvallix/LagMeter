@@ -5,6 +5,8 @@ thread: http://dev.bukkit.org/server-mods/lagmeter/
 database: false
 description: Lets you check the server lag, in ticks-per-second
 dev-url: http://dev.bukkit.org/server-mods/lagmeter/
+categories: [INFO]
+authors: [TheLunarFrog, DemmyDemon]
 commands:
     lag: 
         description: Check current lag
@@ -88,7 +90,3 @@ permissions:
     lagmeter.notify.mem:
         description: Allows the player/group to receive memory notifications.
         default: op
-generators: [bukget]
-categories: [INFO]
-maintainer: marvinej
-authors: [TheLunarFrog, DemmyDemon]

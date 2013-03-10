@@ -1,43 +1,45 @@
 package main.java.com.webkonsept.minecraft.lagmeter;
 
 public class LagMeterPoller implements Runnable{
-	long lastPoll = System.currentTimeMillis()-3000;
-	long polls = 0;
-	int logInterval = 150;
-	LagMeter plugin;
+	private long lastPoll = System.currentTimeMillis()-3000;
+	private long polls = 0;
+	private int logInterval = 40;
+	private final LagMeter plugin;
 
-	LagMeterPoller(LagMeter instance){
+	protected LagMeterPoller(final LagMeter instance){
 		this.plugin = instance;
 	}
-	LagMeterPoller(LagMeter instance, int logInterval){
+
+	protected LagMeterPoller(final LagMeter instance, final int logInterval){
 		this.logInterval = logInterval;
 		this.plugin = instance;
 	}
 
 	@Override
 	public void run(){
-		long now = System.currentTimeMillis();
-		long timeSpent = (now-lastPoll)/1000;
-		String newLine = plugin.newLineForLogStats?"\n":"  ";
-		String players = plugin.playerLoggingEnabled?newLine+"Players online: "+plugin.getServer().getOnlinePlayers().length+"/"+plugin.getServer().getMaxPlayers():"";
-		if(timeSpent == 0)
+		final long now = System.currentTimeMillis();
+		long timeSpent = (now-this.lastPoll)/1000;
+		final String newLine = this.plugin.newLineForLogStats ? "\n" : "  ";
+		final String players = this.plugin.playerLoggingEnabled ? newLine+"Players online: "+this.plugin.getServer().getOnlinePlayers().length+"/"+this.plugin.getServer().getMaxPlayers() : "";
+		if(timeSpent==0)
 			timeSpent = 1;
-		float tps = plugin.interval/timeSpent;
-		plugin.ticksPerSecond = tps;
-		plugin.history.add(tps);
-		lastPoll = now;
-		polls++;
-		if(plugin.logger.enabled() && polls % logInterval == 0){
-			plugin.updateMemoryStats();
+		final float tps = this.plugin.interval/timeSpent;
+		this.plugin.ticksPerSecond = tps;
+		this.plugin.history.add(tps);
+		this.lastPoll = now;
+		this.polls++;
+		if(this.plugin.logger.isEnabled()&&this.polls%this.logInterval==0){
+			this.plugin.updateMemoryStats();
 			float aTPS = 0F;
-			if(plugin.useAverage)
-				aTPS = plugin.history.getAverage();
+			if(this.plugin.useAverage)
+				aTPS = this.plugin.history.getAverage();
 			else
-				aTPS = plugin.getTPS();
-			plugin.logger.log("TPS: "+aTPS+newLine+"Memory free: "+plugin.memFree+"/"+plugin.memMax+" ("+(int)plugin.percentageFree+"%)"+players);
+				aTPS = this.plugin.getTPS();
+			this.plugin.logger.log("TPS: "+aTPS+newLine+"Memory free: "+this.plugin.memFree+"/"+this.plugin.memMax+" ("+(int) this.plugin.percentageFree+"%)"+players);
 		}
 	}
-	public void setLogInterval(int interval){
-		logInterval = interval;
+
+	public void setLogInterval(final int interval){
+		this.logInterval = interval;
 	}
 }

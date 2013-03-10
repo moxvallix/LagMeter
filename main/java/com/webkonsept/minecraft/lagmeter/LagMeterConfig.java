@@ -14,102 +14,98 @@ public class LagMeterConfig extends LagMeter{
 	private YamlConfiguration config;
 	private File configFile;
 	private boolean loaded = false;
-	private LagMeter plugin;
+	private final LagMeter plugin;
 
 	public File getConfigFile(){
 		return this.configFile;
 	}
 
-	protected LagMeterConfig(LagMeter l){
+	protected LagMeterConfig(final LagMeter l){
 		this.plugin = l;
 	}
 
 	@Override
 	public YamlConfiguration getConfig(){
-		if(!loaded)
-			loadConfig();
-		return config;
+		if(!this.loaded)
+			this.loadConfig();
+		return this.config;
 	}
 
 	public void loadConfig(){
-		configFile = new File(Bukkit.getServer().getPluginManager().getPlugin("LagMeter").getDataFolder(), "settings.yml");
-		if(configFile.exists()){
-			config = new YamlConfiguration();
+		this.configFile = new File(Bukkit.getServer().getPluginManager().getPlugin("LagMeter").getDataFolder(), "settings.yml");
+		if(this.configFile.exists()){
+			this.config = new YamlConfiguration();
 			try{
-				config.load(configFile);
-				plugin.useAverage							= config.getBoolean	("useAverage",							true);
-				plugin.averageLength						= config.getInt		("averageLength",						10);
-				plugin.interval								= config.getInt		("interval",							40);
-				plugin.displayChunksOnLoad					= config.getBoolean	("LoadedChunksOnLoad",					true);
-				plugin.displayEntitiesOnLoad				= config.getBoolean	("displayEntitiesOnLoad",				true);
-				plugin.displayEntities						= config.getBoolean	("Commands.Lag.displayEntities",		true);
-				plugin.sendChunks							= config.getBoolean	("Commands.Lag.displayChunks",			true);
-				plugin.logInterval							= config.getInt		("log.interval",						150);
-				plugin.enableLogging						= config.getBoolean	("log.enable",							true);
-				plugin.useLogsFolder						= config.getBoolean	("log.useLogsFolder",					false);
-				plugin.playerLoggingEnabled					= config.getBoolean	("log.logPlayersOnline",				true);
-				plugin.logChunks							= config.getBoolean	("log.logChunks",						false);
-				plugin.logTotalChunksOnly					= config.getBoolean	("log.logTotalChunksOnly",				true);
-				plugin.logEntities							= config.getBoolean	("log.logEntities",						false);
-				plugin.logTotalEntitiesOnly					= config.getBoolean	("log.logTotalEntitiesOnly",			true);
-				plugin.newBlockPerLog						= config.getBoolean	("log.newBlockPerLog",					true);
-				plugin.newLineForLogStats					= config.getBoolean	("log.newLinePerStatistic",				true);
-				plugin.AutomaticLagNotificationsEnabled		= config.getBoolean	("Notifications.Lag.Enabled",			true);
-				plugin.tpsNotificationThreshold				= config.getInt		("Notifications.Lag.Threshold",			15);
-				plugin.lagNotifyInterval					= config.getInt		("Notifications.Lag.CheckInterval",		5);
-				plugin.highLagCommand						= config.getString	("Notifications.Lag.ConsoleCommand",	"/lag");
-				plugin.AutomaticMemoryNotificationsEnabled	= config.getBoolean	("Notifications.Memory.Enabled",		true);
-				plugin.memoryNotificationThreshold			= config.getInt		("Notifications.Memory.Threshold",		25);
-				plugin.memNotifyInterval					= config.getInt		("Notifications.Memory.CheckInterval",	10);
-				plugin.lowMemCommand						= config.getString	("Notifications.Memory.ConsoleCommand",	"/mem");
-			}catch (FileNotFoundException ex){
+				this.config.load(this.configFile);
+				this.plugin.useAverage = this.config.getBoolean("useAverage", true);
+				this.plugin.averageLength = this.config.getInt("averageLength", 10);
+				this.plugin.interval = this.config.getInt("interval", 40);
+				this.plugin.displayChunksOnLoad = this.config.getBoolean("LoadedChunksOnLoad", true);
+				this.plugin.displayEntitiesOnLoad = this.config.getBoolean("displayEntitiesOnLoad", true);
+				this.plugin.displayEntities = this.config.getBoolean("Commands.Lag.displayEntities", true);
+				this.plugin.sendChunks = this.config.getBoolean("Commands.Lag.displayChunks", true);
+				this.plugin.logInterval = this.config.getInt("log.interval", 150);
+				this.plugin.enableLogging = this.config.getBoolean("log.enable", true);
+				this.plugin.useLogsFolder = this.config.getBoolean("log.useLogsFolder", false);
+				this.plugin.playerLoggingEnabled = this.config.getBoolean("log.logPlayersOnline", true);
+				this.plugin.logChunks = this.config.getBoolean("log.logChunks", false);
+				this.plugin.logTotalChunksOnly = this.config.getBoolean("log.logTotalChunksOnly", true);
+				this.plugin.logEntities = this.config.getBoolean("log.logEntities", false);
+				this.plugin.logTotalEntitiesOnly = this.config.getBoolean("log.logTotalEntitiesOnly", true);
+				this.plugin.newBlockPerLog = this.config.getBoolean("log.newBlockPerLog", true);
+				this.plugin.newLineForLogStats = this.config.getBoolean("log.newLinePerStatistic", true);
+				this.plugin.AutomaticLagNotificationsEnabled = this.config.getBoolean("Notifications.Lag.Enabled", true);
+				this.plugin.tpsNotificationThreshold = this.config.getInt("Notifications.Lag.Threshold", 15);
+				this.plugin.lagNotifyInterval = this.config.getInt("Notifications.Lag.CheckInterval", 5);
+				this.plugin.highLagCommand = this.config.getString("Notifications.Lag.ConsoleCommand", "/lag");
+				this.plugin.AutomaticMemoryNotificationsEnabled = this.config.getBoolean("Notifications.Memory.Enabled", true);
+				this.plugin.memoryNotificationThreshold = this.config.getInt("Notifications.Memory.Threshold", 25);
+				this.plugin.memNotifyInterval = this.config.getInt("Notifications.Memory.CheckInterval", 10);
+				this.plugin.lowMemCommand = this.config.getString("Notifications.Memory.ConsoleCommand", "/mem");
+			}catch(final FileNotFoundException ex){
 				ex.printStackTrace();
-			}catch (IOException ex){
+			}catch(final IOException ex){
 				ex.printStackTrace();
-			}catch (InvalidConfigurationException ex){
+			}catch(final InvalidConfigurationException ex){
 				ex.printStackTrace();
 			}
-			loaded = true;
-		}else{
+			this.loaded = true;
+		}else
 			try{
 				Bukkit.getServer().getPluginManager().getPlugin("LagMeter").getDataFolder().mkdir();
-				InputStream jarURL = LagMeterConfig.class.getResourceAsStream("/main/resources/settings.yml");
-				copyFile(jarURL, configFile);
-				config = new YamlConfiguration();
-				config.load(configFile);
+				final InputStream jarURL = LagMeterConfig.class.getResourceAsStream("/main/resources/settings.yml");
+				LagMeterConfig.copyFile(jarURL, this.configFile);
+				this.config = new YamlConfiguration();
+				this.config.load(this.configFile);
 				try{
-					config.load(configFile);
-				}catch (FileNotFoundException ex){
+					this.config.load(this.configFile);
+				}catch(final FileNotFoundException ex){
 					ex.printStackTrace();
-				}catch (IOException ex){
+				}catch(final IOException ex){
 					ex.printStackTrace();
-				}catch (InvalidConfigurationException ex){
+				}catch(final InvalidConfigurationException ex){
 					ex.printStackTrace();
 				}
-				loaded = true;
-			}catch(Exception e){
+				this.loaded = true;
+			}catch(final Exception e){
 			}
-		}
 	}
 
-	private static void copyFile(InputStream in, File out) throws Exception{
-		InputStream fis = in;
-		FileOutputStream fos = new FileOutputStream(out);
+	private static void copyFile(final InputStream in, final File out) throws Exception{
+		final InputStream fis = in;
+		final FileOutputStream fos = new FileOutputStream(out);
 		try{
-			byte[] buf = new byte[1024];
+			final byte[] buf = new byte[1024];
 			int i = 0;
-			while ((i = fis.read(buf)) != -1){
+			while((i = fis.read(buf))!=-1)
 				fos.write(buf, 0, i);
-			}
-		} catch (Exception e){
+		}catch(final Exception e){
 			throw e;
-		} finally{
-			if(fis != null){
+		}finally{
+			if(fis!=null)
 				fis.close();
-			}
-			if(fos != null){
+			if(fos!=null)
 				fos.close();
-			}
 		}
 	}
 }

@@ -11,176 +11,184 @@ import java.util.Calendar;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 
-public class LagMeterLogger {
-	static LagMeter plugin;
-
-	private static final String fileSeparator = System.getProperty("file.separator");
-
+public class LagMeterLogger{
+	private final LagMeter plugin;
 	private String error = "*shrug* Dunno.";
 	private boolean logMemory = true;
 	private boolean logTPS = true;
-	protected static boolean enabled = false;
+	protected boolean enabled = false;
 	private String timeFormat = "MM-dd-yyyy HH:mm:ss";
+	private File logfile;
+	private PrintWriter log;
 
-	String datafolder = "LagMeter";
-	File logfile;
-	PrintWriter log;
-
-	LagMeterLogger (LagMeter instance){
-		plugin = instance;
+	protected LagMeterLogger(final LagMeter instance){
+		this.plugin = instance;
 	}
-	LagMeterLogger (LagMeter instance,boolean enable){
-		plugin = instance;
-		if(enable){
+
+	protected LagMeterLogger(final LagMeter instance, final boolean enable){
+		this.plugin = instance;
+		if(enable)
 			this.enable();
-		}
 	}
-
 
 	private boolean beginLogging(){
 		boolean ret = true;
-		if (logfile == null){
-			error("Logfile is null");
+		if(this.logfile==null){
+			this.error("Logfile is null");
 			ret = false;
-		}else if (logMemory == false && logTPS == false){
-			error("Both logMemory and logTPS are disabled.  Nothing to log!");
+		}else if(this.logMemory==false&&this.logTPS==false){
+			this.error("Both logMemory and logTPS are disabled.  Nothing to log!");
 			ret = false;
-		}else{
+		}else
 			try{
-				if(!logfile.exists()){
-					logfile.createNewFile();
-				}
-				log = new PrintWriter(new FileWriter(logfile, true));
-				log("Logging enabled.");
-			}catch(IOException e){
+				if(!this.logfile.exists())
+					this.logfile.createNewFile();
+				this.log = new PrintWriter(new FileWriter(this.logfile, true));
+				this.log("Logging enabled.");
+			}catch(final IOException e){
 				e.printStackTrace();
-				error("IOException opening logfile!");
+				this.error("IOException opening logfile!");
 				ret = false;
 			}
-		}
-		enabled = true;
+		this.enabled = true;
 		return ret;
 	}
+
 	private void closeLog() throws IOException, Exception, FileNotFoundException{
-		if(enabled = true){
-			log.flush();
-			log.close();
-			log = null;
-			enabled = false;
+		if(this.enabled = true){
+			this.log.flush();
+			this.log.close();
+			this.log = null;
+			this.enabled = false;
 		}
 	}
-	public void disable() throws IOException, FileNotFoundException, Exception {
-		if(plugin.enableLogging = true)
-			closeLog();
+
+	public void disable() throws IOException, FileNotFoundException, Exception{
+		if(this.plugin.enableLogging = true)
+			this.closeLog();
 	}
+
 	public boolean enable(){
-		if(!plugin.useLogsFolder){
+		if(!this.plugin.useLogsFolder){
 			System.out.println("[LagMeter] Not using logs folder.");
-			return this.enable(new File(plugin.getDataFolder(),"lag.log"));
+			return this.enable(new File(this.plugin.getDataFolder(), "lag.log"));
 		}else{
 			System.out.println("[LagMeter] Using logs folder. This will create a new log for each day (it might log data from tomorrow in today's file if you leave the server running without reloading/restarting).");
-			return this.enable(new File("plugins"+fileSeparator+"LagMeter"+fileSeparator+"logs", "LagMeter-"+today()+".log"));
+			return this.enable(new File("plugins"+File.separator+"LagMeter"+File.separator+"logs", "LagMeter-"+this.today()+".log"));
 		}
 	}
-	public boolean enable(File logTo){
-		logfile = logTo;
-		return beginLogging();
+
+	public boolean enable(final File logTo){
+		this.logfile = logTo;
+		return this.beginLogging();
 	}
-	public boolean enabled(){
-		return enabled;
+
+	public boolean isEnabled(){
+		return this.enabled;
 	}
-	private void error(String errorMessage){
+
+	private void error(final String errorMessage){
 		this.error = errorMessage;
 	}
+
 	public String getError(){
 		return this.error;
 	}
+
 	public String getFilename(){
-		if (logfile != null){
-			return logfile.getAbsolutePath();
-		}else{
+		if(this.logfile!=null)
+			return this.logfile.getAbsolutePath();
+		else
 			return "!! UNKNOWN !!";
-		}
 	}
+
 	public String getTimeFormat(){
-		return timeFormat;
+		return this.timeFormat;
 	}
+
 	protected void log(String message){
-		if(enabled){
-			message = "["+now()+"] "+message;
-			String newLine = plugin.newLineForLogStats?"\n":"  ";
-			log.print(message);
-			if(plugin.logChunks){
+		if(this.enabled){
+			message = "["+this.now()+"] "+message;
+			final String newLine = this.plugin.newLineForLogStats ? "\n" : "  ";
+			this.log.print(message);
+			if(this.plugin.logChunks){
 				int totalChunks = 0;
-				for(World world: Bukkit.getServer().getWorlds()){
+				for(final World world: Bukkit.getServer().getWorlds()){
 					totalChunks += world.getLoadedChunks().length;
-					if(!plugin.logTotalChunksOnly)
-						log.print(newLine+"Chunks loaded in world \""+world.getName()+"\": "+world.getLoadedChunks().length);
+					if(!this.plugin.logTotalChunksOnly)
+						this.log.print(newLine+"Chunks loaded in world \""+world.getName()+"\": "+world.getLoadedChunks().length);
 				}
-				log.print(newLine+"Total chunks loaded: "+totalChunks);
+				this.log.print(newLine+"Total chunks loaded: "+totalChunks);
 			}
-			if(plugin.logEntities){
+			if(this.plugin.logEntities){
 				int totalEntities = 0;
-				for(World world: Bukkit.getServer().getWorlds()){
+				for(final World world: Bukkit.getServer().getWorlds()){
 					totalEntities += world.getEntities().size();
-					if(!plugin.logTotalEntitiesOnly)
-						log.print(newLine+"Entities in world \""+world.getName()+"\": "+world.getEntities().size());
+					if(!this.plugin.logTotalEntitiesOnly)
+						this.log.print(newLine+"Entities in world \""+world.getName()+"\": "+world.getEntities().size());
 				}
-				log.print(newLine+"Total entities: "+totalEntities);
+				this.log.print(newLine+"Total entities: "+totalEntities);
 			}
-			if(plugin.newBlockPerLog)
-				log.println();
-			log.println();
-			log.flush();
+			if(this.plugin.newBlockPerLog)
+				this.log.println();
+			this.log.println();
+			this.log.flush();
 		}
 	}
+
 	public boolean logMemory(){
-		return logMemory;
+		return this.logMemory;
 	}
-	public void logMemory(boolean set){
-		logMemory = set;
-		if(logMemory == false && logTPS == false){
+
+	public void logMemory(final boolean set){
+		this.logMemory = set;
+		if(this.logMemory==false&&this.logTPS==false){
 			try{
 				this.disable();
-			}catch(FileNotFoundException e){
+			}catch(final FileNotFoundException e){
 				e.printStackTrace();
-			}catch(IOException e){
+			}catch(final IOException e){
 				e.printStackTrace();
-			}catch(Exception e){
+			}catch(final Exception e){
 				e.printStackTrace();
 			}
-			this.error("Both log outputs disabled: Logging disabled.");
+			this.error("Both log outputs disabled! Logging disabled.");
 		}
 	}
+
 	public boolean logTPS(){
-		return logTPS;
+		return this.logTPS;
 	}
-	public void logTPS(boolean set){
-		logTPS = set;
-		if (logMemory == false && logTPS == false){
-			try {
+
+	public void logTPS(final boolean set){
+		this.logTPS = set;
+		if(this.logMemory==false&&this.logTPS==false){
+			try{
 				this.disable();
-			}catch (FileNotFoundException e){
+			}catch(final FileNotFoundException e){
 				e.printStackTrace();
-			}catch (IOException e){
+			}catch(final IOException e){
 				e.printStackTrace();
-			}catch (Exception e){
+			}catch(final Exception e){
 				e.printStackTrace();
 			}
-			this.error("Both log outputs disabled: Logging disabled.");
+			this.error("Both log outputs disabled! Logging disabled.");
 		}
 	}
+
 	public String now(){
-		Calendar cal = Calendar.getInstance();
-		SimpleDateFormat sdf = new SimpleDateFormat(timeFormat);
+		final Calendar cal = Calendar.getInstance();
+		final SimpleDateFormat sdf = new SimpleDateFormat(this.timeFormat);
 		return sdf.format(cal.getTime());
 	}
-	public void setTimeFormat(String newFormat){
-		timeFormat = newFormat;
+
+	public void setTimeFormat(final String newFormat){
+		this.timeFormat = newFormat;
 	}
+
 	public String today(){
-		Calendar calendar = Calendar.getInstance();
-		SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yyyy");
+		final Calendar calendar = Calendar.getInstance();
+		final SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yyyy");
 		return sdf.format(calendar.getTime());
 	}
 }
