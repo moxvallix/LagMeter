@@ -7,7 +7,7 @@ useAverage: true
 #How many polls to keep in LagMeter's memory.
 #Default: 10
 averageLength: 10
-#How often LagMeter should poll the server.
+#How often, in server ticks, LagMeter should poll the server (where one second is 20 ticks).
 #Default: 40
 interval: 40
 #Display chunks loaded on plugin (re)load?
@@ -30,7 +30,7 @@ Commands:
 ##   Logging   ##
 #################
 log:
-    #How often the plugin should log information to its log file.
+    #How often (after how many polls) the plugin should log information to its log file. If the poll interval is default (40), and this is left at default (150), it will happen every 40*150 ticks (6,000).
     #Default: 150
     interval: 150
     #Should LagMeter log information to a file?
@@ -67,26 +67,26 @@ Notifications:
     Lag:
         #Enables low TPS notifications.
         #Default: true
-        Enabled: true
+        Enabled: false
         #If the server is at or below this value for memory free, it will notify OPs and anyone with the permission node lagmeter.notify.lag
         #Default: 17
-        Threshold: 17
+        Threshold: 21
         #How often LagMeter should check on the TPS, in minutes.
         #Default: 5
-        CheckInterval: 5
+        CheckInterval: 1
         #Specify a command to use when the plugin notices that the TPS is low. Must be usable from console.
         #Default: /lag
         ConsoleCommand: /lag
     Memory:
         #Enables/disables low memory free notifications.
         #Default: true
-        Enabled: true
+        Enabled: false
         #If the server is at or below this value for memory free, it will notify OPs and anyone with the permission node lagmeter.notify.mem
         #Default: 25
-        Threshold: 25
+        Threshold: 101
         #How often LagMeter should check on the free memory, in minutes.
         #Default: 10
-        CheckInterval: 10
+        CheckInterval: 1
         #Specify a command to use when the plugin notices that the free memory is low. Must be usable from console.
         #Default: /mem
         ConsoleCommand: /mem

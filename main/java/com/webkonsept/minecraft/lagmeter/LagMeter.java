@@ -20,15 +20,15 @@ public class LagMeter extends JavaPlugin{
 	protected LagMeterStack history;
 	private LagMeterConfig conf;
 	protected float ticksPerSecond = 20;
-	public PluginDescriptionFile pdfFile;
+	protected PluginDescriptionFile pdfFile;
 	private final String fileSeparator = System.getProperty("file.separator");
 	protected final File logsFolder = new File("plugins"+this.fileSeparator+"LagMeter"+this.fileSeparator+"logs");
 	protected long uptime;
 	protected int averageLength = 10, sustainedLagTimer;
-	double memUsed = (Runtime.getRuntime().totalMemory()-Runtime.getRuntime().freeMemory())/1048576;
-	double memMax = Runtime.getRuntime().maxMemory()/1048576;
-	double memFree = this.memMax-this.memUsed;
-	double percentageFree = 100/this.memMax*this.memFree;
+	protected double memUsed = (Runtime.getRuntime().totalMemory()-Runtime.getRuntime().freeMemory())/1048576;
+	protected double memMax = Runtime.getRuntime().maxMemory()/1048576;
+	protected double memFree = this.memMax-this.memUsed;
+	protected double percentageFree = 100/this.memMax*this.memFree;
 	// Configurable Values - mostly booleans
 	protected int interval = 40, logInterval = 150, lagNotifyInterval, memNotifyInterval, lwTaskID, mwTaskID;
 	protected float tpsNotificationThreshold, memoryNotificationThreshold;
