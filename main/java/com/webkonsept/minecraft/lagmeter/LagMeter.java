@@ -277,7 +277,8 @@ public class LagMeter extends JavaPlugin{
 			final String s = world.getName();
 			final int i = super.getServer().getWorld(s).getLoadedChunks().length;
 			totalChunks += i;
-			this.sendMessage(sender, 0, ChatColor.GOLD+"Chunks in world \""+s+"\": "+i);
+			if(i != 0)
+				this.sendMessage(sender, 0, ChatColor.GOLD+"Chunks in world \""+s+"\": "+i);
 		}
 		this.sendMessage(sender, 0, ChatColor.GOLD+"Total chunks loaded on the server: "+totalChunks);
 	}
@@ -289,7 +290,8 @@ public class LagMeter extends JavaPlugin{
 			final String worldName = world.getName();
 			final int i = super.getServer().getWorld(worldName).getEntities().size();
 			totalEntities += i;
-			this.sendMessage(sender, 0, ChatColor.GOLD+"Entities in world \""+worldName+"\": "+i);
+			if(i != 0)
+				this.sendMessage(sender, 0, ChatColor.GOLD+"Entities in world \""+worldName+"\": "+i);
 		}
 		this.sendMessage(sender, 0, ChatColor.GOLD+"Total entities: "+totalEntities);
 	}
