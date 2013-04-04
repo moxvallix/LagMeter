@@ -1,8 +1,11 @@
 package main.java.com.webkonsept.minecraft.lagmeter;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.Bukkit;
@@ -101,11 +104,11 @@ public class LagMeter extends JavaPlugin{
 			}catch(final Exception e){
 				e.printStackTrace();
 			}
-		if(this.AutomaticLagNotificationsEnabled)
-			super.getServer().getScheduler().cancelTask(this.lwTaskID);
-		if(this.AutomaticMemoryNotificationsEnabled)
-			super.getServer().getScheduler().cancelTask(this.mwTaskID);
-		this.getServer().getScheduler().cancelTasks(this);
+		// if(this.AutomaticLagNotificationsEnabled)
+		// super.getServer().getScheduler().cancelTask(this.lwTaskID);
+		// if(this.AutomaticMemoryNotificationsEnabled)
+		// super.getServer().getScheduler().cancelTask(this.mwTaskID);
+		super.getServer().getScheduler().cancelTasks(this);
 	}
 
 	/**
@@ -182,8 +185,12 @@ public class LagMeter extends JavaPlugin{
 					this.sendMessage(sender, 0, ChatColor.DARK_GREEN+"/lagmeter|/lm"+ChatColor.GREEN+" <reload|r> "+ChatColor.GOLD+" - Allows the player to reload the configuration.");
 				else
 					++doesntHave;
+				if(this.permit(sender, "lagmeter.command.ping")||this.permit(sender, "lagmeter.command.lping"))
+					this.sendMessage(sender, 0, ChatColor.DARK_GREEN+"/ping|/lping"+ChatColor.GREEN+" [hops] "+ChatColor.GOLD+" - Pings google.com from the server. Specify an amount of hops to specify more packets."+ChatColor.RED+" Warning: server-intensive above 4 hops.");
+				else
+					++doesntHave;
 				this.sendMessage(sender, 0, ChatColor.DARK_GREEN+"/lagmeter|/lm"+ChatColor.GREEN+" <help|?> "+ChatColor.GOLD+" - This command. Gives the user a list of commands that they are able to use in this plugin.");
-				if(doesntHave==8)
+				if(doesntHave==9)
 					this.sendMessage(sender, 1, "You don't have permission for any of the commands (besides this one)!");
 			}else
 				this.sendMessage(sender, 1, "Sorry, but you don't have access to the help command.");
@@ -234,6 +241,12 @@ public class LagMeter extends JavaPlugin{
 			}else if(command.getName().equalsIgnoreCase("lentities")||command.getName().equalsIgnoreCase("lmobs")){
 				success = true;
 				this.sendEntities(sender);
+			}else if(command.getName().equalsIgnoreCase("ping")){
+				success = true;
+				ping(sender, args);
+			}else if(command.getName().equalsIgnoreCase("lping")){
+				success = true;
+				ping(sender, args);
 			}else if(command.getName().equalsIgnoreCase("LagMeter")){
 				success = true;
 				if(args.length==0){
@@ -277,7 +290,7 @@ public class LagMeter extends JavaPlugin{
 			final String s = world.getName();
 			final int i = super.getServer().getWorld(s).getLoadedChunks().length;
 			totalChunks += i;
-			if(i != 0)
+			if(i!=0)
 				this.sendMessage(sender, 0, ChatColor.GOLD+"Chunks in world \""+s+"\": "+i);
 		}
 		this.sendMessage(sender, 0, ChatColor.GOLD+"Total chunks loaded on the server: "+totalChunks);
@@ -290,7 +303,7 @@ public class LagMeter extends JavaPlugin{
 			final String worldName = world.getName();
 			final int i = super.getServer().getWorld(worldName).getEntities().size();
 			totalEntities += i;
-			if(i != 0)
+			if(i!=0)
 				this.sendMessage(sender, 0, ChatColor.GOLD+"Entities in world \""+worldName+"\": "+i);
 		}
 		this.sendMessage(sender, 0, ChatColor.GOLD+"Total entities: "+totalEntities);
@@ -355,6 +368,48 @@ public class LagMeter extends JavaPlugin{
 		this.sendMessage(sender, 0, wrapColour+"["+colour+bar+wrapColour+"] "+this.memFree+"MB/"+this.memMax+"MB ("+(int) this.percentageFree+"%) free");
 	}
 
+	private void ping(CommandSender sender, String[] args){
+		try{
+			Process p;
+			String s;
+			final List<String> processCmd = new ArrayList<String>();
+			final BufferedReader result;
+			final BufferedReader errorStream;
+			processCmd.add("ping");
+			processCmd.add("-n");
+			if(args.length>0)
+				if(this.permit(sender, "lagmeter.commands.ping.unlimited"))
+					try{
+						if(Integer.parseInt(args[0])<=10)
+							processCmd.add(args[0]);
+						else{
+							processCmd.add("10");
+							this.sendMessage(sender, 1, "Please be careful with that command! It is exponentially more server-intensive the more hops you specify, and there is therefore a limit of 10 - which will be used for this command instance.");
+						}
+					}catch(final NumberFormatException e){
+						this.sendMessage(sender, 1, "You entered an invalid amount of hops; therefore, 1 will be used instead.");
+						processCmd.add("1");
+					}
+				else{
+					processCmd.add("1");
+					this.sendMessage(sender, 1, "You don't have access to specifying ping hops!");
+				}
+			else
+				processCmd.add("1");
+			processCmd.add("google.com");
+			p = new ProcessBuilder(processCmd).start();
+			result = new BufferedReader(new InputStreamReader(p.getInputStream()));
+			errorStream = new BufferedReader(new InputStreamReader(p.getErrorStream()));
+			while((s = result.readLine())!=null)
+				if(s.indexOf("Average = ")!=-1)
+					this.sendMessage(sender, 0, "Average response time for the server for "+processCmd.get(2)+" ping hop(s) to google.com: "+s.substring(s.indexOf("Average = ")+10));
+			while((s = errorStream.readLine())!=null)
+				this.sendMessage(sender, 1, s);
+			p.destroy();
+		}catch(final IOException e){
+			e.printStackTrace();
+		}
+	}
 	protected void sendMessage(final CommandSender sender, final int severity, final String message){
 		if(sender instanceof Player)
 			switch(severity){
@@ -362,10 +417,10 @@ public class LagMeter extends JavaPlugin{
 					sender.sendMessage(ChatColor.GOLD+"[LagMeter] "+ChatColor.GREEN+message);
 					break;
 				case 1:
-					sender.sendMessage(ChatColor.GOLD+"[LagMeter]"+ChatColor.RED+message);
+					sender.sendMessage(ChatColor.GOLD+"[LagMeter] "+ChatColor.RED+message);
 					break;
 				case 2:
-					sender.sendMessage(ChatColor.GOLD+"[LagMeter]"+ChatColor.DARK_RED+message);
+					sender.sendMessage(ChatColor.GOLD+"[LagMeter] "+ChatColor.DARK_RED+message);
 					break;
 			}
 		else
@@ -389,10 +444,10 @@ public class LagMeter extends JavaPlugin{
 					player.sendMessage(ChatColor.GOLD+"[LagMeter] "+ChatColor.GREEN+message);
 					break;
 				case 1:
-					player.sendMessage(ChatColor.GOLD+"[LagMeter]"+ChatColor.RED+message);
+					player.sendMessage(ChatColor.GOLD+"[LagMeter] "+ChatColor.RED+message);
 					break;
 				case 2:
-					player.sendMessage(ChatColor.GOLD+"[LagMeter]"+ChatColor.DARK_RED+message);
+					player.sendMessage(ChatColor.GOLD+"[LagMeter] "+ChatColor.DARK_RED+message);
 					break;
 			}
 		else
