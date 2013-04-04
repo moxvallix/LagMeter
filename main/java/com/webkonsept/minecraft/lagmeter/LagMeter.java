@@ -151,7 +151,7 @@ public class LagMeter extends JavaPlugin{
 			}
 		}else if(args[0].equalsIgnoreCase("help")){
 			if(this.permit(sender, "lagmeter.command.lagmeter.help")||this.permit(sender, "lagmeter.help")){
-				if(args.length == 1 || args[1] == "0" || args[1] == "1" || args[1].equalsIgnoreCase("one")){
+				if(args.length == 1 || args[1] == "0" || args[1] == "1"){
 					this.sendMessage(sender, 0, "*           *Help for LagMeter [1/2]*           *");
 					if(this.permit(sender, "lagmeter.command.lag"))
 						this.sendMessage(sender, 0, ChatColor.DARK_GREEN+"/lag"+ChatColor.GOLD+" - Check the server's TPS. If configuChatColor.RED, may also display chunks loaded and/or entities alive.");
@@ -250,7 +250,9 @@ public class LagMeter extends JavaPlugin{
 
 		protected boolean permit(final CommandSender sender, final String perm){
 			if(sender instanceof Player){
-				if(sender.hasPermission(perm))
+				if(sender.hasPermission("lagmeter.*"))
+					return true;
+				else if(sender.hasPermission(perm))
 					return true;
 				else
 					return sender.isOp();
