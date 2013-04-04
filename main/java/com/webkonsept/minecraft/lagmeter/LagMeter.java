@@ -151,7 +151,7 @@ public class LagMeter extends JavaPlugin{
 			}
 		}else if(args[0].equalsIgnoreCase("help")){
 			if(this.permit(sender, "lagmeter.command.lagmeter.help")||this.permit(sender, "lagmeter.help")){
-				if(args.length == 1 || args[1] == "0" || args[1] == "1"){
+				if(args.length==1||args[1].trim().equals("0")||args[1].trim().equals("1")){
 					this.sendMessage(sender, 0, "*           *Help for LagMeter [1/2]*           *");
 					if(this.permit(sender, "lagmeter.command.lag"))
 						this.sendMessage(sender, 0, ChatColor.DARK_GREEN+"/lag"+ChatColor.GOLD+" - Check the server's TPS. If configuChatColor.RED, may also display chunks loaded and/or entities alive.");
@@ -169,14 +169,13 @@ public class LagMeter extends JavaPlugin{
 						this.sendMessage(sender, 0, ChatColor.DARK_GREEN+"/lagmeter|/lm"+ChatColor.GOLD+" - Shows the current version and gives sub-commands.");
 					if(this.permit(sender, "lagmeter.command.lagmeter.reload")||this.permit(sender, "lagmeter.reload"))
 						this.sendMessage(sender, 0, ChatColor.DARK_GREEN+"/lagmeter|/lm"+ChatColor.GREEN+" <reload|r> "+ChatColor.GOLD+" - Allows the player to reload the configuration.");
-				}else if(args.length > 1 && args[1] == "2"){
+				}else if(args.length>1&&args[1].trim().equals("2")){
 					this.sendMessage(sender, 0, "*           *Help for LagMeter [2/2]*           *");
 					this.sendMessage(sender, 0, ChatColor.DARK_GREEN+"/lagmeter|/lm"+ChatColor.GREEN+" <help|?> [page]"+ChatColor.GOLD+" - This command. Gives the user a list of commands that they are able to use in this plugin.");
 					if(this.permit(sender, "lagmeter.command.ping")||this.permit(sender, "lagmeter.command.lping"))
 						this.sendMessage(sender, 0, ChatColor.DARK_GREEN+"/ping|/lping"+ChatColor.GREEN+" [hops] "+ChatColor.GOLD+" - Pings google.com from the server. Specify an amount of hops to specify more packets."+ChatColor.RED+" Warning: server-intensive above 4 hops.");
-				}else{
-					this.sendMessage(sender, 1, "Invalid page - there aren't that many pages ("+args[1]+").");
-				}
+				}else
+					this.sendMessage(sender, 1, "Invalid page number.");
 			}else
 				this.sendMessage(sender, 1, "Sorry, but you don't have access to the help command.");
 		}else{
@@ -228,10 +227,10 @@ public class LagMeter extends JavaPlugin{
 				this.sendEntities(sender);
 			}else if(command.getName().equalsIgnoreCase("ping")){
 				success = true;
-				ping(sender, args);
+				this.ping(sender, args);
 			}else if(command.getName().equalsIgnoreCase("lping")){
 				success = true;
-				ping(sender, args);
+				this.ping(sender, args);
 			}else if(command.getName().equalsIgnoreCase("LagMeter")){
 				success = true;
 				if(args.length==0){
@@ -264,7 +263,7 @@ public class LagMeter extends JavaPlugin{
 		if(player!=null&&player instanceof Player){
 			if(player.hasPermission(perm))
 				return true;
-			if(player.hasPermission(perm))
+			else if(player.hasPermission(perm))
 				return true;
 			else
 				return player.isOp();
@@ -357,7 +356,7 @@ public class LagMeter extends JavaPlugin{
 		this.sendMessage(sender, 0, wrapColour+"["+colour+bar+wrapColour+"] "+this.memFree+"MB/"+this.memMax+"MB ("+(int) this.percentageFree+"%) free");
 	}
 
-	private void ping(CommandSender sender, String[] args){
+	private void ping(final CommandSender sender, final String[] args){
 		try{
 			Process p;
 			String s;
@@ -399,6 +398,7 @@ public class LagMeter extends JavaPlugin{
 			e.printStackTrace();
 		}
 	}
+
 	protected void sendMessage(final CommandSender sender, final int severity, final String message){
 		if(sender instanceof Player)
 			switch(severity){

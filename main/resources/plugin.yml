@@ -40,10 +40,10 @@ commands:
         usage: /<command>
     ping:
         description: Pings Google.com, from the server.
-        usage: /<command>
+        usage: /<command> [amount of packets]
     lping:
         description: Pings Google.com, from the server.
-        usage: /<command>
+        usage: /<command> [amount of packets]
 permissions:
     lagmeter.*:
         description: Gives full access
