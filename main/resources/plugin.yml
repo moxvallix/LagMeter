@@ -1,6 +1,6 @@
 name: LagMeter
 main: main.java.com.webkonsept.minecraft.lagmeter.LagMeter
-version: 1.13.0
+version: 1.13.1
 thread: http://dev.bukkit.org/server-mods/lagmeter/
 database: false
 description: Lets you check the server lag, in ticks-per-second
