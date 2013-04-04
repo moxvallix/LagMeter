@@ -39,7 +39,10 @@ commands:
         description: Shows how long the server has been online.
         usage: /<command>
     ping:
-        description: Pings Googlep, from the server.
+        description: Pings Google.com, from the server.
+        usage: /<command>
+    lping:
+        description: Pings Google.com, from the server.
         usage: /<command>
 permissions:
     lagmeter.*:
