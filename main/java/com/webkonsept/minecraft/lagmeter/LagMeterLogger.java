@@ -37,7 +37,7 @@ public class LagMeterLogger{
 			this.error("Logfile is null");
 			ret = false;
 		}else if(this.logMemory==false&&this.logTPS==false){
-			this.error("Both logMemory and logTPS are disabled.  Nothing to log!");
+			this.error("Both logMemory and logTPS are disabled. Nothing to log!");
 			ret = false;
 		}else
 			try{
@@ -55,7 +55,7 @@ public class LagMeterLogger{
 	}
 
 	private void closeLog() throws IOException, Exception, FileNotFoundException{
-		if(this.enabled = true){
+		if(this.enabled = true&&this.log!=null){
 			this.log.flush();
 			this.log.close();
 			this.log = null;
