@@ -26,6 +26,9 @@ Commands:
         displayEntities: false
         #Should the commands which show the TPS meter also display loaded chunks in each world?
         displayChunks: false
+    Ping:
+        #Where the server should ping when the /ping and /lping commands are used.
+        destinationDomain: google.com
 #################
 ##   Logging   ##
 #################

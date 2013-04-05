@@ -36,7 +36,7 @@ public class LagMeter extends JavaPlugin{
 	protected int interval = 40, logInterval = 150, lagNotifyInterval, memNotifyInterval, lwTaskID, mwTaskID;
 	protected float tpsNotificationThreshold, memoryNotificationThreshold;
 	protected boolean useAverage = true, enableLogging = true, useLogsFolder = true, AutomaticLagNotificationsEnabled, AutomaticMemoryNotificationsEnabled, displayEntities, playerLoggingEnabled, displayChunksOnLoad, sendChunks, logChunks, logTotalChunksOnly, logEntities, logTotalEntitiesOnly, newBlockPerLog, displayEntitiesOnLoad, newLineForLogStats;
-	protected String highLagCommand, lowMemCommand;
+	protected String highLagCommand, lowMemCommand, pingDomain;
 	/** Static accessor */
 	public static LagMeter p;
 
@@ -384,13 +384,13 @@ public class LagMeter extends JavaPlugin{
 				}
 			else
 				processCmd.add("1");
-			processCmd.add("google.com");
+			processCmd.add(this.pingDomain);
 			p = new ProcessBuilder(processCmd).start();
 			result = new BufferedReader(new InputStreamReader(p.getInputStream()));
 			errorStream = new BufferedReader(new InputStreamReader(p.getErrorStream()));
 			while((s = result.readLine())!=null)
 				if(s.indexOf("Average = ")!=-1)
-					this.sendMessage(sender, 0, "Average response time for the server for "+processCmd.get(2)+" ping hop(s) to google.com: "+s.substring(s.indexOf("Average = ")+10));
+					this.sendMessage(sender, 0, "Average response time for the server for "+processCmd.get(2)+" ping hop(s) to "+this.pingDomain+": "+s.substring(s.indexOf("Average = ")+10));
 			while((s = errorStream.readLine())!=null)
 				this.sendMessage(sender, 1, s);
 			p.destroy();
