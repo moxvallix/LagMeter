@@ -25,9 +25,11 @@ Commands:
         #Default: false 
         displayEntities: false
         #Should the commands which show the TPS meter also display loaded chunks in each world?
+        #Default: false
         displayChunks: false
     Ping:
-        #Where the server should ping when the /ping and /lping commands are used.
+        #Where the server should ping when the /ping and /lping commands are used. This can be a domain name or an IP; it doesn't matter which it is.
+        #Default: google.com
         destinationDomain: google.com
 #################
 ##   Logging   ##
