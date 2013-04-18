@@ -364,26 +364,14 @@ public class LagMeter extends JavaPlugin{
 			final BufferedReader result;
 			final BufferedReader errorStream;
 			processCmd.add("ping");
-			processCmd.add("-n");
-			if(args.length>0)
-				if(this.permit(sender, "lagmeter.commands.ping.unlimited"))
-					try{
-						if(Integer.parseInt(args[0])<=10)
-							processCmd.add(args[0]);
-						else{
-							processCmd.add("10");
-							this.sendMessage(sender, 1, "Please be careful with that command! It is exponentially more server-intensive the more hops you specify, and there is therefore a limit of 10 - which will be used for this command instance.");
-						}
-					}catch(final NumberFormatException e){
-						this.sendMessage(sender, 1, "You entered an invalid amount of hops; therefore, 1 will be used instead.");
-						processCmd.add("1");
-					}
-				else{
-					processCmd.add("1");
-					this.sendMessage(sender, 1, "You don't have access to specifying ping hops!");
-				}
-			else
-				processCmd.add("1");
+			if(System.getProperty("os.name").startsWith("Windows"))
+				processCmd.add("-n");
+			else {
+				processCmd.add("-s");
+				processCmd.add("32");
+				processCmd.add("-c");
+			}
+			processCmd.add(getHops(sender, args));
 			processCmd.add(this.pingDomain);
 			p = new ProcessBuilder(processCmd).start();
 			result = new BufferedReader(new InputStreamReader(p.getInputStream()));
@@ -397,6 +385,28 @@ public class LagMeter extends JavaPlugin{
 		}catch(final IOException e){
 			e.printStackTrace();
 		}
+	}
+	
+	public String getHops(CommandSender sender, String[] args) {
+		if(args.length>0)
+			if(this.permit(sender, "lagmeter.commands.ping.unlimited"))
+				try{
+					if(Integer.parseInt(args[0])<=10)
+						return args[0];
+					else{
+						this.sendMessage(sender, 1, "Please be careful with that command! It is exponentially more server-intensive the more hops you specify, and there is therefore a limit of 10 - which will be used for this command instance.");
+						return "10";
+					}
+				}catch(final NumberFormatException e){
+					this.sendMessage(sender, 1, "You entered an invalid amount of hops; therefore, 1 will be used instead.");
+					return "1";
+				}
+			else{
+				this.sendMessage(sender, 1, "You don't have access to specifying ping hops!");
+				return "1";
+			}
+		else
+			return "1";
 	}
 
 	protected void sendMessage(final CommandSender sender, final int severity, final String message){
