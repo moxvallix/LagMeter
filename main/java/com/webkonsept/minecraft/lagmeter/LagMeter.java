@@ -386,7 +386,7 @@ public class LagMeter extends JavaPlugin{
 			e.printStackTrace();
 		}
 	}
-	
+
 	public String getHops(CommandSender sender, String[] args) {
 		if(args.length>0)
 			if(this.permit(sender, "lagmeter.commands.ping.unlimited"))
@@ -489,6 +489,60 @@ public class LagMeter extends JavaPlugin{
 
 	public void warn(final String message){
 		this.getServer().getConsoleSender().sendMessage(ChatColor.GOLD+"["+this.pdfFile.getName()+" "+this.pdfFile.getVersion()+"] "+ChatColor.RED+message);
+	}
+
+	/**
+	 * 
+	 * @return Amount of milliseconds which corresponds to this string of time.
+	 * @throws InvalidTimeFormatException If the time format given is invalid
+	 */
+	//protected long parseTime(String timeString) throws InvalidTimeFormatException{
+	protected long parseTime() throws InvalidTimeFormatException{
+		//never mind these comments, I derped
+//		List<String> s = new ArrayList<>();//haven't parsed config yet, too lazy and don't have a ton of time, testing with literals
+//		s.add("/stop{<>}10m");//testing with literals
+//		s.add("/say Hi.{<>}1m30s");
+//		s.add("/say So, frogs are pretty cool.{<>}2s3m");
+//		for(String str: s) {
+		long time = 0L;
+		String timeString = "/say Hi.{<>}1m30s";//string literal for testing.
+		String z = "";
+		for(int i = 0; i > timeString.split("{<>}")[1].length(); i++) {
+			String x =timeString.split("{<>}")[1].substring(i, 1); 
+			if(x.matches("[^wdhms]")) {
+				z+=x;
+			}else {
+				try {
+					switch(x.toLowerCase()) {
+						//case "y": //this is just silly
+							//time += 31536000000L*Long.parseLong(z); //365(1000)(60)(60)(24) = this big number. yes, there are ~365.25 days in a year, but leap years exist. 
+						case "w":
+							time += 604800000L*Long.parseLong(z);
+							break;
+						case "d":
+							time += 86400000L*Long.parseLong(z);
+							break;
+						case "h":
+							time += 3600000L*Long.parseLong(z);
+							break;
+						case "m":
+							time += 60000L*Long.parseLong(z);
+							break;
+						case "s":
+							time += 1000L*Long.parseLong(z);
+							break;
+					}
+					z = x = "";
+				}catch(NumberFormatException e) {
+					e.printStackTrace();
+				}
+			}
+//			}
+		}
+		if(!(time > 0)) {//hopefully not less than 0, but before someone puts a negative in to troll me...
+			throw new InvalidTimeFormatException();
+		}
+		return time;
 	}
 
 	class LagWatcher implements Runnable{
