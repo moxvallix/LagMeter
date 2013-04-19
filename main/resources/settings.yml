@@ -21,11 +21,11 @@ displayEntitiesOnLoad: true
 #########################
 #List of up-time commands.
 #Format: /command text{<>}amountOfTime
-#Proper time delimiters: y: years (ha), m: months, w: weeks, d: days, h: hours, m: minutes, s: seconds
-#Can use any combination of these delimiters, for example, 3y1d, 3w1d, 2h1d, etc.
+#Proper time delimiters: w: weeks, d: days, h: hours, m: minutes, s: seconds
+#Can use any combination of these delimiters, for example, 1s35m2d, 1d, 3w1d, 2h1d, etc.
 UptimeCommands:
     commandList:
-        - /stop{<>}7d
+        - /stop{<>}7d2m
         - /reload{<>}12h30m30s
         - /lag{<>}30m
     #If the commands are set to repeat, they will be run, for example, if the uptime trigger is set to 4h, then it will run every 4h.
