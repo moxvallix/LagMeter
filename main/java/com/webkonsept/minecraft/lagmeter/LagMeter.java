@@ -197,6 +197,12 @@ public class LagMeter extends JavaPlugin{
 			if(command.getName().equalsIgnoreCase("lag")){
 				success = true;
 				this.sendLagMeter(sender);
+				try{
+//	                sender.sendMessage(this.parseTime(args[0])+"ms");
+	                sender.sendMessage(this.parseTime()+"ms");
+                }catch(InvalidTimeFormatException e){
+	                e.printStackTrace();
+                }
 			}else if(command.getName().equalsIgnoreCase("mem")){
 				success = true;
 				this.sendMemMeter(sender);
@@ -298,15 +304,12 @@ public class LagMeter extends JavaPlugin{
 	}
 
 	protected void sendLagMeter(final CommandSender sender){
-		ChatColor wrapColour = ChatColor.WHITE;
+		String lagMeter = "";
+		final float tps;
 		if(this.displayEntities)
 			this.sendEntities(sender);
 		if(this.sendChunks)
 			this.sendChunks(sender);
-		if(sender instanceof Player)
-			wrapColour = ChatColor.GOLD;
-		String lagMeter = "";
-		float tps = 0f;
 		if(this.useAverage)
 			tps = this.history.getAverage();
 		else
@@ -315,45 +318,25 @@ public class LagMeter extends JavaPlugin{
 			int looped = 0;
 			while(looped++<tps)
 				lagMeter += "#";
-			// lagMeter = String.format("%-20s",lagMeter);
-			lagMeter += ChatColor.WHITE;
 			while(looped++<=20)
 				lagMeter += "_";
 		}else{
 			this.sendMessage(sender, 1, "LagMeter just loaded, please wait for polling.");
 			return;
 		}
-		ChatColor colour;
-		if(tps>=20)
-			colour = ChatColor.GREEN;
-		else if(tps>=18)
-			colour = ChatColor.GREEN;
-		else if(tps>=15)
-			colour = ChatColor.YELLOW;
-		else
-			colour = ChatColor.RED;
-		this.sendMessage(sender, 0, wrapColour+"["+colour+lagMeter+wrapColour+"] "+tps+" TPS");
+		this.sendMessage(sender, 0, ChatColor.GOLD+"["+(tps >= 18 ? ChatColor.GREEN : (tps >= 15 ? ChatColor.YELLOW : ChatColor.RED))+lagMeter+ChatColor.GOLD+"] "+String.format("%3.2f", tps)+" TPS");
 	}
 
 	protected void sendMemMeter(final CommandSender sender){
-		this.updateMemoryStats();
-		final String wrapColour = ChatColor.GOLD.toString();
-		String colour = ChatColor.GOLD.toString();
-		if(this.percentageFree>=60)
-			colour = ChatColor.GREEN.toString();
-		else if(this.percentageFree>=35)
-			colour = ChatColor.YELLOW.toString();
-		else
-			colour = ChatColor.RED.toString();
 		String bar = "";
 		int looped = 0;
+		this.updateMemoryStats();
 		while(looped++<this.percentageFree/5)
 			bar += '#';
-		// bar = String.format("%-20s",bar);
 		bar += ChatColor.WHITE;
 		while(looped++<=20)
 			bar += '_';
-		this.sendMessage(sender, 0, wrapColour+"["+colour+bar+wrapColour+"] "+this.memFree+"MB/"+this.memMax+"MB ("+(int) this.percentageFree+"%) free");
+		this.sendMessage(sender, 0, ChatColor.GOLD+"["+(this.percentageFree >= 60 ? ChatColor.GREEN : (this.percentageFree >= 35 ? ChatColor.YELLOW : ChatColor.RED))+bar+ChatColor.GOLD+"] "+String.format("%3.2f", this.memFree)+"MB/"+String.format("%3.2f", this.memMax)+"MB ("+String.format("%3.2f", this.percentageFree)+"%) free");
 	}
 
 	private void ping(final CommandSender sender, final String[] args){
@@ -496,26 +479,19 @@ public class LagMeter extends JavaPlugin{
 	 * @return Amount of milliseconds which corresponds to this string of time.
 	 * @throws InvalidTimeFormatException If the time format given is invalid
 	 */
-	//protected long parseTime(String timeString) throws InvalidTimeFormatException{
+//	protected long parseTime(String timeString) throws InvalidTimeFormatException{
 	protected long parseTime() throws InvalidTimeFormatException{
-		//never mind these comments, I derped
-//		List<String> s = new ArrayList<>();//haven't parsed config yet, too lazy and don't have a ton of time, testing with literals
-//		s.add("/stop{<>}10m");//testing with literals
-//		s.add("/say Hi.{<>}1m30s");
-//		s.add("/say So, frogs are pretty cool.{<>}2s3m");
-//		for(String str: s) {
 		long time = 0L;
-		String timeString = "/say Hi.{<>}1m30s";//string literal for testing.
+		String timeString = "/say Hi.;1s";//string literal for testing.
 		String z = "";
-		for(int i = 0; i > timeString.split("{<>}")[1].length(); i++) {
-			String x =timeString.split("{<>}")[1].substring(i, 1); 
-			if(x.matches("[^wdhms]")) {
-				z+=x;
+		String x = timeString.split(";")[1];
+		for(int i = 0; i > x.length(); i++) {
+			String moo = x.substring(i, 1);
+			if(moo.matches("[^wdhms]")) {
+				z+=moo;
 			}else {
 				try {
-					switch(x.toLowerCase()) {
-						//case "y": //this is just silly
-							//time += 31536000000L*Long.parseLong(z); //365(1000)(60)(60)(24) = this big number. yes, there are ~365.25 days in a year, but leap years exist. 
+					switch(moo.toLowerCase()) {
 						case "w":
 							time += 604800000L*Long.parseLong(z);
 							break;
@@ -534,12 +510,11 @@ public class LagMeter extends JavaPlugin{
 					}
 					z = x = "";
 				}catch(NumberFormatException e) {
-					e.printStackTrace();
+					throw new InvalidTimeFormatException();//should never happen
 				}
 			}
-//			}
 		}
-		if(!(time > 0)) {//hopefully not less than 0, but before someone puts a negative in to troll me...
+		if(!(time > 0)) {//hopefully not <= 0, but before someone puts a negative in to troll me...
 			throw new InvalidTimeFormatException();
 		}
 		return time;
