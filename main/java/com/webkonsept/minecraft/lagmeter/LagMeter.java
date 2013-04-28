@@ -115,11 +115,7 @@ public class LagMeter extends JavaPlugin{
 	 * Gets the current memory used, maxmimum memory, memory free, and percentage of memory free. Returned in a single array of doubles.
 	 * 
 	 * @since 1.11.0-SNAPSHOT
-	 * @return memory[], which is an array of doubles, containing four values, where: <br />
-	 *         <b><i>memory[0]</i></b> is the currently used memory;<br />
-	 *         <b><i>memory[1]</i></b> is the current maximum memory;<br />
-	 *         <b><i>memory[2]</i></b> is the current free memory;<br />
-	 *         <b><i>memory[3]</i></b> is the percentage memory free (note this may be an irrational number, so you might want to truncate it if you use this).
+	 * @return memory[], which is an array of doubles, containing four values, where: <br /> <b><i>memory[0]</i></b> is the currently used memory;<br /> <b><i>memory[1]</i></b> is the current maximum memory;<br /> <b><i>memory[2]</i></b> is the current free memory;<br /> <b><i>memory[3]</i></b> is the percentage memory free (note this may be an irrational number, so you might want to truncate it if you use this).
 	 */
 	public double[] getMemory(){
 		final double[] memory = {0D, 0D, 0D, 0D};
@@ -198,11 +194,12 @@ public class LagMeter extends JavaPlugin{
 				success = true;
 				this.sendLagMeter(sender);
 				try{
-//	                sender.sendMessage(this.parseTime(args[0])+"ms");
-	                sender.sendMessage(this.parseTime()+"ms");
-                }catch(InvalidTimeFormatException e){
-	                e.printStackTrace();
-                }
+					// sender.sendMessage(this.parseTime(args[0])+"ms");
+					sender.sendMessage(this.parseTime(args[0])+"ms");
+				}catch(final InvalidTimeFormatException e){
+					sender.sendMessage("invalid.");
+					// e.printStackTrace();
+				}
 			}else if(command.getName().equalsIgnoreCase("mem")){
 				success = true;
 				this.sendMemMeter(sender);
@@ -324,7 +321,7 @@ public class LagMeter extends JavaPlugin{
 			this.sendMessage(sender, 1, "LagMeter just loaded, please wait for polling.");
 			return;
 		}
-		this.sendMessage(sender, 0, ChatColor.GOLD+"["+(tps >= 18 ? ChatColor.GREEN : (tps >= 15 ? ChatColor.YELLOW : ChatColor.RED))+lagMeter+ChatColor.GOLD+"] "+String.format("%3.2f", tps)+" TPS");
+		this.sendMessage(sender, 0, ChatColor.GOLD+"["+(tps>=18 ? ChatColor.GREEN : (tps>=15 ? ChatColor.YELLOW : ChatColor.RED))+lagMeter+ChatColor.GOLD+"] "+String.format("%3.2f", tps)+" TPS");
 	}
 
 	protected void sendMemMeter(final CommandSender sender){
@@ -336,7 +333,7 @@ public class LagMeter extends JavaPlugin{
 		bar += ChatColor.WHITE;
 		while(looped++<=20)
 			bar += '_';
-		this.sendMessage(sender, 0, ChatColor.GOLD+"["+(this.percentageFree >= 60 ? ChatColor.GREEN : (this.percentageFree >= 35 ? ChatColor.YELLOW : ChatColor.RED))+bar+ChatColor.GOLD+"] "+String.format("%3.2f", this.memFree)+"MB/"+String.format("%3.2f", this.memMax)+"MB ("+String.format("%3.2f", this.percentageFree)+"%) free");
+		this.sendMessage(sender, 0, ChatColor.GOLD+"["+(this.percentageFree>=60 ? ChatColor.GREEN : (this.percentageFree>=35 ? ChatColor.YELLOW : ChatColor.RED))+bar+ChatColor.GOLD+"] "+String.format("%3.2f", this.memFree)+"MB/"+String.format("%3.2f", this.memMax)+"MB ("+String.format("%3.2f", this.percentageFree)+"%) free");
 	}
 
 	private void ping(final CommandSender sender, final String[] args){
@@ -349,12 +346,12 @@ public class LagMeter extends JavaPlugin{
 			processCmd.add("ping");
 			if(System.getProperty("os.name").startsWith("Windows"))
 				processCmd.add("-n");
-			else {
+			else{
 				processCmd.add("-s");
 				processCmd.add("32");
 				processCmd.add("-c");
 			}
-			processCmd.add(getHops(sender, args));
+			processCmd.add(this.getHops(sender, args));
 			processCmd.add(this.pingDomain);
 			p = new ProcessBuilder(processCmd).start();
 			result = new BufferedReader(new InputStreamReader(p.getInputStream()));
@@ -370,7 +367,7 @@ public class LagMeter extends JavaPlugin{
 		}
 	}
 
-	public String getHops(CommandSender sender, String[] args) {
+	public String getHops(CommandSender sender, String[] args){
 		if(args.length>0)
 			if(this.permit(sender, "lagmeter.commands.ping.unlimited"))
 				try{
@@ -479,44 +476,43 @@ public class LagMeter extends JavaPlugin{
 	 * @return Amount of milliseconds which corresponds to this string of time.
 	 * @throws InvalidTimeFormatException If the time format given is invalid
 	 */
-//	protected long parseTime(String timeString) throws InvalidTimeFormatException{
-	protected long parseTime() throws InvalidTimeFormatException{
+	protected long parseTime(String timeString) throws InvalidTimeFormatException{
 		long time = 0L;
-		String timeString = "/say Hi.;1s";//string literal for testing.
-		String z = "";
-		String x = timeString.split(";")[1];
-		for(int i = 0; i > x.length(); i++) {
-			String moo = x.substring(i, 1);
-			if(moo.matches("[^wdhms]")) {
-				z+=moo;
-			}else {
-				try {
-					switch(moo.toLowerCase()) {
-						case "w":
-							time += 604800000L*Long.parseLong(z);
-							break;
-						case "d":
-							time += 86400000L*Long.parseLong(z);
-							break;
-						case "h":
-							time += 3600000L*Long.parseLong(z);
-							break;
-						case "m":
-							time += 60000L*Long.parseLong(z);
-							break;
-						case "s":
-							time += 1000L*Long.parseLong(z);
-							break;
+		if(timeString.split(";").length==2){
+			String x = timeString.split(";")[1].toLowerCase();
+			String z = "";
+			for(int i = 0; i<x.length(); i++){
+				final String c = x.substring(i, i+1);
+				if(c.matches("[^wdhms]"))
+					z += c;
+				else
+					try{
+						switch(c){
+							case "w":
+								time += 604800000L*Long.parseLong(z);
+								break;
+							case "d":
+								time += 86400000L*Long.parseLong(z);
+								break;
+							case "h":
+								time += 3600000L*Long.parseLong(z);
+								break;
+							case "m":
+								time += 60000L*Long.parseLong(z);
+								break;
+							case "s":
+								time += 1000L*Long.parseLong(z);
+								break;
+						}
+						z = x = "";
+					}catch(final NumberFormatException e){
+						throw new InvalidTimeFormatException("The time for the uptime command "+timeString.split(";")[0]+" is invalid: the time string contains characters other than 0-9, w/d/h/m/s.");
 					}
-					z = x = "";
-				}catch(NumberFormatException e) {
-					throw new InvalidTimeFormatException();//should never happen
-				}
 			}
-		}
-		if(!(time > 0)) {//hopefully not <= 0, but before someone puts a negative in to troll me...
-			throw new InvalidTimeFormatException();
-		}
+		}else
+			time = -1L;
+		if(!(time>0))
+			throw new InvalidTimeFormatException("The time or command for the uptime command string "+timeString+" is invalid.");
 		return time;
 	}
 
