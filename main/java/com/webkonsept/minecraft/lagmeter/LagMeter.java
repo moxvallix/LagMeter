@@ -193,13 +193,6 @@ public class LagMeter extends JavaPlugin{
 			if(command.getName().equalsIgnoreCase("lag")){
 				success = true;
 				this.sendLagMeter(sender);
-				try{
-					// sender.sendMessage(this.parseTime(args[0])+"ms");
-					sender.sendMessage(this.parseTime(args[0])+"ms");
-				}catch(final InvalidTimeFormatException e){
-					sender.sendMessage("invalid.");
-					// e.printStackTrace();
-				}
 			}else if(command.getName().equalsIgnoreCase("mem")){
 				success = true;
 				this.sendMemMeter(sender);
