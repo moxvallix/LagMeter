@@ -504,7 +504,7 @@ public class LagMeter extends JavaPlugin{
 			}
 		}else
 			time = -1L;
-		if(!(time>0))
+		if(time<1)
 			throw new InvalidTimeFormatException("The time or command for the uptime command string "+timeString+" is invalid.");
 		return time;
 	}
