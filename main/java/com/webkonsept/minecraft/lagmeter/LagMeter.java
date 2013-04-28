@@ -14,24 +14,16 @@ import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class LagMeter extends JavaPlugin{
 	protected LagMeterLogger logger;
 	protected LagMeterPoller poller;
 	protected LagMeterStack history;
-	private LagMeterConfig conf;
 	protected float ticksPerSecond = 20;
-	protected PluginDescriptionFile pdfFile;
-	private final String fileSeparator = System.getProperty("file.separator");
-	protected final File logsFolder = new File("plugins"+this.fileSeparator+"LagMeter"+this.fileSeparator+"logs");
 	protected long uptime;
 	protected int averageLength = 10, sustainedLagTimer;
-	protected double memUsed = (Runtime.getRuntime().totalMemory()-Runtime.getRuntime().freeMemory())/1048576;
-	protected double memMax = Runtime.getRuntime().maxMemory()/1048576;
-	protected double memFree = this.memMax-this.memUsed;
-	protected double percentageFree = 100/this.memMax*this.memFree;
+	protected double memUsed = (Runtime.getRuntime().totalMemory()-Runtime.getRuntime().freeMemory())/1048576, memMax = Runtime.getRuntime().maxMemory()/1048576, memFree = this.memMax-this.memUsed, percentageFree = 100/this.memMax*this.memFree;
 	// Configurable Values - mostly booleans
 	protected int interval = 40, logInterval = 150, lagNotifyInterval, memNotifyInterval, lwTaskID, mwTaskID;
 	protected float tpsNotificationThreshold, memoryNotificationThreshold;
@@ -42,18 +34,17 @@ public class LagMeter extends JavaPlugin{
 
 	@Override
 	public void onEnable(){
+		this.uptime = System.currentTimeMillis();
+		final File logsFolder = new File("plugins"+File.separator+"LagMeter"+File.separator+"logs");
 		LagMeter.p = this;
-		this.conf = new LagMeterConfig(this);
 		this.logger = new LagMeterLogger(this);
 		this.poller = new LagMeterPoller(this);
 		this.history = new LagMeterStack();
-		this.pdfFile = this.getDescription();
-		this.conf.loadConfig();
-		this.uptime = System.currentTimeMillis();
-		if(!this.logsFolder.exists()&&this.useLogsFolder&&this.enableLogging){
-			this.info("Logs folder not found. Creating one for you.");
-			this.logsFolder.mkdir();
-			if(!this.logsFolder.exists())
+		new LagMeterConfig(this).loadConfig();
+		if(!logsFolder.exists()&&this.useLogsFolder&&this.enableLogging){
+			this.info("Logs folder not found. Attempting to create one for you.");
+			logsFolder.mkdir();
+			if(!logsFolder.exists())
 				this.severe("Error! Couldn't create the folder!");
 			else
 				this.info("Logs folder created.");
@@ -104,10 +95,6 @@ public class LagMeter extends JavaPlugin{
 			}catch(final Exception e){
 				e.printStackTrace();
 			}
-		// if(this.AutomaticLagNotificationsEnabled)
-		// super.getServer().getScheduler().cancelTask(this.lwTaskID);
-		// if(this.AutomaticMemoryNotificationsEnabled)
-		// super.getServer().getScheduler().cancelTask(this.mwTaskID);
 		super.getServer().getScheduler().cancelTasks(this);
 	}
 
@@ -142,7 +129,7 @@ public class LagMeter extends JavaPlugin{
 	protected void handleBaseCommand(final CommandSender sender, final String[] args){
 		if(args[0].equalsIgnoreCase("reload")){
 			if(this.permit(sender, "lagmeter.command.lagmeter.reload")||this.permit(sender, "lagmeter.reload")){
-				this.conf.loadConfig();
+				new LagMeterConfig(this).loadConfig();
 				this.sendMessage(sender, 0, "Configuration reloaded!");
 			}
 		}else if(args[0].equalsIgnoreCase("help")){
@@ -181,7 +168,7 @@ public class LagMeter extends JavaPlugin{
 	}
 
 	public void info(final String message){
-		this.getServer().getConsoleSender().sendMessage(ChatColor.GOLD+"["+this.pdfFile.getName()+" "+this.pdfFile.getVersion()+"] "+ChatColor.GREEN+message);
+		this.getServer().getConsoleSender().sendMessage(ChatColor.GOLD+"[LagMeter "+this.getDescription().getVersion()+"] "+ChatColor.GREEN+message);
 	}
 
 	@Override
@@ -230,7 +217,7 @@ public class LagMeter extends JavaPlugin{
 			}else if(command.getName().equalsIgnoreCase("LagMeter")){
 				success = true;
 				if(args.length==0){
-					this.sendMessage(sender, 0, "Version: "+this.pdfFile.getVersion());
+					this.sendMessage(sender, 0, "Version: "+this.getDescription().getVersion());
 					this.sendMessage(sender, 0, "Available sub-commands: /lagmeter|lm <reload|r>|/lagmeter|lm <help|?>");
 				}else
 					this.handleBaseCommand(sender, args);
@@ -450,7 +437,7 @@ public class LagMeter extends JavaPlugin{
 	}
 
 	public void severe(final String message){
-		this.getServer().getConsoleSender().sendMessage(ChatColor.GOLD+"["+this.pdfFile.getName()+" "+this.pdfFile.getVersion()+"] "+ChatColor.DARK_RED+message);
+		this.getServer().getConsoleSender().sendMessage(ChatColor.GOLD+"[LagMeter "+this.getDescription().getVersion()+"] "+ChatColor.DARK_RED+message);
 	}
 
 	protected void updateMemoryStats(){
@@ -461,7 +448,7 @@ public class LagMeter extends JavaPlugin{
 	}
 
 	public void warn(final String message){
-		this.getServer().getConsoleSender().sendMessage(ChatColor.GOLD+"["+this.pdfFile.getName()+" "+this.pdfFile.getVersion()+"] "+ChatColor.RED+message);
+		this.getServer().getConsoleSender().sendMessage(ChatColor.GOLD+"[LagMeter "+this.getDescription().getVersion()+"] "+ChatColor.RED+message);
 	}
 
 	/**
@@ -543,6 +530,12 @@ public class LagMeter extends JavaPlugin{
 				else
 					Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), LagMeter.this.lowMemCommand.replaceFirst("/", ""));
 			}
+		}
+	}
+
+	class UptimeCommandManager implements Runnable{
+		@Override
+		public void run(){
 		}
 	}
 }
