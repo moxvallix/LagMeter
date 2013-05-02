@@ -15,6 +15,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 
 public class LagMeter extends JavaPlugin{
 	protected LagMeterLogger logger;
@@ -317,46 +318,83 @@ public class LagMeter extends JavaPlugin{
 	}
 
 	private void ping(final CommandSender sender, final String[] args){
-		try{
-			Process p;
-			String s;
-			final List<String> processCmd = new ArrayList<String>();
-			final BufferedReader result;
-			final BufferedReader errorStream;
-			processCmd.add("ping");
-			if(System.getProperty("os.name").startsWith("Windows"))
-				processCmd.add("-n");
-			else{
-				processCmd.add("-s");
-				processCmd.add("32");
-				processCmd.add("-c");
+		final List<String> processCmd = new ArrayList<String>();
+		final String hops = this.getHops(sender, args);
+		final String domain = this.pingDomain;
+		processCmd.add("ping");
+		processCmd.add(System.getProperty("os.name").startsWith("Windows") ? "-n" : "-c");
+		processCmd.add(hops);
+		processCmd.add(domain);
+
+		class SyncSendMessage extends BukkitRunnable {
+			CommandSender sender;
+			int severity;
+			String message;
+
+			SyncSendMessage(final CommandSender sender, final int severity, final String message) {
+				this.sender = sender;
+				this.severity = severity;
+				this.message = message;
 			}
-			processCmd.add(this.getHops(sender, args));
-			processCmd.add(this.pingDomain);
-			p = new ProcessBuilder(processCmd).start();
-			result = new BufferedReader(new InputStreamReader(p.getInputStream()));
-			errorStream = new BufferedReader(new InputStreamReader(p.getErrorStream()));
-			while((s = result.readLine())!=null)
-				if(s.indexOf("Average = ")!=-1)
-					this.sendMessage(sender, 0, "Average response time for the server for "+processCmd.get(2)+" ping hop(s) to "+this.pingDomain+": "+s.substring(s.indexOf("Average = ")+10));
-			while((s = errorStream.readLine())!=null)
-				this.sendMessage(sender, 1, s);
-			p.destroy();
-		}catch(final IOException e){
-			e.printStackTrace();
+
+			public void run() {
+				LagMeter.this.sendMessage(sender, severity, message);
+			}
 		}
+
+		this.getServer().getScheduler().runTaskAsynchronously(this, new Runnable() {
+			public void run() {
+				final BufferedReader result;
+				final BufferedReader errorStream;
+				Process p;
+				String s;
+				String output = null;
+				String windowsPingSummary = "Average = ";
+				String unixPingSummary = "rtt min/avg/max/mdev = ";
+				try {
+					p = new ProcessBuilder(processCmd).start();
+					result = new BufferedReader(new InputStreamReader(p.getInputStream()));
+					errorStream = new BufferedReader(new InputStreamReader(p.getErrorStream()));
+					while((s = result.readLine())!=null) {
+						if (s.trim().length() != 0) {
+							output = s;
+						}
+						if (s.indexOf(windowsPingSummary)!=-1) {
+							output = s.substring(s.indexOf(windowsPingSummary)+windowsPingSummary.length());
+							break;
+						}
+						if (s.indexOf(unixPingSummary)!=-1) {
+							output = s.substring(unixPingSummary.length()).split("/")[1];
+							break;
+						}
+					}
+
+					if (output != null) {
+						new SyncSendMessage(sender, 0, "Average response time for the server for "+hops+" ping hop(s) to "+domain+": "+output).runTask(LagMeter.this);
+					} else {
+						new SyncSendMessage(sender, 0, "Error running ping command").runTask(LagMeter.this);
+					}
+
+					while((s = errorStream.readLine())!=null) {
+						new SyncSendMessage(sender, 1, s).runTask(LagMeter.this);
+					}
+					p.destroy();
+				}catch(final IOException e){
+					new SyncSendMessage(sender, 0, "Error running ping command").runTask(LagMeter.this);
+					e.printStackTrace();
+				}
+			}
+		});
 	}
 
 	public String getHops(CommandSender sender, String[] args){
 		if(args.length>0)
 			if(this.permit(sender, "lagmeter.commands.ping.unlimited"))
 				try{
-					if(Integer.parseInt(args[0])<=10)
-						return args[0];
-					else{
-						this.sendMessage(sender, 1, "Please be careful with that command! It is exponentially more server-intensive the more hops you specify, and there is therefore a limit of 10 - which will be used for this command instance.");
-						return "10";
+					if(Integer.parseInt(args[0])>10) {
+						this.sendMessage(sender, 1, "This might take a while...");
 					}
+					return args[0];
 				}catch(final NumberFormatException e){
 					this.sendMessage(sender, 1, "You entered an invalid amount of hops; therefore, 1 will be used instead.");
 					return "1";
