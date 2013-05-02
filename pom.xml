@@ -8,17 +8,12 @@
 
 	<!-- Build Settings -->
 	<build>
+		<sourceDirectory>main</sourceDirectory>
 		<resources>
-			<!--Main -->
-			<resource>
-				<targetPath>main/java/com/webkonsept/minecraft/lagmeter</targetPath>
-				<filtering>false</filtering>
-				<directory>${basedir}/main/java/com/webkonsept/minecraft/lagmeter</directory>
-			</resource>
 			<!--settings.yml -->
 			<resource>
 				<targetPath>main/resources</targetPath>
-				<filtering>false</filtering>
+				<filtering>true</filtering>
 				<directory>${basedir}/main/resources</directory>
 				<includes>
 					<include>settings.yml</include>
@@ -28,8 +23,8 @@
 			</resource>
 			<!--plugin.yml -->
 			<resource>
-				<targetPath></targetPath>
-				<filtering>false</filtering>
+				<targetPath>.</targetPath>
+				<filtering>true</filtering>
 				<directory>${basedir}/main/resources</directory>
 				<includes>
 					<include>plugin.yml</include>
@@ -38,6 +33,17 @@
 				</excludes>
 			</resource>
 		</resources>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.1</version>
+				<configuration>
+					<source>1.7</source>
+					<target>1.7</target>
+				</configuration>
+			</plugin>
+		</plugins>
 	</build>
 
 	<dependencies>
