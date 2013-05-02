@@ -370,7 +370,7 @@ public class LagMeter extends JavaPlugin{
 	}
 
 	protected void sendMessage(final CommandSender sender, final int severity, final String message){
-		if(sender instanceof Player)
+		if(sender != null)
 			switch(severity){
 				case 0:
 					sender.sendMessage(ChatColor.GOLD+"[LagMeter] "+ChatColor.GREEN+message);
@@ -397,30 +397,7 @@ public class LagMeter extends JavaPlugin{
 	}
 
 	protected void sendMessage(final Player player, final int severity, final String message){
-		if(player!=null)
-			switch(severity){
-				case 0:
-					player.sendMessage(ChatColor.GOLD+"[LagMeter] "+ChatColor.GREEN+message);
-					break;
-				case 1:
-					player.sendMessage(ChatColor.GOLD+"[LagMeter] "+ChatColor.RED+message);
-					break;
-				case 2:
-					player.sendMessage(ChatColor.GOLD+"[LagMeter] "+ChatColor.DARK_RED+message);
-					break;
-			}
-		else
-			switch(severity){
-				case 0:
-					this.info(message);
-					break;
-				case 1:
-					this.warn(message);
-					break;
-				case 2:
-					this.severe(message);
-					break;
-			}
+		this.sendMessage((CommandSender) player, severity, message);
 	}
 
 	private String convertUptime(){
