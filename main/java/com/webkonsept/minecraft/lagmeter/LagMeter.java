@@ -66,7 +66,7 @@ public class LagMeter extends JavaPlugin{
 			for(final String s: this.uptimeCommands){
 				long time;
 				try{
-					time = this.parseTime(s)/50L;
+					time = this.parseTime(s);
 					if(this.repeatingUptimeCommands)
 						super.getServer().getScheduler().scheduleSyncRepeatingTask(this, new UptimeCommand(s.split(";")[1]), time, time);
 					else
@@ -339,7 +339,7 @@ public class LagMeter extends JavaPlugin{
 		processCmd.add(System.getProperty("os.name").startsWith("Windows") ? "-n" : "-c");
 		processCmd.add(hops);
 		processCmd.add(domain);
-		class SyncSendMessage extends BukkitRunnable{
+		final class SyncSendMessage extends BukkitRunnable{
 			CommandSender sender;
 			int severity;
 			String message;
@@ -476,7 +476,7 @@ public class LagMeter extends JavaPlugin{
 
 	/**
 	 * 
-	 * @return Amount of milliseconds which corresponds to this string of time.
+	 * @return Amount of ticks which corresponds to this string of time.
 	 * @throws InvalidTimeFormatException If the time format given is invalid
 	 */
 	protected long parseTime(final String timeString) throws InvalidTimeFormatException{
@@ -492,19 +492,19 @@ public class LagMeter extends JavaPlugin{
 					try{
 						switch(c){
 							case "w":
-								time += 604800000L*Long.parseLong(z);
+								time += 12096000L*Long.parseLong(z);
 								break;
 							case "d":
-								time += 86400000L*Long.parseLong(z);
+								time += 1728000L*Long.parseLong(z);
 								break;
 							case "h":
-								time += 3600000L*Long.parseLong(z);
+								time += 7200L*Long.parseLong(z);
 								break;
 							case "m":
-								time += 60000L*Long.parseLong(z);
+								time += 1200L*Long.parseLong(z);
 								break;
 							case "s":
-								time += 1000L*Long.parseLong(z);
+								time += 20L*Long.parseLong(z);
 								break;
 						}
 						z = x = "";
@@ -519,7 +519,7 @@ public class LagMeter extends JavaPlugin{
 		return time;
 	}
 
-	class LagWatcher implements Runnable{
+	final class LagWatcher implements Runnable{
 		@Override
 		public void run(){
 			if(LagMeter.this.tpsNotificationThreshold>=LagMeter.this.getTPS()){
@@ -537,7 +537,7 @@ public class LagMeter extends JavaPlugin{
 		}
 	}
 
-	class MemoryWatcher implements Runnable{
+	final class MemoryWatcher implements Runnable{
 		@Override
 		public void run(){
 			if(LagMeter.this.memoryNotificationThreshold>=LagMeter.this.getMemory()[3]){
@@ -556,8 +556,8 @@ public class LagMeter extends JavaPlugin{
 		}
 	}
 
-	class UptimeCommand implements Runnable{
-		String command;
+	final class UptimeCommand implements Runnable{
+		final String command;
 
 		public UptimeCommand(String command){
 			this.command = command;
