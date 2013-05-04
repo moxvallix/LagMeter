@@ -490,23 +490,28 @@ public class LagMeter extends JavaPlugin{
 					z += c;
 				else
 					try{
-						switch(c){
-							case "w":
-								time += 12096000L*Long.parseLong(z);
-								break;
-							case "d":
-								time += 1728000L*Long.parseLong(z);
-								break;
-							case "h":
-								time += 7200L*Long.parseLong(z);
-								break;
-							case "m":
-								time += 1200L*Long.parseLong(z);
-								break;
-							case "s":
-								time += 20L*Long.parseLong(z);
-								break;
-						}
+						// switch(c){ // Non-java-6-compliant
+						// case "w":
+						if(c.equalsIgnoreCase("w"))
+							time += 12096000L*Long.parseLong(z);
+						// break;
+						// case "d":
+						else if(c.equalsIgnoreCase("d"))
+							time += 1728000L*Long.parseLong(z);
+						// break;
+						// case "h":
+						else if(c.equalsIgnoreCase("h"))
+							time += 7200L*Long.parseLong(z);
+						// break;
+						// case "m":
+						else if(c.equalsIgnoreCase("m"))
+							time += 1200L*Long.parseLong(z);
+						// break;
+						// case "s":
+						else if(c.equalsIgnoreCase("s"))
+							time += 20L*Long.parseLong(z);
+						// break;
+						// }
 						z = x = "";
 					}catch(final NumberFormatException e){
 						throw new InvalidTimeFormatException("The time for the uptime command "+timeString.split(";")[0]+" is invalid: the time string contains characters other than 0-9, w/d/h/m/s.");
