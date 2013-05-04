@@ -68,9 +68,9 @@ public class LagMeter extends JavaPlugin{
 				try{
 					time = this.parseTime(s);
 					if(this.repeatingUptimeCommands)
-						super.getServer().getScheduler().scheduleSyncRepeatingTask(this, new UptimeCommand(s.split(";")[1]), time, time);
+						super.getServer().getScheduler().scheduleSyncRepeatingTask(this, new UptimeCommand(s.split(";")[0]), time, time);
 					else
-						super.getServer().getScheduler().scheduleSyncDelayedTask(this, new UptimeCommand(s.split(";")[1]), time);
+						super.getServer().getScheduler().scheduleSyncDelayedTask(this, new UptimeCommand(s.split(";")[0]), time);
 				}catch(final InvalidTimeFormatException e){
 					e.printStackTrace();
 				}
