@@ -559,7 +559,7 @@ public class LagMeter extends JavaPlugin{
 	final class UptimeCommand implements Runnable{
 		final String command;
 
-		public UptimeCommand(String command){
+		public UptimeCommand(final String command){
 			this.command = command;
 		}
 

@@ -8,7 +8,7 @@ public class InvalidTimeFormatException extends Throwable{
 		this.message = "";
 	}
 
-	public InvalidTimeFormatException(String message){
+	public InvalidTimeFormatException(final String message){
 		this.message = message;
 	}
 
