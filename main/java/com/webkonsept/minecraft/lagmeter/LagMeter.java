@@ -28,7 +28,8 @@ public class LagMeter extends JavaPlugin{
 	// Configurable Values - mostly booleans
 	protected int interval = 40, logInterval = 150, lagNotifyInterval, memNotifyInterval, lwTaskID, mwTaskID;
 	protected float tpsNotificationThreshold, memoryNotificationThreshold;
-	protected boolean useAverage = true, enableLogging = true, useLogsFolder = true, AutomaticLagNotificationsEnabled, AutomaticMemoryNotificationsEnabled, displayEntities, playerLoggingEnabled, displayChunksOnLoad, sendChunks, logChunks, logTotalChunksOnly, logEntities, logTotalEntitiesOnly, newBlockPerLog, displayEntitiesOnLoad, newLineForLogStats;
+	protected boolean useAverage = true, enableLogging = true, useLogsFolder = true, AutomaticLagNotificationsEnabled, AutomaticMemoryNotificationsEnabled, displayEntities, playerLoggingEnabled, displayChunksOnLoad, sendChunks, logChunks, logTotalChunksOnly, logEntities, logTotalEntitiesOnly, newBlockPerLog, displayEntitiesOnLoad, newLineForLogStats, repeatingUptimeCommands;
+	protected List<String> uptimeCommands;
 	protected String highLagCommand, lowMemCommand, pingDomain;
 	/** Static accessor */
 	public static LagMeter p;
@@ -61,6 +62,19 @@ public class LagMeter extends JavaPlugin{
 		this.info("Enabled! Polling every "+this.interval+" server ticks."+loggingMessage);
 		this.lwTaskID = this.AutomaticLagNotificationsEnabled ? super.getServer().getScheduler().scheduleSyncRepeatingTask(this, new LagWatcher(), this.lagNotifyInterval*1200, this.lagNotifyInterval*1200) : -1;
 		this.mwTaskID = this.AutomaticMemoryNotificationsEnabled ? super.getServer().getScheduler().scheduleSyncRepeatingTask(this, new MemoryWatcher(), this.memNotifyInterval*1200, this.memNotifyInterval*1200) : -1;
+		if(this.uptimeCommands!=null)
+			for(final String s: this.uptimeCommands){
+				long time;
+				try{
+					time = this.parseTime(s)/50L;
+					if(this.repeatingUptimeCommands)
+						super.getServer().getScheduler().scheduleSyncRepeatingTask(this, new UptimeCommand(s.split(";")[1]), time, time);
+					else
+						super.getServer().getScheduler().scheduleSyncDelayedTask(this, new UptimeCommand(s.split(";")[1]), time);
+				}catch(final InvalidTimeFormatException e){
+					e.printStackTrace();
+				}
+			}
 		if(this.displayChunksOnLoad){
 			this.info("Chunks loaded:");
 			int total = 0;
@@ -302,7 +316,7 @@ public class LagMeter extends JavaPlugin{
 			this.sendMessage(sender, 1, "LagMeter just loaded, please wait for polling.");
 			return;
 		}
-		this.sendMessage(sender, 0, ChatColor.GOLD+"["+(tps>=18 ? ChatColor.GREEN : (tps>=15 ? ChatColor.YELLOW : ChatColor.RED))+lagMeter+ChatColor.GOLD+"] "+String.format("%3.2f", tps)+" TPS");
+		this.sendMessage(sender, 0, ChatColor.GOLD+"["+(tps>=18 ? ChatColor.GREEN : tps>=15 ? ChatColor.YELLOW : ChatColor.RED)+lagMeter+ChatColor.GOLD+"] "+String.format("%3.2f", tps)+" TPS");
 	}
 
 	protected void sendMemMeter(final CommandSender sender){
@@ -314,7 +328,7 @@ public class LagMeter extends JavaPlugin{
 		bar += ChatColor.WHITE;
 		while(looped++<=20)
 			bar += '_';
-		this.sendMessage(sender, 0, ChatColor.GOLD+"["+(this.percentageFree>=60 ? ChatColor.GREEN : (this.percentageFree>=35 ? ChatColor.YELLOW : ChatColor.RED))+bar+ChatColor.GOLD+"] "+String.format("%3.2f", this.memFree)+"MB/"+String.format("%3.2f", this.memMax)+"MB ("+String.format("%3.2f", this.percentageFree)+"%) free");
+		this.sendMessage(sender, 0, ChatColor.GOLD+"["+(this.percentageFree>=60 ? ChatColor.GREEN : this.percentageFree>=35 ? ChatColor.YELLOW : ChatColor.RED)+bar+ChatColor.GOLD+"] "+String.format("%3.2f", this.memFree)+"MB/"+String.format("%3.2f", this.memMax)+"MB ("+String.format("%3.2f", this.percentageFree)+"%) free");
 	}
 
 	private void ping(final CommandSender sender, final String[] args){
@@ -325,59 +339,54 @@ public class LagMeter extends JavaPlugin{
 		processCmd.add(System.getProperty("os.name").startsWith("Windows") ? "-n" : "-c");
 		processCmd.add(hops);
 		processCmd.add(domain);
-
-		class SyncSendMessage extends BukkitRunnable {
+		class SyncSendMessage extends BukkitRunnable{
 			CommandSender sender;
 			int severity;
 			String message;
 
-			SyncSendMessage(final CommandSender sender, final int severity, final String message) {
+			SyncSendMessage(final CommandSender sender, final int severity, final String message){
 				this.sender = sender;
 				this.severity = severity;
 				this.message = message;
 			}
 
-			public void run() {
-				LagMeter.this.sendMessage(sender, severity, message);
+			@Override
+			public void run(){
+				LagMeter.this.sendMessage(this.sender, this.severity, this.message);
 			}
 		}
-
-		this.getServer().getScheduler().runTaskAsynchronously(this, new Runnable() {
-			public void run() {
+		this.getServer().getScheduler().runTaskAsynchronously(this, new Runnable(){
+			@Override
+			public void run(){
 				final BufferedReader result;
 				final BufferedReader errorStream;
 				Process p;
 				String s;
 				String output = null;
-				String windowsPingSummary = "Average = ";
-				String unixPingSummary = "rtt min/avg/max/mdev = ";
-				try {
+				final String windowsPingSummary = "Average = ";
+				final String unixPingSummary = "rtt min/avg/max/mdev = ";
+				try{
 					p = new ProcessBuilder(processCmd).start();
 					result = new BufferedReader(new InputStreamReader(p.getInputStream()));
 					errorStream = new BufferedReader(new InputStreamReader(p.getErrorStream()));
-					while((s = result.readLine())!=null) {
-						if (s.trim().length() != 0) {
+					while((s = result.readLine())!=null){
+						if(s.trim().length()!=0)
 							output = s;
-						}
-						if (s.indexOf(windowsPingSummary)!=-1) {
+						if(s.indexOf(windowsPingSummary)!=-1){
 							output = s.substring(s.indexOf(windowsPingSummary)+windowsPingSummary.length());
 							break;
 						}
-						if (s.indexOf(unixPingSummary)!=-1) {
+						if(s.indexOf(unixPingSummary)!=-1){
 							output = s.substring(unixPingSummary.length()).split("/")[1];
 							break;
 						}
 					}
-
-					if (output != null) {
+					if(output!=null)
 						new SyncSendMessage(sender, 0, "Average response time for the server for "+hops+" ping hop(s) to "+domain+": "+output).runTask(LagMeter.this);
-					} else {
+					else
 						new SyncSendMessage(sender, 0, "Error running ping command").runTask(LagMeter.this);
-					}
-
-					while((s = errorStream.readLine())!=null) {
+					while((s = errorStream.readLine())!=null)
 						new SyncSendMessage(sender, 1, s).runTask(LagMeter.this);
-					}
 					p.destroy();
 				}catch(final IOException e){
 					new SyncSendMessage(sender, 0, "Error running ping command").runTask(LagMeter.this);
@@ -387,13 +396,12 @@ public class LagMeter extends JavaPlugin{
 		});
 	}
 
-	public String getHops(CommandSender sender, String[] args){
+	public String getHops(final CommandSender sender, final String[] args){
 		if(args.length>0)
 			if(this.permit(sender, "lagmeter.commands.ping.unlimited"))
 				try{
-					if(Integer.parseInt(args[0])>10) {
+					if(Integer.parseInt(args[0])>10)
 						this.sendMessage(sender, 1, "This might take a while...");
-					}
 					return args[0];
 				}catch(final NumberFormatException e){
 					this.sendMessage(sender, 1, "You entered an invalid amount of hops; therefore, 1 will be used instead.");
@@ -408,7 +416,7 @@ public class LagMeter extends JavaPlugin{
 	}
 
 	protected void sendMessage(final CommandSender sender, final int severity, final String message){
-		if(sender != null)
+		if(sender!=null)
 			switch(severity){
 				case 0:
 					sender.sendMessage(ChatColor.GOLD+"[LagMeter] "+ChatColor.GREEN+message);
@@ -471,7 +479,7 @@ public class LagMeter extends JavaPlugin{
 	 * @return Amount of milliseconds which corresponds to this string of time.
 	 * @throws InvalidTimeFormatException If the time format given is invalid
 	 */
-	protected long parseTime(String timeString) throws InvalidTimeFormatException{
+	protected long parseTime(final String timeString) throws InvalidTimeFormatException{
 		long time = 0L;
 		if(timeString.split(";").length==2){
 			String x = timeString.split(";")[1].toLowerCase();
@@ -548,9 +556,16 @@ public class LagMeter extends JavaPlugin{
 		}
 	}
 
-	class UptimeCommandManager implements Runnable{
+	class UptimeCommand implements Runnable{
+		String command;
+
+		public UptimeCommand(String command){
+			this.command = command;
+		}
+
 		@Override
 		public void run(){
+			Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), this.command);
 		}
 	}
 }

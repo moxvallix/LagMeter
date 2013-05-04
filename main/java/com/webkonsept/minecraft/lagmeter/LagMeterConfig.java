@@ -45,6 +45,8 @@ public class LagMeterConfig extends LagMeter{
 				this.plugin.displayEntities = this.config.getBoolean("Commands.Lag.displayEntities", true);
 				this.plugin.sendChunks = this.config.getBoolean("Commands.Lag.displayChunks", true);
 				this.plugin.pingDomain = this.config.getString("Commands.Ping.destinationDomain", "google.com");
+				this.plugin.uptimeCommands = this.config.getStringList("UptimeCommands.commandList");
+				this.plugin.repeatingUptimeCommands = this.config.getBoolean("UptimeCommands.repeatCommands", true);
 				this.plugin.logInterval = this.config.getInt("log.interval", 150);
 				this.plugin.enableLogging = this.config.getBoolean("log.enable", true);
 				this.plugin.useLogsFolder = this.config.getBoolean("log.useLogsFolder", false);
