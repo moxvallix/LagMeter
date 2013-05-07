@@ -8,6 +8,10 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JOptionPane;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
@@ -33,6 +37,23 @@ public class LagMeter extends JavaPlugin{
 	protected String highLagCommand, lowMemCommand, pingDomain;
 	/** Static accessor */
 	public static LagMeter p;
+
+	public static void main(String[] args){
+		try{
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		}catch(final ClassNotFoundException e){
+			e.printStackTrace();
+		}catch(final InstantiationException e){
+			e.printStackTrace();
+		}catch(final IllegalAccessException e){
+			e.printStackTrace();
+		}catch(final UnsupportedLookAndFeelException e){
+			e.printStackTrace();
+		}finally{
+			JOptionPane.showMessageDialog(null, "Sorry, but LagMeter is a Bukkit plugin, and cannot be run directly like you've attempted.\nTo use the plugin, download and set up a Bukkit Minecraft server, and in the root directory, create a folder called\n\"plugins\" (no quotes, and assuming it hasn't already been created for you), and put this JAR file (LagMeter.jar) there.\nWhen you've done that, start the Bukkit server using the command line java -jar \"path to Bukkit.jar\",\nor if it's already running, type \"reload\" (no quotes) into the command-line.", "LagMeter", JOptionPane.OK_OPTION);
+			System.exit(0);
+		}
+	}
 
 	@Override
 	public void onEnable(){
