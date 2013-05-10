@@ -473,11 +473,11 @@ public class LagMeter extends JavaPlugin{
 	public int[] getCurrentServerUptime(){
 		final int[] i = new int[4];
 		long l = System.currentTimeMillis()-this.uptime;
-		i[3] = (int) (l/1000L/60L/60L/24L);
+		i[3] = (int) (l/86400000L);
 		l -= i[3]*86400000L;
-		i[2] = (int) (l/1000L/60L/60L);
+		i[2] = (int) (l/3600000L);
 		l -= i[2]*3600000;
-		i[1] = (int) (l/1000L/60L);
+		i[1] = (int) (l/60000L);
 		l -= i[1]*60000L;
 		i[0] = (int) (l/1000L);
 		return i;
