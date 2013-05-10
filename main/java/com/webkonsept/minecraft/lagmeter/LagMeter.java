@@ -467,6 +467,7 @@ public class LagMeter extends JavaPlugin{
 	}
 
 	/**
+	 * This method will return the time in days, hours, minutes, and seconds, since the server was <b>started</b> <i>OR</i> <b>since it was last reloaded</b>.
 	 * 
 	 * @return An array of <b>int</b>s, i, where:<br /><ul><b>i[0]</b> is the seconds,<br /><b>i[1]</b> is the minutes,<br /><b>i[2]</b> is the hours,<br /><b>i[3]</b> is the days,</ul>that the server has been online without reloading.
 	 */
