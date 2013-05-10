@@ -43,7 +43,7 @@ public class LagMeter extends JavaPlugin{
 	private boolean displayEntities;
 	private boolean playerLoggingEnabled;
 	private boolean displayChunksOnLoad;
-	private boolean sendChunks;
+	private boolean displayChunks;
 	private boolean logChunks;
 	private boolean logTotalChunksOnly;
 	private boolean logEntities;
@@ -223,7 +223,8 @@ public class LagMeter extends JavaPlugin{
 				this.sendMemMeter(sender);
 			}else if(command.getName().equalsIgnoreCase("uptime")){
 				success = true;
-				this.sendMessage(sender, 0, "Current server uptime: "+this.convertUptime());
+				final int[] i = this.getCurrentServerUptime();
+				this.sendMessage(sender, 0, "Current server uptime: "+i[3]+" day(s), "+i[2]+" hour(s), "+i[1]+" minute(s), and "+i[0]+" second(s)");
 			}else if(command.getName().equalsIgnoreCase("lm")){
 				success = true;
 				if(args.length==0){
@@ -319,7 +320,7 @@ public class LagMeter extends JavaPlugin{
 		final float tps;
 		if(this.displayEntities)
 			this.sendEntities(sender);
-		if(this.sendChunks)
+		if(this.displayChunks)
 			this.sendChunks(sender);
 		if(this.useAverage)
 			tps = this.history.getAverage();
@@ -465,17 +466,21 @@ public class LagMeter extends JavaPlugin{
 		this.sendMessage((CommandSender) player, severity, message);
 	}
 
-	private String convertUptime(){
-		int days, hours, minutes, seconds;
+	/**
+	 * 
+	 * @return An array of <b>int</b>s, i, where:<br /><ul><b>i[0]</b> is the seconds,<br /><b>i[1]</b> is the minutes,<br /><b>i[2]</b> is the hours,<br /><b>i[3]</b> is the days,</ul>that the server has been online without reloading.
+	 */
+	public int[] getCurrentServerUptime(){
+		final int[] i = new int[4];
 		long l = System.currentTimeMillis()-this.uptime;
-		days = (int) (l/1000L/60L/60L/24L);
-		l -= days*86400000L;
-		hours = (int) (l/1000L/60L/60L);
-		l -= hours*3600000;
-		minutes = (int) (l/1000L/60L);
-		l -= minutes*60000L;
-		seconds = (int) (l/1000L);
-		return days+" day(s), "+hours+" hour(s), "+minutes+" minute(s), and "+seconds+" second(s)";
+		i[3] = (int) (l/1000L/60L/60L/24L);
+		l -= i[3]*86400000L;
+		i[2] = (int) (l/1000L/60L/60L);
+		l -= i[2]*3600000;
+		i[1] = (int) (l/1000L/60L);
+		l -= i[1]*60000L;
+		i[0] = (int) (l/1000L);
+		return i;
 	}
 
 	public void severe(final String message){
@@ -539,7 +544,7 @@ public class LagMeter extends JavaPlugin{
 		this.displayChunksOnLoad = yml.getBoolean("LoadedChunksOnLoad", true);
 		this.displayEntitiesOnLoad = yml.getBoolean("displayEntitiesOnLoad", true);
 		this.displayEntities = yml.getBoolean("Commands.Lag.displayEntities", true);
-		this.sendChunks = yml.getBoolean("Commands.Lag.displayChunks", true);
+		this.displayChunks = yml.getBoolean("Commands.Lag.displayChunks", true);
 		this.pingDomain = yml.getString("Commands.Ping.destinationDomain", "google.com");
 		this.uptimeCommands = yml.getStringList("UptimeCommands.commandList");
 		this.repeatingUptimeCommands = yml.getBoolean("UptimeCommands.repeatCommands", true);
@@ -614,7 +619,7 @@ public class LagMeter extends JavaPlugin{
 	}
 
 	public boolean isDisplayingChunks(){
-		return this.displayEntities;
+		return this.displayChunks;
 	}
 
 	public String getLagCommand(){
@@ -635,10 +640,6 @@ public class LagMeter extends JavaPlugin{
 
 	public LagMeterStack getHistory(){
 		return this.history;
-	}
-
-	public void setHistory(LagMeterStack stack){
-		this.history = stack;
 	}
 
 	public void addHistory(float tps){
