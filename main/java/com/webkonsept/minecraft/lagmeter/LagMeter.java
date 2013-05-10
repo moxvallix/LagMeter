@@ -97,8 +97,8 @@ public class LagMeter extends JavaPlugin{
 				this.severe("Logging is disabled because: "+this.logger.getError());
 		}
 		this.history.setMaxSize(this.averageLength);
-		final String loggingMessage = this.enableLogging ? " Logging to "+this.logger.getFilename()+"." : "";
-		this.info("Enabled! Polling every "+this.interval+" server ticks."+loggingMessage);
+		this.info("Enabled! Polling every "+this.interval+" server ticks."+(this.isLoggingEnabled() ? " Logging to "+this.logger.getFilename()+"." : ""));
+		this.registerTasks();
 		if(this.displayChunksOnLoad){
 			this.info("Chunks loaded:");
 			int total = 0;
