@@ -12,33 +12,52 @@ import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class LagMeter extends JavaPlugin{
-	protected LagMeterLogger logger;
-	protected LagMeterPoller poller;
-	protected LagMeterStack history;
-	protected float ticksPerSecond = 20;
-	protected long uptime;
-	protected int averageLength = 10, sustainedLagTimer;
-	protected double memUsed = (Runtime.getRuntime().totalMemory()-Runtime.getRuntime().freeMemory())/1048576, memMax = Runtime.getRuntime().maxMemory()/1048576, memFree = this.memMax-this.memUsed, percentageFree = 100/this.memMax*this.memFree;
+	private LagMeterLogger logger;
+	private LagMeterPoller poller;
+	private LagMeterStack history;
+	private float ticksPerSecond = 20;
+	private long uptime;
+	private int averageLength = 10;
+	private double memUsed = (Runtime.getRuntime().totalMemory()-Runtime.getRuntime().freeMemory())/1048576, memMax = Runtime.getRuntime().maxMemory()/1048576, memFree = this.memMax-this.memUsed, percentageFree = 100/this.memMax*this.memFree;
 	// Configurable Values - mostly booleans
-	protected int interval = 40, logInterval = 150, lagNotifyInterval, memNotifyInterval, lwTaskID, mwTaskID;
-	protected float tpsNotificationThreshold, memoryNotificationThreshold;
-	protected boolean useAverage = true, enableLogging = true, useLogsFolder = true, AutomaticLagNotificationsEnabled, AutomaticMemoryNotificationsEnabled, displayEntities, playerLoggingEnabled, displayChunksOnLoad, sendChunks, logChunks, logTotalChunksOnly, logEntities, logTotalEntitiesOnly, newBlockPerLog, displayEntitiesOnLoad, newLineForLogStats, repeatingUptimeCommands;
-	protected List<String> uptimeCommands;
-	protected String highLagCommand, lowMemCommand, pingDomain;
+	private int interval = 40;
+	private int logInterval = 150;
+	private int lagNotifyInterval;
+	private int memNotifyInterval;
+	private float tpsNotificationThreshold, memoryNotificationThreshold;
+	private boolean useAverage = true;
+	private boolean enableLogging = true;
+	private boolean useLogsFolder = true;
+	private boolean AutomaticLagNotificationsEnabled;
+	private boolean AutomaticMemoryNotificationsEnabled;
+	private boolean displayEntities;
+	private boolean playerLoggingEnabled;
+	private boolean displayChunksOnLoad;
+	private boolean sendChunks;
+	private boolean logChunks;
+	private boolean logTotalChunksOnly;
+	private boolean logEntities;
+	private boolean logTotalEntitiesOnly;
+	private boolean newBlockPerLog;
+	private boolean displayEntitiesOnLoad;
+	private boolean newLineForLogStats;
+	private boolean repeatingUptimeCommands;
+	private List<String> uptimeCommands;
+	private String highLagCommand, lowMemCommand, pingDomain;
 	/** Static accessor */
 	public static LagMeter p;
 
-	public static void main(String[] args){
+	public static void main(final String[] args){
 		try{
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		}catch(final ClassNotFoundException e){
@@ -63,7 +82,7 @@ public class LagMeter extends JavaPlugin{
 		this.logger = new LagMeterLogger(this);
 		this.poller = new LagMeterPoller(this);
 		this.history = new LagMeterStack();
-		new LagMeterConfig(this).loadConfig();
+		this.updateConfiguration();
 		if(!logsFolder.exists()&&this.useLogsFolder&&this.enableLogging){
 			this.info("Logs folder not found. Attempting to create one for you.");
 			logsFolder.mkdir();
@@ -78,24 +97,8 @@ public class LagMeter extends JavaPlugin{
 				this.severe("Logging is disabled because: "+this.logger.getError());
 		}
 		this.history.setMaxSize(this.averageLength);
-		super.getServer().getScheduler().scheduleSyncRepeatingTask(this, this.poller, 0, this.interval);
 		final String loggingMessage = this.enableLogging ? " Logging to "+this.logger.getFilename()+"." : "";
 		this.info("Enabled! Polling every "+this.interval+" server ticks."+loggingMessage);
-		this.lwTaskID = this.AutomaticLagNotificationsEnabled ? super.getServer().getScheduler().scheduleSyncRepeatingTask(this, new LagWatcher(), this.lagNotifyInterval*1200, this.lagNotifyInterval*1200) : -1;
-		this.mwTaskID = this.AutomaticMemoryNotificationsEnabled ? super.getServer().getScheduler().scheduleSyncRepeatingTask(this, new MemoryWatcher(), this.memNotifyInterval*1200, this.memNotifyInterval*1200) : -1;
-		if(this.uptimeCommands!=null)
-			for(final String s: this.uptimeCommands){
-				long time;
-				try{
-					time = this.parseTime(s);
-					if(this.repeatingUptimeCommands)
-						super.getServer().getScheduler().scheduleSyncRepeatingTask(this, new UptimeCommand(s.split(";")[0]), time, time);
-					else
-						super.getServer().getScheduler().scheduleSyncDelayedTask(this, new UptimeCommand(s.split(";")[0]), time);
-				}catch(final InvalidTimeFormatException e){
-					e.printStackTrace();
-				}
-			}
 		if(this.displayChunksOnLoad){
 			this.info("Chunks loaded:");
 			int total = 0;
@@ -140,14 +143,9 @@ public class LagMeter extends JavaPlugin{
 	 * @since 1.11.0-SNAPSHOT
 	 * @return memory[], which is an array of doubles, containing four values, where: <br /> <b><i>memory[0]</i></b> is the currently used memory;<br /> <b><i>memory[1]</i></b> is the current maximum memory;<br /> <b><i>memory[2]</i></b> is the current free memory;<br /> <b><i>memory[3]</i></b> is the percentage memory free (note this may be an irrational number, so you might want to truncate it if you use this).
 	 */
-	public double[] getMemory(){
-		final double[] memory = {0D, 0D, 0D, 0D};
+	public synchronized double[] getMemory(){
 		this.updateMemoryStats();
-		memory[0] = this.memUsed;
-		memory[1] = this.memMax;
-		memory[2] = this.memFree;
-		memory[3] = this.percentageFree;
-		return memory;
+		return new double[]{this.memUsed, this.memMax, this.memFree, this.percentageFree};
 	}
 
 	/**
@@ -165,7 +163,7 @@ public class LagMeter extends JavaPlugin{
 	protected void handleBaseCommand(final CommandSender sender, final String[] args){
 		if(args[0].equalsIgnoreCase("reload")){
 			if(this.permit(sender, "lagmeter.command.lagmeter.reload")||this.permit(sender, "lagmeter.reload")){
-				new LagMeterConfig(this).loadConfig();
+				this.updateConfiguration();
 				this.sendMessage(sender, 0, "Configuration reloaded!");
 			}
 		}else if(args[0].equalsIgnoreCase("help")){
@@ -484,7 +482,7 @@ public class LagMeter extends JavaPlugin{
 		this.getServer().getConsoleSender().sendMessage(ChatColor.GOLD+"[LagMeter "+this.getDescription().getVersion()+"] "+ChatColor.DARK_RED+message);
 	}
 
-	protected void updateMemoryStats(){
+	protected synchronized void updateMemoryStats(){
 		this.memUsed = (Runtime.getRuntime().totalMemory()-Runtime.getRuntime().freeMemory())/1048576;
 		this.memMax = Runtime.getRuntime().maxMemory()/1048576;
 		this.memFree = this.memMax-this.memUsed;
@@ -511,28 +509,16 @@ public class LagMeter extends JavaPlugin{
 					z += c;
 				else
 					try{
-						// switch(c){ // Non-java-6-compliant
-						// case "w":
 						if(c.equalsIgnoreCase("w"))
 							time += 12096000L*Long.parseLong(z);
-						// break;
-						// case "d":
 						else if(c.equalsIgnoreCase("d"))
 							time += 1728000L*Long.parseLong(z);
-						// break;
-						// case "h":
 						else if(c.equalsIgnoreCase("h"))
 							time += 7200L*Long.parseLong(z);
-						// break;
-						// case "m":
 						else if(c.equalsIgnoreCase("m"))
 							time += 1200L*Long.parseLong(z);
-						// break;
-						// case "s":
 						else if(c.equalsIgnoreCase("s"))
 							time += 20L*Long.parseLong(z);
-						// break;
-						// }
 						z = x = "";
 					}catch(final NumberFormatException e){
 						throw new InvalidTimeFormatException("The time for the uptime command "+timeString.split(";")[0]+" is invalid: the time string contains characters other than 0-9, w/d/h/m/s.");
@@ -545,53 +531,149 @@ public class LagMeter extends JavaPlugin{
 		return time;
 	}
 
-	final class LagWatcher implements Runnable{
-		@Override
-		public void run(){
-			if(LagMeter.this.tpsNotificationThreshold>=LagMeter.this.getTPS()){
-				final Player[] players = Bukkit.getServer().getOnlinePlayers();
-				for(final Player p: players)
-					if(LagMeter.this.permit(p, "lagmeter.notify.lag")||p.isOp())
-						p.sendMessage(ChatColor.GOLD+"[LagMeter] "+ChatColor.RED+"The server's TPS has dropped below "+LagMeter.this.tpsNotificationThreshold+"! If you configured a server command to execute at this time, it will run now.");
-				LagMeter.this.severe("The server's TPS has dropped below "+LagMeter.this.tpsNotificationThreshold+"! Executing command (if configured).");
-				if(LagMeter.this.highLagCommand.contains(";"))
-					for(final String cmd: LagMeter.this.highLagCommand.split(";"))
-						Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), cmd.replaceFirst("/", ""));
-				else
-					Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), LagMeter.this.highLagCommand.replaceFirst("/", ""));
-			}
-		}
+	private void updateConfiguration(){
+		final YamlConfiguration yml = new LagMeterConfig().loadConfig();
+		this.useAverage = yml.getBoolean("useAverage", true);
+		this.averageLength = yml.getInt("averageLength", 10);
+		this.interval = yml.getInt("interval", 40);
+		this.displayChunksOnLoad = yml.getBoolean("LoadedChunksOnLoad", true);
+		this.displayEntitiesOnLoad = yml.getBoolean("displayEntitiesOnLoad", true);
+		this.displayEntities = yml.getBoolean("Commands.Lag.displayEntities", true);
+		this.sendChunks = yml.getBoolean("Commands.Lag.displayChunks", true);
+		this.pingDomain = yml.getString("Commands.Ping.destinationDomain", "google.com");
+		this.uptimeCommands = yml.getStringList("UptimeCommands.commandList");
+		this.repeatingUptimeCommands = yml.getBoolean("UptimeCommands.repeatCommands", true);
+		this.logInterval = yml.getInt("log.interval", 150);
+		this.enableLogging = yml.getBoolean("log.enable", true);
+		this.useLogsFolder = yml.getBoolean("log.useLogsFolder", false);
+		this.playerLoggingEnabled = yml.getBoolean("log.logPlayersOnline", true);
+		this.logChunks = yml.getBoolean("log.logChunks", false);
+		this.logTotalChunksOnly = yml.getBoolean("log.logTotalChunksOnly", true);
+		this.logEntities = yml.getBoolean("log.logEntities", false);
+		this.logTotalEntitiesOnly = yml.getBoolean("log.logTotalEntitiesOnly", true);
+		this.newBlockPerLog = yml.getBoolean("log.newBlockPerLog", true);
+		this.newLineForLogStats = yml.getBoolean("log.newLinePerStatistic", true);
+		this.AutomaticLagNotificationsEnabled = yml.getBoolean("Notifications.Lag.Enabled", true);
+		this.tpsNotificationThreshold = yml.getInt("Notifications.Lag.Threshold", 15);
+		this.lagNotifyInterval = yml.getInt("Notifications.Lag.CheckInterval", 5);
+		this.highLagCommand = yml.getString("Notifications.Lag.ConsoleCommand", "/lag");
+		this.AutomaticMemoryNotificationsEnabled = yml.getBoolean("Notifications.Memory.Enabled", true);
+		this.memoryNotificationThreshold = yml.getInt("Notifications.Memory.Threshold", 25);
+		this.memNotifyInterval = yml.getInt("Notifications.Memory.CheckInterval", 10);
+		this.lowMemCommand = yml.getString("Notifications.Memory.ConsoleCommand", "/mem");
 	}
 
-	final class MemoryWatcher implements Runnable{
-		@Override
-		public void run(){
-			if(LagMeter.this.memoryNotificationThreshold>=LagMeter.this.getMemory()[3]){
-				Player[] players;
-				players = Bukkit.getServer().getOnlinePlayers();
-				for(final Player p: players)
-					if(LagMeter.this.permit(p, "lagmeter.notify.mem")||p.isOp())
-						p.sendMessage(ChatColor.GOLD+"[LagMeter] "+ChatColor.RED+"The server's free memory pool has dropped below "+LagMeter.this.memoryNotificationThreshold+"%! If you configured a server command to execute at this time, it will run now.");
-				LagMeter.this.severe("The server's free memory pool has dropped below "+LagMeter.this.memoryNotificationThreshold+"! Executing command (if configured).");
-				if(LagMeter.this.lowMemCommand.contains(";"))
-					for(final String cmd: LagMeter.this.lowMemCommand.split(";"))
-						Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), cmd.replaceFirst("/", ""));
-				else
-					Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), LagMeter.this.lowMemCommand.replaceFirst("/", ""));
+	private void registerTasks(){
+		super.getServer().getScheduler().cancelTasks(this);
+		super.getServer().getScheduler().scheduleSyncRepeatingTask(this, this.poller, 0, this.interval);
+		if(this.AutomaticLagNotificationsEnabled)
+			super.getServer().getScheduler().scheduleSyncRepeatingTask(this, new LagWatcher(this), this.lagNotifyInterval*1200, this.lagNotifyInterval*1200);
+		if(this.AutomaticMemoryNotificationsEnabled)
+			super.getServer().getScheduler().scheduleSyncRepeatingTask(this, new MemoryWatcher(this), this.memNotifyInterval*1200, this.memNotifyInterval*1200);
+		if(this.uptimeCommands!=null)
+			for(final String s: this.uptimeCommands){
+				long time;
+				try{
+					time = this.parseTime(s);
+					if(this.repeatingUptimeCommands)
+						super.getServer().getScheduler().scheduleSyncRepeatingTask(this, new UptimeCommand(s.split(";")[0]), time, time);
+					else
+						super.getServer().getScheduler().scheduleSyncDelayedTask(this, new UptimeCommand(s.split(";")[0]), time);
+				}catch(final InvalidTimeFormatException e){
+					e.printStackTrace();
+				}
 			}
-		}
 	}
 
-	final class UptimeCommand implements Runnable{
-		final String command;
+	protected void setTicksPerSecond(float f){
+		this.ticksPerSecond = f;
+	}
 
-		public UptimeCommand(final String command){
-			this.command = command;
-		}
+	public boolean usingNewLineForLogStats(){
+		return this.newLineForLogStats;
+	}
 
-		@Override
-		public void run(){
-			Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), this.command);
-		}
+	public boolean usingNewBlockEveryLog(){
+		return this.newBlockPerLog;
+	}
+
+	public boolean isUsingLogFolder(){
+		return this.useLogsFolder;
+	}
+
+	public boolean isAveraging(){
+		return this.useAverage;
+	}
+
+	public int getAverageLength(){
+		return this.averageLength;
+	}
+
+	public boolean isDisplayingEntities(){
+		return this.displayEntities;
+	}
+
+	public boolean isDisplayingChunks(){
+		return this.displayEntities;
+	}
+
+	public String getLagCommand(){
+		return this.highLagCommand;
+	}
+
+	public String getMemoryCommand(){
+		return this.lowMemCommand;
+	}
+
+	public boolean isPlayerLoggingEnabled(){
+		return this.playerLoggingEnabled;
+	}
+
+	public int getInterval(){
+		return this.interval;
+	}
+
+	public LagMeterStack getHistory(){
+		return this.history;
+	}
+
+	public void setHistory(LagMeterStack stack){
+		this.history = stack;
+	}
+
+	public void addHistory(float tps){
+		this.history.add(tps);
+	}
+
+	public LagMeterLogger getLMLogger(){
+		return this.logger;
+	}
+
+	public float getTpsNotificationThreshold(){
+		return this.tpsNotificationThreshold;
+	}
+
+	public float getMemoryNotificationThreshold(){
+		return this.memoryNotificationThreshold;
+	}
+
+	public boolean isLoggingEnabled(){
+		return this.enableLogging;
+	}
+
+	public boolean isLoggingEntities(){
+		return this.isLoggingEnabled() ? this.logEntities : false;
+	}
+
+	public boolean isLoggingChunks(){
+		return this.isLoggingEnabled() ? this.logChunks : false;
+	}
+
+	public boolean isLoggingTotalChunksOnly(){
+		return this.isLoggingChunks() ? this.logTotalChunksOnly : false;
+	}
+
+	public boolean isLoggingTotalEntitiesOnly(){
+		return this.isLoggingEntities() ? this.logTotalEntitiesOnly : false;
 	}
 }

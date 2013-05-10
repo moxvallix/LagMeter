@@ -16,7 +16,7 @@ public class LagMeterLogger{
 	private String error = "*shrug* Dunno.";
 	private boolean logMemory = true;
 	private boolean logTPS = true;
-	protected boolean enabled = false;
+	private boolean enabled = false;
 	private String timeFormat = "MM-dd-yyyy HH:mm:ss";
 	private File logfile;
 	private PrintWriter log;
@@ -36,7 +36,7 @@ public class LagMeterLogger{
 		if(this.logfile==null){
 			this.error("Logfile is null");
 			ret = false;
-		}else if(this.logMemory==false&&this.logTPS==false){
+		}else if(!this.logMemory&&!this.logTPS){
 			this.error("Both logMemory and logTPS are disabled. Nothing to log!");
 			ret = false;
 		}else
@@ -55,7 +55,7 @@ public class LagMeterLogger{
 	}
 
 	private void closeLog() throws IOException, Exception, FileNotFoundException{
-		if(this.enabled = true&&this.log!=null){
+		if(this.enabled&&this.log!=null){
 			this.log.flush();
 			this.log.close();
 			this.log = null;
@@ -64,12 +64,12 @@ public class LagMeterLogger{
 	}
 
 	public void disable() throws IOException, FileNotFoundException, Exception{
-		if(this.plugin.enableLogging = true)
+		if(this.plugin.isLoggingEnabled())
 			this.closeLog();
 	}
 
 	public boolean enable(){
-		if(!this.plugin.useLogsFolder){
+		if(!this.plugin.isUsingLogFolder()){
 			System.out.println("[LagMeter] Not using logs folder.");
 			return this.enable(new File(this.plugin.getDataFolder(), "lag.log"));
 		}else{
@@ -102,34 +102,30 @@ public class LagMeterLogger{
 			return "!! UNKNOWN !!";
 	}
 
-	public String getTimeFormat(){
-		return this.timeFormat;
-	}
-
 	protected void log(String message){
 		if(this.enabled){
 			message = "["+this.now()+"] "+message;
-			final String newLine = this.plugin.newLineForLogStats ? "\n" : "  ";
+			final String newLine = this.plugin.usingNewLineForLogStats() ? "\n" : "  ";
 			this.log.print(message);
-			if(this.plugin.logChunks){
+			if(this.plugin.isLoggingChunks()){
 				int totalChunks = 0;
 				for(final World world: Bukkit.getServer().getWorlds()){
 					totalChunks += world.getLoadedChunks().length;
-					if(!this.plugin.logTotalChunksOnly)
+					if(!this.plugin.isLoggingTotalChunksOnly())
 						this.log.print(newLine+"Chunks loaded in world \""+world.getName()+"\": "+world.getLoadedChunks().length);
 				}
 				this.log.print(newLine+"Total chunks loaded: "+totalChunks);
 			}
-			if(this.plugin.logEntities){
+			if(this.plugin.isLoggingEntities()){
 				int totalEntities = 0;
 				for(final World world: Bukkit.getServer().getWorlds()){
 					totalEntities += world.getEntities().size();
-					if(!this.plugin.logTotalEntitiesOnly)
+					if(!this.plugin.isLoggingTotalEntitiesOnly())
 						this.log.print(newLine+"Entities in world \""+world.getName()+"\": "+world.getEntities().size());
 				}
 				this.log.print(newLine+"Total entities: "+totalEntities);
 			}
-			if(this.plugin.newBlockPerLog)
+			if(this.plugin.usingNewBlockEveryLog())
 				this.log.println();
 			this.log.println();
 			this.log.flush();
@@ -178,8 +174,12 @@ public class LagMeterLogger{
 
 	public String now(){
 		final Calendar cal = Calendar.getInstance();
-		final SimpleDateFormat sdf = new SimpleDateFormat(this.timeFormat);
+		final SimpleDateFormat sdf = new SimpleDateFormat(this.getTimeFormat());
 		return sdf.format(cal.getTime());
+	}
+
+	public String getTimeFormat(){
+		return this.timeFormat;
 	}
 
 	public void setTimeFormat(final String newFormat){
