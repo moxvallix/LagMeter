@@ -93,8 +93,6 @@ public class LagMeter extends JavaPlugin{
 		this.history = new LagMeterStack();
 		this.lagListeners = new ArrayList<LagListener>();
 		this.memListeners = new ArrayList<MemoryListener>();
-		this.registerLagListener(new DefaultHighLag(this));
-		this.registerMemoryListener(new DefaultLowMemory(this));
 		this.updateConfiguration();
 		if(!logsFolder.exists()&&this.useLogsFolder&&this.enableLogging){
 			this.info("Logs folder not found. Attempting to create one for you.");
