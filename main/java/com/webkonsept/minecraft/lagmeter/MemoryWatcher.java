@@ -18,12 +18,13 @@ final class MemoryWatcher implements Runnable{
 			if(this.plugin.getMemory()[3]<=this.plugin.getMemoryNotificationThreshold()){
 				final LowMemoryEvent e = new LowMemoryEvent(this.plugin.getMemory(), this.plugin.getTPS());
 				for(final MemoryListener m: this.plugin.getMemoryListeners())
-					new Thread(new Runnable(){
-						@Override
-						public void run(){
-							m.onLowMemoryEvent(e);
-						}
-					}).start();
+					if(m!=null)
+						new Thread(new Runnable(){
+							@Override
+							public void run(){
+								m.onLowMemoryEvent(e);
+							}
+						}).start();
 			}
 			try{
 				Thread.sleep(this.plugin.getCheckMemoryInterval());

@@ -18,12 +18,13 @@ final class LagWatcher implements Runnable{
 			if(this.plugin.getTpsNotificationThreshold()>=this.plugin.getTPS()){
 				final HighLagEvent e = new HighLagEvent(this.plugin.getTPS());
 				for(final LagListener l: this.plugin.getLagListeners())
-					new Thread(new Runnable(){
-						@Override
-						public void run(){
-							l.onHighLagEvent(e);
-						}
-					}).start();
+					if(l!=null)
+						new Thread(new Runnable(){
+							@Override
+							public void run(){
+								l.onHighLagEvent(e);
+							}
+						}).start();
 			}
 			try{
 				Thread.sleep(this.plugin.getCheckMemoryInterval());

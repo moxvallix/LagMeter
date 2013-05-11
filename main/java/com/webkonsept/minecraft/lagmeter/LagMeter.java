@@ -738,6 +738,14 @@ public class LagMeter extends JavaPlugin{
 		this.memListeners.clear();
 	}
 
+	public void cancelLagListener(int id){
+		this.lagListeners.set(id, null);
+	}
+
+	public void cancelMemoryListener(int id){
+		this.memListeners.set(id, null);
+	}
+
 	protected List<LagListener> getLagListeners(){
 		return this.lagListeners;
 	}
