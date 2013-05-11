@@ -1,29 +1,39 @@
 package main.java.com.webkonsept.minecraft.lagmeter;
 
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
+import main.java.com.webkonsept.minecraft.lagmeter.events.HighLagEvent;
+import main.java.com.webkonsept.minecraft.lagmeter.listeners.LagListener;
 
 final class LagWatcher implements Runnable{
-	final LagMeter plugin;
+	private final LagMeter plugin;
+	private boolean stop;
 
 	public LagWatcher(final LagMeter plugin){
 		this.plugin = plugin;
+		this.stop = false;
 	}
 
 	@Override
 	public void run(){
-		if(this.plugin.getTpsNotificationThreshold()>=this.plugin.getTPS()){
-			final Player[] players = Bukkit.getServer().getOnlinePlayers();
-			for(final Player p: players)
-				if(this.plugin.permit(p, "lagmeter.notify.lag")||p.isOp())
-					p.sendMessage(ChatColor.GOLD+"[LagMeter] "+ChatColor.RED+"The server's TPS has dropped below "+this.plugin.getTpsNotificationThreshold()+"! If you configured a server command to execute at this time, it will run now.");
-			this.plugin.severe("The server's TPS has dropped below "+this.plugin.getTpsNotificationThreshold()+"! Executing command (if configured).");
-			if(this.plugin.getLagCommand().contains(";"))
-				for(final String cmd: this.plugin.getLagCommand().split(";"))
-					Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), cmd.replaceFirst("/", ""));
-			else
-				Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), this.plugin.getLagCommand().replaceFirst("/", ""));
+		while(!this.stop){
+			if(this.plugin.getTpsNotificationThreshold()>=this.plugin.getTPS()){
+				final HighLagEvent e = new HighLagEvent(this.plugin.getTPS());
+				for(final LagListener l: this.plugin.getLagListeners())
+					new Thread(new Runnable(){
+						@Override
+						public void run(){
+							l.onHighLagEvent(e);
+						}
+					}).start();
+			}
+			try{
+				Thread.sleep(this.plugin.getCheckMemoryInterval());
+			}catch(final InterruptedException e){
+				e.printStackTrace();
+			}
 		}
+	}
+
+	public void stop(){
+		this.stop = true;
 	}
 }

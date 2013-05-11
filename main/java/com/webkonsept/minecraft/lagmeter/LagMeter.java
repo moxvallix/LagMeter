@@ -12,6 +12,11 @@ import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
+import main.java.com.webkonsept.minecraft.lagmeter.eventhandlers.DefaultHighLag;
+import main.java.com.webkonsept.minecraft.lagmeter.eventhandlers.DefaultLowMemory;
+import main.java.com.webkonsept.minecraft.lagmeter.listeners.LagListener;
+import main.java.com.webkonsept.minecraft.lagmeter.listeners.MemoryListener;
+
 import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.command.Command;
@@ -54,8 +59,12 @@ public class LagMeter extends JavaPlugin{
 	private boolean repeatingUptimeCommands;
 	private List<String> uptimeCommands;
 	private String highLagCommand, lowMemCommand, pingDomain;
+	private List<LagListener> lagListeners;
+	private List<MemoryListener> memListeners;
+	private LagWatcher lagWatcher;
+	private MemoryWatcher memWatcher;
 	/** Static accessor */
-	public static LagMeter p;
+	private static LagMeter p;
 
 	public static void main(final String[] args){
 		try{
@@ -82,6 +91,10 @@ public class LagMeter extends JavaPlugin{
 		this.logger = new LagMeterLogger(this);
 		this.poller = new LagMeterPoller(this);
 		this.history = new LagMeterStack();
+		this.lagListeners = new ArrayList<LagListener>();
+		this.memListeners = new ArrayList<MemoryListener>();
+		this.registerLagListener(new DefaultHighLag(this));
+		this.registerMemoryListener(new DefaultLowMemory(this));
 		this.updateConfiguration();
 		if(!logsFolder.exists()&&this.useLogsFolder&&this.enableLogging){
 			this.info("Logs folder not found. Attempting to create one for you.");
@@ -123,7 +136,10 @@ public class LagMeter extends JavaPlugin{
 
 	@Override
 	public void onDisable(){
-		this.info("Disabled!");
+		this.memWatcher.stop();
+		this.lagWatcher.stop();
+		this.cancelAllLagListeners();
+		this.cancelAllMemoryListeners();
 		if(!this.logger.isEnabled())
 			try{
 				this.logger.disable();
@@ -135,6 +151,7 @@ public class LagMeter extends JavaPlugin{
 				e.printStackTrace();
 			}
 		super.getServer().getScheduler().cancelTasks(this);
+		this.info("Disabled!");
 	}
 
 	/**
@@ -265,7 +282,7 @@ public class LagMeter extends JavaPlugin{
 		return success;
 	}
 
-	protected boolean permit(final CommandSender sender, final String perm){
+	public boolean permit(final CommandSender sender, final String perm){
 		if(sender instanceof Player){
 			if(sender.hasPermission("lagmeter.*"))
 				return true;
@@ -277,7 +294,7 @@ public class LagMeter extends JavaPlugin{
 			return true;
 	}
 
-	protected boolean permit(final Player player, final String perm){
+	public boolean permit(final Player player, final String perm){
 		if(player!=null&&player instanceof Player){
 			if(player.hasPermission(perm))
 				return true;
@@ -315,7 +332,7 @@ public class LagMeter extends JavaPlugin{
 		this.sendMessage(sender, 0, ChatColor.GOLD+"Total entities: "+totalEntities);
 	}
 
-	protected void sendLagMeter(final CommandSender sender){
+	public void sendLagMeter(final CommandSender sender){
 		String lagMeter = "";
 		final float tps;
 		if(this.displayEntities)
@@ -339,7 +356,7 @@ public class LagMeter extends JavaPlugin{
 		this.sendMessage(sender, 0, ChatColor.GOLD+"["+(tps>=18 ? ChatColor.GREEN : tps>=15 ? ChatColor.YELLOW : ChatColor.RED)+lagMeter+ChatColor.GOLD+"] "+String.format("%3.2f", tps)+" TPS");
 	}
 
-	protected void sendMemMeter(final CommandSender sender){
+	public void sendMemMeter(final CommandSender sender){
 		String bar = "";
 		int looped = 0;
 		this.updateMemoryStats();
@@ -351,7 +368,7 @@ public class LagMeter extends JavaPlugin{
 		this.sendMessage(sender, 0, ChatColor.GOLD+"["+(this.percentageFree>=60 ? ChatColor.GREEN : this.percentageFree>=35 ? ChatColor.YELLOW : ChatColor.RED)+bar+ChatColor.GOLD+"] "+String.format("%3.2f", this.memFree)+"MB/"+String.format("%3.2f", this.memMax)+"MB ("+String.format("%3.2f", this.percentageFree)+"%) free");
 	}
 
-	private void ping(final CommandSender sender, final String[] args){
+	public void ping(final CommandSender sender, final String[] args){
 		final List<String> processCmd = new ArrayList<String>();
 		final String hops = this.getHops(sender, args);
 		final String domain = this.pingDomain;
@@ -573,7 +590,7 @@ public class LagMeter extends JavaPlugin{
 		super.getServer().getScheduler().cancelTasks(this);
 		super.getServer().getScheduler().scheduleSyncRepeatingTask(this, this.poller, 0, this.interval);
 		if(this.AutomaticLagNotificationsEnabled)
-			super.getServer().getScheduler().scheduleSyncRepeatingTask(this, new LagWatcher(this), this.lagNotifyInterval*1200, this.lagNotifyInterval*1200);
+			new Thread((this.lagWatcher = new LagWatcher(this))).start();
 		if(this.AutomaticMemoryNotificationsEnabled)
 			super.getServer().getScheduler().scheduleSyncRepeatingTask(this, new MemoryWatcher(this), this.memNotifyInterval*1200, this.memNotifyInterval*1200);
 		if(this.uptimeCommands!=null)
@@ -677,5 +694,61 @@ public class LagMeter extends JavaPlugin{
 
 	public boolean isLoggingTotalEntitiesOnly(){
 		return this.isLoggingEntities() ? this.logTotalEntitiesOnly : false;
+	}
+
+	/**
+	 * Registers a listener for when LagMeter finds that the server's TPS has dropped below the user's specified threshold for the event to be fired. When this happens, the event method in the class which implements LagListener will be run.
+	 * 
+	 * @param listener - The listener which implements LagListener which should be notified of the event when (if) it happens.
+	 * @return The ID of the listener in LagMeter's allocated memory. This is used to cancel the registration of the listener, etc.
+	 */
+	public int registerLagListener(LagListener listener){
+		if(!this.lagListeners.contains(listener)){
+			this.lagListeners.add(listener);
+			return this.lagListeners.indexOf(listener);
+		}else
+			return -1;
+	}
+
+	/**
+	 * Registers a listener for when LagMeter finds that the free memory has dropped below the user's specified threshold for the evnt to be fired. When this happens, the event method in the class which implements MemoryListener will be run.
+	 * 
+	 * @param listener The listener which implements MemoryListener which should be notified of the event when (if) it happens.
+	 * @return The ID of the listener in LagMeter's allocated memory. This is used to cancel the registration of the listener, etc.
+	 */
+	public int registerMemoryListener(MemoryListener listener){
+		if(this.memListeners.contains(listener)){
+			this.memListeners.add(listener);
+			return this.memListeners.indexOf(listener);
+		}else
+			return -1;
+	}
+
+	private void cancelAllLagListeners(){
+		this.lagListeners.clear();
+	}
+
+	private void cancelAllMemoryListeners(){
+		this.memListeners.clear();
+	}
+
+	protected List<LagListener> getLagListeners(){
+		return this.lagListeners;
+	}
+
+	protected List<MemoryListener> getMemoryListeners(){
+		return this.memListeners;
+	}
+
+	public long getCheckLagInterval(){
+		return this.lagNotifyInterval;
+	}
+
+	public long getCheckMemoryInterval(){
+		return this.memNotifyInterval;
+	}
+
+	public static LagMeter getInstance(){
+		return LagMeter.p;
 	}
 }

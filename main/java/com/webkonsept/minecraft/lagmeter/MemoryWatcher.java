@@ -1,30 +1,39 @@
 package main.java.com.webkonsept.minecraft.lagmeter;
 
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
+import main.java.com.webkonsept.minecraft.lagmeter.events.LowMemoryEvent;
+import main.java.com.webkonsept.minecraft.lagmeter.listeners.MemoryListener;
 
 final class MemoryWatcher implements Runnable{
-	LagMeter plugin = null;
+	private final LagMeter plugin;
+	private boolean stop;
 
 	public MemoryWatcher(final LagMeter plugin){
 		this.plugin = plugin;
+		this.stop = false;
 	}
 
 	@Override
 	public void run(){
-		if(this.plugin.getMemoryNotificationThreshold()>=this.plugin.getMemory()[3]){
-			Player[] players;
-			players = Bukkit.getServer().getOnlinePlayers();
-			for(final Player p: players)
-				if(this.plugin.permit(p, "lagmeter.notify.mem")||p.isOp())
-					p.sendMessage(ChatColor.GOLD+"[LagMeter] "+ChatColor.RED+"The server's free memory pool has dropped below "+this.plugin.getMemoryNotificationThreshold()+"%! If you configured a server command to execute at this time, it will run now.");
-			this.plugin.severe("The server's free memory pool has dropped below "+this.plugin.getMemoryNotificationThreshold()+"! Executing command (if configured).");
-			if(this.plugin.getMemoryCommand().contains(";"))
-				for(final String cmd: this.plugin.getMemoryCommand().split(";"))
-					Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), cmd.replaceFirst("/", ""));
-			else
-				Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), this.plugin.getMemoryCommand().replaceFirst("/", ""));
+		while(!this.stop){
+			if(this.plugin.getMemoryNotificationThreshold()>=this.plugin.getMemory()[3]){
+				final LowMemoryEvent e = new LowMemoryEvent(this.plugin.getMemory(), this.plugin.getTPS());
+				for(final MemoryListener m: this.plugin.getMemoryListeners())
+					new Thread(new Runnable(){
+						@Override
+						public void run(){
+							m.onLowMemoryEvent(e);
+						}
+					}).start();
+			}
+			try{
+				Thread.sleep(this.plugin.getCheckMemoryInterval());
+			}catch(final InterruptedException e){
+				e.printStackTrace();
+			}
 		}
+	}
+
+	public void stop(){
+		this.stop = true;
 	}
 }
