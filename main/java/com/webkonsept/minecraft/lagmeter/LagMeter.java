@@ -723,7 +723,7 @@ public class LagMeter extends JavaPlugin{
 	 * @return The ID of the listener in LagMeter's allocated memory. This is used to cancel the registration of the listener, etc.
 	 */
 	public int registerMemoryListener(MemoryListener listener){
-		if(this.memListeners.contains(listener)){
+		if(!this.memListeners.contains(listener)){
 			this.memListeners.add(listener);
 			return this.memListeners.indexOf(listener);
 		}else
