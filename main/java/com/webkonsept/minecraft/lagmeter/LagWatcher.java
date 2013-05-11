@@ -28,7 +28,7 @@ final class LagWatcher implements Runnable{
 			try{
 				Thread.sleep(this.plugin.getCheckMemoryInterval());
 			}catch(final InterruptedException e){
-				e.printStackTrace();
+				// do nothing, interruption probably means the server is shutting down or reloading.
 			}
 		}
 	}
