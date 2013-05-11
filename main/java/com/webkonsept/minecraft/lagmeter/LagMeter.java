@@ -505,7 +505,7 @@ public class LagMeter extends JavaPlugin{
 		this.getServer().getConsoleSender().sendMessage(ChatColor.GOLD+"[LagMeter "+this.getDescription().getVersion()+"] "+ChatColor.DARK_RED+message);
 	}
 
-	protected synchronized void updateMemoryStats(){
+	public synchronized void updateMemoryStats(){
 		this.memUsed = (Runtime.getRuntime().totalMemory()-Runtime.getRuntime().freeMemory())/1048576;
 		this.memMax = Runtime.getRuntime().maxMemory()/1048576;
 		this.memFree = this.memMax-this.memUsed;
@@ -521,7 +521,7 @@ public class LagMeter extends JavaPlugin{
 	 * @return Amount of ticks which corresponds to this string of time.
 	 * @throws InvalidTimeFormatException If the time format given is invalid
 	 */
-	protected long parseTime(final String timeString) throws InvalidTimeFormatException{
+	public long parseTime(final String timeString) throws InvalidTimeFormatException{
 		long time = 0L;
 		if(timeString.split(";").length==2){
 			String x = timeString.split(";")[1].toLowerCase();
@@ -588,11 +588,19 @@ public class LagMeter extends JavaPlugin{
 
 	private void registerTasks(){
 		super.getServer().getScheduler().cancelTasks(this);
+		if(this.memWatcher!=null)
+			this.memWatcher.stop();
+		if(this.lagWatcher!=null)
+			this.lagWatcher.stop();
 		super.getServer().getScheduler().scheduleSyncRepeatingTask(this, this.poller, 0, this.interval);
+		this.lagNotifyInterval *= 60000;
+		this.memNotifyInterval *= 60000;
+		new Thread((this.lagWatcher = new LagWatcher(this))).start();
+		new Thread((this.memWatcher = new MemoryWatcher(this))).start();
 		if(this.AutomaticLagNotificationsEnabled)
-			new Thread((this.lagWatcher = new LagWatcher(this))).start();
+			this.registerLagListener(new DefaultHighLag(this));
 		if(this.AutomaticMemoryNotificationsEnabled)
-			super.getServer().getScheduler().scheduleSyncRepeatingTask(this, new MemoryWatcher(this), this.memNotifyInterval*1200, this.memNotifyInterval*1200);
+			this.registerMemoryListener(new DefaultLowMemory(this));
 		if(this.uptimeCommands!=null)
 			for(final String s: this.uptimeCommands){
 				long time;
