@@ -24,7 +24,7 @@ public class DefaultLowMemory implements MemoryListener{
 				p.sendMessage(ChatColor.GOLD+"[LagMeter] "+ChatColor.RED+"The server's free memory pool has dropped below "+this.plugin.getMemoryNotificationThreshold()+"%! If you configured a server command to execute at this time, it will run now.");
 		this.plugin.severe("The server's free memory pool has dropped below "+this.plugin.getMemoryNotificationThreshold()+"%! Executing command (if configured).");
 		if(this.plugin.getLagCommand().contains(";"))
-			for(final String cmd: this.plugin.getLagCommand().split(";"))
+			for(final String cmd: this.plugin.getMemoryCommand().split(";"))
 				Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), cmd.replaceFirst("/", ""));
 		else
 			Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), this.plugin.getLagCommand().replaceFirst("/", ""));
