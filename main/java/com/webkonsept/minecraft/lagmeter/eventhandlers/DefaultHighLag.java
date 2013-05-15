@@ -11,12 +11,8 @@ import org.bukkit.entity.Player;
 public class DefaultHighLag implements LagListener{
 	private final LagMeter plugin;
 
-	public DefaultHighLag(LagMeter plugin){
-		this.plugin = plugin;
-	}
-
 	@Override
-	public void onHighLagEvent(HighLagEvent evt){
+	public void onHighLagEvent(final HighLagEvent evt){
 		final Player[] players = Bukkit.getServer().getOnlinePlayers();
 		for(final Player p: players)
 			if(this.plugin.permit(p, "lagmeter.notify.lag")||p.isOp())
@@ -27,5 +23,9 @@ public class DefaultHighLag implements LagListener{
 				Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), cmd.replaceFirst("/", ""));
 		else
 			Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), this.plugin.getLagCommand().replaceFirst("/", ""));
+	}
+
+	public DefaultHighLag(final LagMeter plugin){
+		this.plugin = plugin;
 	}
 }

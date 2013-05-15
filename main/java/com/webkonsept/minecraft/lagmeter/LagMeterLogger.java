@@ -21,16 +21,6 @@ public class LagMeterLogger{
 	private File logfile;
 	private PrintWriter log;
 
-	protected LagMeterLogger(final LagMeter instance){
-		this.plugin = instance;
-	}
-
-	protected LagMeterLogger(final LagMeter instance, final boolean enable){
-		this.plugin = instance;
-		if(enable)
-			this.enable();
-	}
-
 	private boolean beginLogging(){
 		boolean ret = true;
 		if(this.logfile==null){
@@ -83,10 +73,6 @@ public class LagMeterLogger{
 		return this.beginLogging();
 	}
 
-	public boolean isEnabled(){
-		return this.enabled;
-	}
-
 	private void error(final String errorMessage){
 		this.error = errorMessage;
 	}
@@ -100,6 +86,14 @@ public class LagMeterLogger{
 			return this.logfile.getAbsolutePath();
 		else
 			return "!! UNKNOWN !!";
+	}
+
+	public String getTimeFormat(){
+		return this.timeFormat;
+	}
+
+	public boolean isEnabled(){
+		return this.enabled;
 	}
 
 	protected void log(String message){
@@ -178,10 +172,6 @@ public class LagMeterLogger{
 		return sdf.format(cal.getTime());
 	}
 
-	public String getTimeFormat(){
-		return this.timeFormat;
-	}
-
 	public void setTimeFormat(final String newFormat){
 		this.timeFormat = newFormat;
 	}
@@ -190,5 +180,15 @@ public class LagMeterLogger{
 		final Calendar calendar = Calendar.getInstance();
 		final SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yyyy");
 		return sdf.format(calendar.getTime());
+	}
+
+	protected LagMeterLogger(final LagMeter instance){
+		this.plugin = instance;
+	}
+
+	protected LagMeterLogger(final LagMeter instance, final boolean enable){
+		this.plugin = instance;
+		if(enable)
+			this.enable();
 	}
 }

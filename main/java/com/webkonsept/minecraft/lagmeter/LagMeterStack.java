@@ -6,14 +6,6 @@ public class LagMeterStack{
 	private int maxSize = 0;
 	private final LinkedList<Float> stack = new LinkedList<Float>();
 
-	LagMeterStack(){
-		this.maxSize = 10;
-	}
-
-	LagMeterStack(final int maxSize){
-		this.maxSize = maxSize;
-	}
-
 	public void add(final Float item){
 		if(item!=null&&item<=20){
 			this.stack.add(item);
@@ -51,5 +43,13 @@ public class LagMeterStack{
 
 	public int size(){
 		return this.stack.size();
+	}
+
+	LagMeterStack(){
+		this.maxSize = 10;
+	}
+
+	LagMeterStack(final int maxSize){
+		this.maxSize = maxSize;
 	}
 }

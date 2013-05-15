@@ -7,11 +7,6 @@ final class MemoryWatcher implements Runnable{
 	private final LagMeter plugin;
 	private boolean stop;
 
-	public MemoryWatcher(final LagMeter plugin){
-		this.plugin = plugin;
-		this.stop = false;
-	}
-
 	@Override
 	public void run(){
 		while(!this.stop){
@@ -36,5 +31,10 @@ final class MemoryWatcher implements Runnable{
 
 	public void stop(){
 		this.stop = true;
+	}
+
+	public MemoryWatcher(final LagMeter plugin){
+		this.plugin = plugin;
+		this.stop = false;
 	}
 }

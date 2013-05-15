@@ -6,15 +6,6 @@ public class LagMeterPoller implements Runnable{
 	private int logInterval = 40;
 	private final LagMeter plugin;
 
-	protected LagMeterPoller(final LagMeter instance){
-		this.plugin = instance;
-	}
-
-	protected LagMeterPoller(final LagMeter instance, final int logInterval){
-		this.logInterval = logInterval;
-		this.plugin = instance;
-	}
-
 	@Override
 	public void run(){
 		final long now = System.currentTimeMillis();
@@ -42,5 +33,14 @@ public class LagMeterPoller implements Runnable{
 
 	public void setLogInterval(final int interval){
 		this.logInterval = interval;
+	}
+
+	protected LagMeterPoller(final LagMeter instance){
+		this.plugin = instance;
+	}
+
+	protected LagMeterPoller(final LagMeter instance, final int logInterval){
+		this.logInterval = logInterval;
+		this.plugin = instance;
 	}
 }

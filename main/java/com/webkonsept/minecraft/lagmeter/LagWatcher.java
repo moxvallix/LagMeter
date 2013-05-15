@@ -7,11 +7,6 @@ final class LagWatcher implements Runnable{
 	private final LagMeter plugin;
 	private boolean stop;
 
-	public LagWatcher(final LagMeter plugin){
-		this.plugin = plugin;
-		this.stop = false;
-	}
-
 	@Override
 	public void run(){
 		while(!this.stop){
@@ -36,5 +31,10 @@ final class LagWatcher implements Runnable{
 
 	public void stop(){
 		this.stop = true;
+	}
+
+	public LagWatcher(final LagMeter plugin){
+		this.plugin = plugin;
+		this.stop = false;
 	}
 }

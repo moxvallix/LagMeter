@@ -9,35 +9,35 @@ public class LowMemoryEvent{
 	private final double percentageFree;
 	private final float currentTPS;
 
-	public LowMemoryEvent(double[] values, float tps){
-		this.usedMemory = values[0];
-		this.maxMemory = values[1];
-		this.freeMemory = values[2];
-		this.percentageFree = values[3];
-		this.currentTPS = tps;
-	}
-
-	public double getMaximumMemory(){
-		return this.maxMemory;
-	}
-
-	public double getUsedMemory(){
-		return this.usedMemory;
+	public float getCurrentTPS(){
+		return this.currentTPS;
 	}
 
 	public double getFreeMemory(){
 		return this.freeMemory;
 	}
 
+	public LagMeter getLagMeter(){
+		return LagMeter.getInstance();
+	}
+
+	public double getMaximumMemory(){
+		return this.maxMemory;
+	}
+
 	public double getMemoryFreePercentage(){
 		return this.percentageFree;
 	}
 
-	public float getCurrentTPS(){
-		return this.currentTPS;
+	public double getUsedMemory(){
+		return this.usedMemory;
 	}
 
-	public LagMeter getLagMeter(){
-		return LagMeter.getInstance();
+	public LowMemoryEvent(final double[] values, final float tps){
+		this.usedMemory = values[0];
+		this.maxMemory = values[1];
+		this.freeMemory = values[2];
+		this.percentageFree = values[3];
+		this.currentTPS = tps;
 	}
 }

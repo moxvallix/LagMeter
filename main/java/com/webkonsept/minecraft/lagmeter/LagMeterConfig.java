@@ -11,6 +11,24 @@ import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 public class LagMeterConfig extends LagMeter{
+	private static void copyFile(final InputStream in, final File out) throws Exception{
+		final InputStream fis = in;
+		final FileOutputStream fos = new FileOutputStream(out);
+		try{
+			final byte[] buf = new byte[1024];
+			int i = 0;
+			while((i = fis.read(buf))!=-1)
+				fos.write(buf, 0, i);
+		}catch(final Exception e){
+			throw e;
+		}finally{
+			if(fis!=null)
+				fis.close();
+			if(fos!=null)
+				fos.close();
+		}
+	}
+
 	@Override
 	public YamlConfiguration getConfig(){
 		return this.loadConfig();
@@ -45,23 +63,5 @@ public class LagMeterConfig extends LagMeter{
 				e.printStackTrace();
 			}
 		return new YamlConfiguration();
-	}
-
-	private static void copyFile(final InputStream in, final File out) throws Exception{
-		final InputStream fis = in;
-		final FileOutputStream fos = new FileOutputStream(out);
-		try{
-			final byte[] buf = new byte[1024];
-			int i = 0;
-			while((i = fis.read(buf))!=-1)
-				fos.write(buf, 0, i);
-		}catch(final Exception e){
-			throw e;
-		}finally{
-			if(fis!=null)
-				fis.close();
-			if(fos!=null)
-				fos.close();
-		}
 	}
 }

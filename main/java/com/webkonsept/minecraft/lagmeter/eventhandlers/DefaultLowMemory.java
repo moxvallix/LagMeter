@@ -11,12 +11,8 @@ import org.bukkit.entity.Player;
 public class DefaultLowMemory implements MemoryListener{
 	private final LagMeter plugin;
 
-	public DefaultLowMemory(LagMeter plugin){
-		this.plugin = plugin;
-	}
-
 	@Override
-	public void onLowMemoryEvent(LowMemoryEvent evt){
+	public void onLowMemoryEvent(final LowMemoryEvent evt){
 		Player[] players;
 		players = Bukkit.getServer().getOnlinePlayers();
 		for(final Player p: players)
@@ -28,5 +24,9 @@ public class DefaultLowMemory implements MemoryListener{
 				Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), cmd.replaceFirst("/", ""));
 		else
 			Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), this.plugin.getMemoryCommand().replaceFirst("/", ""));
+	}
+
+	public DefaultLowMemory(final LagMeter plugin){
+		this.plugin = plugin;
 	}
 }
