@@ -64,13 +64,22 @@ public class LagMeter extends JavaPlugin{
 	private List<MemoryListener> memListeners;
 	private LagWatcher lagWatcher;
 	private MemoryWatcher memWatcher;
-	/** Static accessor */
 	private static LagMeter p;
 
+	/**
+	 * This method gets the current instance of LagMeter.
+	 * 
+	 * @return The current instance of the plugin's main class.
+	 */
 	public static LagMeter getInstance(){
 		return LagMeter.p;
 	}
 
+	/**
+	 * This method is the main method for running this plugin as a java application. As Bukkit plugins are not intended to be run directly, all this does is give the user a long error message in a message box and then exits.
+	 * 
+	 * @param args Command-line arguments, with which nothing is done.
+	 */
 	public static void main(final String[] args){
 		try{
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -88,6 +97,11 @@ public class LagMeter extends JavaPlugin{
 		}
 	}
 
+	/**
+	 * Add a TPS value to the plugin's history.
+	 * 
+	 * @param tps The TPS value to add.
+	 */
 	public void addHistory(final float tps){
 		this.history.add(tps);
 	}
@@ -100,22 +114,47 @@ public class LagMeter extends JavaPlugin{
 		this.memListeners.clear();
 	}
 
+	/**
+	 * Uses an ID obtained from the registerLagListener(LagListener) method to cancel recurring notification of your observer object.
+	 * 
+	 * @param id The id of the LagListener to stop notifying.
+	 */
 	public void cancelLagListener(final int id){
 		this.lagListeners.set(id, null);
 	}
 
+	/**
+	 * Uses an ID obtained from the registerMemoryListener(MemoryListener) method to cancel recurring notification of your observer object.
+	 * 
+	 * @param id The id of the MemoryListener to stop notifying.
+	 */
 	public void cancelMemoryListener(final int id){
 		this.memListeners.set(id, null);
 	}
 
+	/**
+	 * This is the getter for the upper limit of length of the history of the plugin's TPS averaging.
+	 * 
+	 * @return The max bound for the history.
+	 */
 	public int getAverageLength(){
 		return this.averageLength;
 	}
 
+	/**
+	 * This is the getter for the sleep interval of the TPS watcher's thread.
+	 * 
+	 * @return How often the plugin checks the server's TPS to notify its observers.
+	 */
 	public long getCheckLagInterval(){
 		return this.lagNotifyInterval;
 	}
 
+	/**
+	 * This is the getter for the sleep interval of the memory watcher's thread.
+	 * 
+	 * @return How often the plugin checks the server's memory to notify its observers.
+	 */
 	public long getCheckMemoryInterval(){
 		return this.memNotifyInterval;
 	}
@@ -138,11 +177,16 @@ public class LagMeter extends JavaPlugin{
 		return i;
 	}
 
+	/**
+	 * Gets the LagMeterStack (the history) of the server TPS.
+	 * 
+	 * @return The LagMeterStack for however long the average upper bound allows.
+	 */
 	public LagMeterStack getHistory(){
 		return this.history;
 	}
 
-	public String getHops(final CommandSender sender, final String[] args){
+	private String getHops(final CommandSender sender, final String[] args){
 		if(args.length>0)
 			if(this.permit(sender, "lagmeter.commands.ping.unlimited"))
 				try{
@@ -161,10 +205,20 @@ public class LagMeter extends JavaPlugin{
 			return "1";
 	}
 
+	/**
+	 * This is a getter for how often the server is polled by LagMeter.
+	 * 
+	 * @return How often LagMeter polls the server's TPS.
+	 */
 	public int getInterval(){
 		return this.interval;
 	}
 
+	/**
+	 * This is the getter for the command the plugin runs when the default high lag listener is triggered.
+	 * 
+	 * @return The lag notification command.
+	 */
 	public String getLagCommand(){
 		return this.highLagCommand;
 	}
@@ -173,6 +227,11 @@ public class LagMeter extends JavaPlugin{
 		return this.lagListeners;
 	}
 
+	/**
+	 * Getter for the logger of tps and memory (and players if so configured).
+	 * 
+	 * @return The instance of LagMeter's logger for logging tps/memory/players.
+	 */
 	public LagMeterLogger getLMLogger(){
 		return this.logger;
 	}
@@ -188,6 +247,11 @@ public class LagMeter extends JavaPlugin{
 		return new double[]{this.memUsed, this.memMax, this.memFree, this.percentageFree};
 	}
 
+	/**
+	 * This is the getter for the command the plugin runs when the default low memory listener is triggered.
+	 * 
+	 * @return The memory notification command.
+	 */
 	public String getMemoryCommand(){
 		return this.lowMemCommand;
 	}
@@ -196,6 +260,11 @@ public class LagMeter extends JavaPlugin{
 		return this.memListeners;
 	}
 
+	/**
+	 * The memory notification theshold is the point at which LagMeter will notify its observers that the memory free has dropped below this amount.
+	 * 
+	 * @return The memory notification theshold.
+	 */
 	public float getMemoryNotificationThreshold(){
 		return this.memoryNotificationThreshold;
 	}
@@ -212,6 +281,11 @@ public class LagMeter extends JavaPlugin{
 		return this.ticksPerSecond;
 	}
 
+	/**
+	 * The TPS notification threshold is where the plugin will notify its observers when the TPS reaches or drops below this amount.
+	 * 
+	 * @return The tps notification theshold.
+	 */
 	public float getTpsNotificationThreshold(){
 		return this.tpsNotificationThreshold;
 	}
@@ -257,46 +331,96 @@ public class LagMeter extends JavaPlugin{
 		}
 	}
 
-	public void info(final String message){
+	protected void info(final String message){
 		this.getServer().getConsoleSender().sendMessage(ChatColor.GOLD+"[LagMeter "+this.getDescription().getVersion()+"] "+ChatColor.GREEN+message);
 	}
 
+	/**
+	 * Whether or not the plugin is taking an average of TPS when outputting.
+	 * 
+	 * @return Whether or not the plugin is averaging TPS.
+	 */
 	public boolean isAveraging(){
 		return this.useAverage;
 	}
 
+	/**
+	 * Whether or not the plugin should display chunks with /lag
+	 * 
+	 * @return Displaying chunks with /lag or not
+	 */
 	public boolean isDisplayingChunks(){
 		return this.displayChunks;
 	}
 
+	/**
+	 * Whether or not the plugin should display entities with /lag
+	 * 
+	 * @return Displaying entities with /lag or not
+	 */
 	public boolean isDisplayingEntities(){
 		return this.displayEntities;
 	}
 
+	/**
+	 * Whether or not the plugin is logging chunks when it logs.
+	 * 
+	 * @return The plugin's setting for logging chunks.
+	 */
 	public boolean isLoggingChunks(){
 		return this.isLoggingEnabled() ? this.logChunks : false;
 	}
 
+	/**
+	 * This is a getter for whether or not the plugin is logging anything at all.
+	 * 
+	 * @return Whether or not the plugin is logging stuff.
+	 */
 	public boolean isLoggingEnabled(){
 		return this.enableLogging;
 	}
 
+	/**
+	 * Whether or not the plugin is logging entities when it logs.
+	 * 
+	 * @return The plugin's setting for logging entities.
+	 */
 	public boolean isLoggingEntities(){
 		return this.isLoggingEnabled() ? this.logEntities : false;
 	}
 
+	/**
+	 * Whether or not the plugin is logging total chunks only, not by world with a total.
+	 * 
+	 * @return Whether or not the plugin will log chunks per-world, or only a total. Will return false if the setting is true, but the logging chunks option is off.
+	 */
 	public boolean isLoggingTotalChunksOnly(){
 		return this.isLoggingChunks() ? this.logTotalChunksOnly : false;
 	}
 
+	/**
+	 * Whether or not the plugin is logging total entities only, not by world with a total.
+	 * 
+	 * @return Whether or not the plugin will log entities per-world, or only a total. Will return false if the setting is true, but the logging entities option is off.
+	 */
 	public boolean isLoggingTotalEntitiesOnly(){
 		return this.isLoggingEntities() ? this.logTotalEntitiesOnly : false;
 	}
 
+	/**
+	 * Whether or not the plugin will log players online.
+	 * 
+	 * @return If the plugin is logging players online or not.
+	 */
 	public boolean isPlayerLoggingEnabled(){
 		return this.playerLoggingEnabled;
 	}
 
+	/**
+	 * This is the getter for whether or not the plugin will put its logfile in a folder, with today as its date.
+	 * 
+	 * @return Whether or not the log will be separated from others, based on the date it was created.
+	 */
 	public boolean isUsingLogFolder(){
 		return this.useLogsFolder;
 	}
@@ -482,7 +606,7 @@ public class LagMeter extends JavaPlugin{
 
 	public boolean permit(final Player player, final String perm){
 		if(player!=null&&player instanceof Player){
-			if(player.hasPermission(perm))
+			if(player.hasPermission("lagmeter.*"))
 				return true;
 			else if(player.hasPermission(perm))
 				return true;
@@ -492,6 +616,12 @@ public class LagMeter extends JavaPlugin{
 			return true;
 	}
 
+	/**
+	 * This method pings google.com, telling the player what the result is.
+	 * 
+	 * @param sender - The CommandSender object to output to.
+	 * @param args <br /><ul>[0]: hops</ul>
+	 */
 	public void ping(final CommandSender sender, final String[] args){
 		final List<String> processCmd = new ArrayList<String>();
 		final String hops = this.getHops(sender, args);
@@ -615,6 +745,11 @@ public class LagMeter extends JavaPlugin{
 			}
 	}
 
+	/**
+	 * This method sends the specified CommandSender a message, with the amount of chunks currently loaded on the server, for each world, followed by a grand total.
+	 * 
+	 * @param sender - The CommandSender to send output to.
+	 */
 	public void sendChunks(final CommandSender sender){
 		int totalChunks = 0;
 		final List<World> worlds = super.getServer().getWorlds();
@@ -628,6 +763,11 @@ public class LagMeter extends JavaPlugin{
 		this.sendMessage(sender, 0, ChatColor.GOLD+"Total chunks loaded on the server: "+totalChunks);
 	}
 
+	/**
+	 * This method sends the specified CommandSender a message, with the amount of entities currently living on the server, for each world, followed by a grand total.
+	 * 
+	 * @param sender - The CommandSender to send output to.
+	 */
 	public void sendEntities(final CommandSender sender){
 		int totalEntities = 0;
 		final List<World> worlds = super.getServer().getWorlds();
@@ -641,6 +781,11 @@ public class LagMeter extends JavaPlugin{
 		this.sendMessage(sender, 0, ChatColor.GOLD+"Total entities: "+totalEntities);
 	}
 
+	/**
+	 * Sends the original purpose of this plugin, the Lag Meter, to the specified CommandSender.
+	 * 
+	 * @param sender The CommandSender to send the LagMeter to.
+	 */
 	public void sendLagMeter(final CommandSender sender){
 		String lagMeter = "";
 		final float tps;
@@ -665,6 +810,11 @@ public class LagMeter extends JavaPlugin{
 		this.sendMessage(sender, 0, ChatColor.GOLD+"["+(tps>=18 ? ChatColor.GREEN : tps>=15 ? ChatColor.YELLOW : ChatColor.RED)+lagMeter+ChatColor.GOLD+"] "+String.format("%3.2f", tps)+" TPS");
 	}
 
+	/**
+	 * This sends the other original function of this plugin, the memory meter, to the specified ConsoleSender.
+	 * 
+	 * @param sender - The ConsoleSender object to send the memory meter to.
+	 */
 	public void sendMemMeter(final CommandSender sender){
 		String bar = "";
 		int looped = 0;
@@ -748,6 +898,9 @@ public class LagMeter extends JavaPlugin{
 		this.lowMemCommand = yml.getString("Notifications.Memory.ConsoleCommand", "/mem");
 	}
 
+	/**
+	 * This method updates the plugin's stored statistics for memory.
+	 */
 	public synchronized void updateMemoryStats(){
 		this.memUsed = (Runtime.getRuntime().totalMemory()-Runtime.getRuntime().freeMemory())/1048576;
 		this.memMax = Runtime.getRuntime().maxMemory()/1048576;
@@ -755,15 +908,25 @@ public class LagMeter extends JavaPlugin{
 		this.percentageFree = 100/this.memMax*this.memFree;
 	}
 
+	/**
+	 * This method gets whether or not the plugin, when logging, will add an extra empty line between logging blocks.
+	 * 
+	 * @return If the plugin inserts an extra line feed between logging blocks.
+	 */
 	public boolean usingNewBlockEveryLog(){
 		return this.newBlockPerLog;
 	}
 
+	/**
+	 * This method gets whether or not the plugin, when logging, will add an extra empty line between logging entities and chunks, etc.
+	 * 
+	 * @return If the plugin inserts an extra line feed between logging chunks, etc..
+	 */
 	public boolean usingNewLineForLogStats(){
 		return this.newLineForLogStats;
 	}
 
-	public void warn(final String message){
+	private void warn(final String message){
 		this.getServer().getConsoleSender().sendMessage(ChatColor.GOLD+"[LagMeter "+this.getDescription().getVersion()+"] "+ChatColor.RED+message);
 	}
 }
