@@ -491,7 +491,7 @@ public class LagMeter extends JavaPlugin{
 		this.lagWatcher.stop();
 		this.cancelAllLagListeners();
 		this.cancelAllMemoryListeners();
-		if(!this.logger.isEnabled())
+		if(this.logger.isEnabled())
 			try{
 				this.logger.disable();
 			}catch(final FileNotFoundException e){
