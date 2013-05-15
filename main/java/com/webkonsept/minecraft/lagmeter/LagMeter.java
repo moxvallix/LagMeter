@@ -824,7 +824,7 @@ public class LagMeter extends JavaPlugin{
 		bar += ChatColor.WHITE;
 		while(looped++<=20)
 			bar += '_';
-		this.sendMessage(sender, 0, ChatColor.GOLD+"["+(this.percentageFree>=60 ? ChatColor.GREEN : this.percentageFree>=35 ? ChatColor.YELLOW : ChatColor.RED)+bar+ChatColor.GOLD+"] "+String.format("%3.2f", this.memFree)+"MB/"+String.format("%3.2f", this.memMax)+"MB ("+String.format("%3.2f", this.percentageFree)+"%) free");
+		this.sendMessage(sender, 0, ChatColor.GOLD+"["+(this.percentageFree>=60 ? ChatColor.GREEN : this.percentageFree>=35 ? ChatColor.YELLOW : ChatColor.RED)+bar+ChatColor.GOLD+"] "+String.format("%3,.2f", this.memFree)+"MB/"+String.format("%3,.2f", this.memMax)+"MB ("+String.format("%3,.2f", this.percentageFree)+"%) free");
 	}
 
 	protected void sendMessage(final CommandSender sender, final int severity, final String message){
