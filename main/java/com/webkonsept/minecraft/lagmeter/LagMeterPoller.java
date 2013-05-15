@@ -27,7 +27,7 @@ public class LagMeterPoller implements Runnable{
 			else
 				aTPS = this.plugin.getTPS();
 			final double[] d = this.plugin.getMemory();
-			this.plugin.getLMLogger().log("TPS: "+aTPS+newLine+"Memory free: "+String.format("%,f", d[2])+"/"+String.format("%,f", d[1])+" ("+String.format("%,f", d[3])+"%)"+players);
+			this.plugin.getLMLogger().log("TPS: "+aTPS+newLine+"Memory free: "+String.format("%,.2f", d[2])+"/"+String.format("%,.2f", d[1])+" ("+String.format("%,.2f", d[3])+"%)"+players);
 		}
 	}
 
