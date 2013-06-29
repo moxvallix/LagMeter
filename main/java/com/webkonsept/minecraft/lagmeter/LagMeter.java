@@ -508,17 +508,29 @@ public class LagMeter extends JavaPlugin{
 	}
 
 	protected void notifySyncLagListeners(){
-		final HighLagEvent e = new HighLagEvent(this.getTPS());
-		for(final LagListener l: this.getSyncLagListeners())
-			if(l!=null)
-				l.onHighLagEvent(e);
+		class C extends BukkitRunnable{
+			@Override
+			public void run(){
+				final HighLagEvent e = new HighLagEvent(LagMeter.this.getTPS());
+				for(final LagListener l: LagMeter.this.getSyncLagListeners())
+					if(l!=null)
+						l.onHighLagEvent(e);
+			}
+		}
+		new C().runTask(this);
 	}
 
 	protected void notifySyncMemoryListeners(){
-		final LowMemoryEvent e = new LowMemoryEvent(this.getMemory(), this.getTPS());
-		for(final MemoryListener m: this.getSyncMemoryListeners())
-			if(m!=null)
-				m.onLowMemoryEvent(e);
+		class C extends BukkitRunnable{
+			@Override
+			public void run(){
+				final LowMemoryEvent e = new LowMemoryEvent(LagMeter.this.getMemory(), LagMeter.this.getTPS());
+				for(final MemoryListener m: LagMeter.this.getSyncMemoryListeners())
+					if(m!=null)
+						m.onLowMemoryEvent(e);
+			}
+		}
+		new C().runTask(this);
 	}
 
 	@Override
@@ -663,13 +675,13 @@ public class LagMeter extends JavaPlugin{
 	 * 
 	 * @see LagMeter#parseTimeMS(String)
 	 */
-	public long parseTime(final String timeString) throws InvalidTimeFormatException{
+	public long parseTime(String timeString) throws InvalidTimeFormatException{
 		long time = 0L;
 		if(timeString.split("<>").length==2){
-			final String x = timeString.split("<>")[1].toLowerCase();
+			timeString = timeString.split("<>")[1].toLowerCase();
 			String z = "";
-			for(int i = 0; i<x.length(); i++){
-				final String c = x.substring(i, i+1);
+			for(int i = 0; i<timeString.length(); i++){
+				final String c = timeString.substring(i, i+1);
 				if(c.matches("[^wdhms]"))
 					z += c;
 				else
@@ -692,7 +704,8 @@ public class LagMeter extends JavaPlugin{
 		}else
 			time = -1L;
 		if(time<1)
-			throw new InvalidTimeFormatException("The time or command for the uptime command string "+timeString+" is invalid.");
+			throw new InvalidTimeFormatException("The time \""+timeString+"\" is invalid and couldn't be parsed.");
+		System.out.println(time);
 		return time;
 	}
 
