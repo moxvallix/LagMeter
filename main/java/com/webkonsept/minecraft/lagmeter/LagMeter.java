@@ -653,20 +653,20 @@ public class LagMeter extends JavaPlugin{
 	}
 
 	/**
-	 * Parses a string to get the amount of ticks equal to the
+	 * Parses a string to get the amount of ticks equal to what the string passed represents.
 	 * 
 	 * @param timeString - The "human-readable" representation of time, where:<ul><b>s</b> is seconds;<br><b>m</b> is minutes;<br><b>h</b> is hours;<br><b>d</b> is days; and finally,<br><b>w</b> is weeks.</ul>
 	 * 
 	 * @return Amount of ticks which corresponds to this string of time.
 	 * 
-	 * @throws InvalidTimeFormatException If the time format given is invalid
+	 * @throws InvalidTimeFormatException If the time format given is invalid or the tick amount which results is less than 1
 	 * 
 	 * @see LagMeter#parseTimeMS(String)
 	 */
 	public long parseTime(final String timeString) throws InvalidTimeFormatException{
 		long time = 0L;
 		if(timeString.split("<>").length==2){
-			String x = timeString.split("<>")[1].toLowerCase();
+			final String x = timeString.split("<>")[1].toLowerCase();
 			String z = "";
 			for(int i = 0; i<x.length(); i++){
 				final String c = x.substring(i, i+1);
@@ -684,7 +684,7 @@ public class LagMeter extends JavaPlugin{
 							time += 1200L*Long.parseLong(z);
 						else if(c.equalsIgnoreCase("s"))
 							time += 20L*Long.parseLong(z);
-						z = x = "";
+						z = "";
 					}catch(final NumberFormatException e){
 						throw new InvalidTimeFormatException("The time for the uptime command "+timeString.split("<>")[0]+" is invalid: the time string contains characters other than 0-9, w/d/h/m/s.");
 					}
@@ -705,7 +705,7 @@ public class LagMeter extends JavaPlugin{
 	 * 
 	 * @return The amount of milliseconds that would equate to the time string given.
 	 * 
-	 * @throws InvalidTimeFormatException
+	 * @throws InvalidTimeFormatException If the timeString is in an invalid format (i.e. invalid characters) or the result is less than 1.
 	 */
 	public long parseTimeMS(String timeString) throws InvalidTimeFormatException{
 		return (this.parseTime(timeString)*50L);
