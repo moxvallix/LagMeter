@@ -29,10 +29,11 @@ public class LagMeterLogger{
 		}else if(!this.logMemory&&!this.logTPS){
 			this.error("Both logMemory and logTPS are disabled. Nothing to log!");
 			ret = false;
-		}else
+		}else{
 			try{
-				if(!this.logfile.exists())
+				if(!this.logfile.exists()){
 					this.logfile.createNewFile();
+				}
 				this.log = new PrintWriter(new FileWriter(this.logfile, true));
 				this.log("Logging enabled.");
 			}catch(final IOException e){
@@ -40,6 +41,7 @@ public class LagMeterLogger{
 				this.error("IOException opening logfile!");
 				ret = false;
 			}
+		}
 		this.enabled = true;
 		return ret;
 	}
@@ -54,8 +56,9 @@ public class LagMeterLogger{
 	}
 
 	public void disable() throws IOException, FileNotFoundException, Exception{
-		if(this.plugin.isLoggingEnabled())
+		if(this.plugin.isLoggingEnabled()){
 			this.closeLog();
+		}
 	}
 
 	public boolean enable(){
@@ -82,10 +85,11 @@ public class LagMeterLogger{
 	}
 
 	public String getFilename(){
-		if(this.logfile!=null)
+		if(this.logfile!=null){
 			return this.logfile.getAbsolutePath();
-		else
+		}else{
 			return "!! UNKNOWN !!";
+		}
 	}
 
 	public String getTimeFormat(){
@@ -99,14 +103,15 @@ public class LagMeterLogger{
 	protected void log(String message){
 		if(this.enabled){
 			message = "["+this.now()+"] "+message;
-			final String newLine = this.plugin.usingNewLineForLogStats() ? "\n" : "  ";
+			final String newLine = this.plugin.isUsingNewLineForLogStats() ? "\n" : "  ";
 			this.log.print(message);
 			if(this.plugin.isLoggingChunks()){
 				int totalChunks = 0;
 				for(final World world: Bukkit.getServer().getWorlds()){
 					totalChunks += world.getLoadedChunks().length;
-					if(!this.plugin.isLoggingTotalChunksOnly())
+					if(!this.plugin.isLoggingTotalChunksOnly()){
 						this.log.print(newLine+"Chunks loaded in world \""+world.getName()+"\": "+world.getLoadedChunks().length);
+					}
 				}
 				this.log.print(newLine+"Total chunks loaded: "+totalChunks);
 			}
@@ -114,13 +119,15 @@ public class LagMeterLogger{
 				int totalEntities = 0;
 				for(final World world: Bukkit.getServer().getWorlds()){
 					totalEntities += world.getEntities().size();
-					if(!this.plugin.isLoggingTotalEntitiesOnly())
+					if(!this.plugin.isLoggingTotalEntitiesOnly()){
 						this.log.print(newLine+"Entities in world \""+world.getName()+"\": "+world.getEntities().size());
+					}
 				}
 				this.log.print(newLine+"Total entities: "+totalEntities);
 			}
-			if(this.plugin.usingNewBlockEveryLog())
+			if(this.plugin.isUsingNewBlockEveryLog()){
 				this.log.println();
+			}
 			this.log.println();
 			this.log.flush();
 		}
@@ -188,7 +195,8 @@ public class LagMeterLogger{
 
 	protected LagMeterLogger(final LagMeter instance, final boolean enable){
 		this.plugin = instance;
-		if(enable)
+		if(enable){
 			this.enable();
+		}
 	}
 }

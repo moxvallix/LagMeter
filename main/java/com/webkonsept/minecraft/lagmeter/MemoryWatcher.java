@@ -1,8 +1,5 @@
 package main.java.com.webkonsept.minecraft.lagmeter;
 
-import main.java.com.webkonsept.minecraft.lagmeter.events.LowMemoryEvent;
-import main.java.com.webkonsept.minecraft.lagmeter.listeners.MemoryListener;
-
 final class MemoryWatcher implements Runnable{
 	private final LagMeter plugin;
 	private boolean stop;
@@ -11,15 +8,7 @@ final class MemoryWatcher implements Runnable{
 	public void run(){
 		while(!this.stop){
 			if(this.plugin.getMemory()[3]<=this.plugin.getMemoryNotificationThreshold()){
-				final LowMemoryEvent e = new LowMemoryEvent(this.plugin.getMemory(), this.plugin.getTPS());
-				for(final MemoryListener m: this.plugin.getMemoryListeners())
-					if(m!=null)
-						new Thread(new Runnable(){
-							@Override
-							public void run(){
-								m.onLowMemoryEvent(e);
-							}
-						}).start();
+				this.plugin.notifyMemoryListeners();
 			}
 			try{
 				Thread.sleep(this.plugin.getCheckMemoryInterval());

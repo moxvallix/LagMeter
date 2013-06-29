@@ -1,8 +1,5 @@
 package main.java.com.webkonsept.minecraft.lagmeter;
 
-import main.java.com.webkonsept.minecraft.lagmeter.events.HighLagEvent;
-import main.java.com.webkonsept.minecraft.lagmeter.listeners.LagListener;
-
 final class LagWatcher implements Runnable{
 	private final LagMeter plugin;
 	private boolean stop;
@@ -11,15 +8,7 @@ final class LagWatcher implements Runnable{
 	public void run(){
 		while(!this.stop){
 			if(this.plugin.getTpsNotificationThreshold()>=this.plugin.getTPS()){
-				final HighLagEvent e = new HighLagEvent(this.plugin.getTPS());
-				for(final LagListener l: this.plugin.getLagListeners())
-					if(l!=null)
-						new Thread(new Runnable(){
-							@Override
-							public void run(){
-								l.onHighLagEvent(e);
-							}
-						}).start();
+				this.plugin.notifyLagListeners();
 			}
 			try{
 				Thread.sleep(this.plugin.getCheckMemoryInterval());
