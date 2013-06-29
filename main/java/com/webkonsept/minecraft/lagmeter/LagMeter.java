@@ -653,13 +653,15 @@ public class LagMeter extends JavaPlugin{
 	}
 
 	/**
-	 * Parses a string
+	 * Parses a string to get the amount of ticks equal to the
 	 * 
-	 * @params timeString - The string to grab the amount of milliseconds from.
+	 * @param timeString - The "human-readable" representation of time, where:<ul><b>s</b> is seconds;<br><b>m</b> is minutes;<br><b>h</b> is hours;<br><b>d</b> is days; and finally,<br><b>w</b> is weeks.</ul>
 	 * 
 	 * @return Amount of ticks which corresponds to this string of time.
 	 * 
 	 * @throws InvalidTimeFormatException If the time format given is invalid
+	 * 
+	 * @see LagMeter#parseTimeMS(String)
 	 */
 	public long parseTime(final String timeString) throws InvalidTimeFormatException{
 		long time = 0L;
@@ -684,7 +686,7 @@ public class LagMeter extends JavaPlugin{
 							time += 20L*Long.parseLong(z);
 						z = x = "";
 					}catch(final NumberFormatException e){
-						throw new InvalidTimeFormatException("The time for the uptime command "+timeString.split(";")[0]+" is invalid: the time string contains characters other than 0-9, w/d/h/m/s.");
+						throw new InvalidTimeFormatException("The time for the uptime command "+timeString.split("<>")[0]+" is invalid: the time string contains characters other than 0-9, w/d/h/m/s.");
 					}
 			}
 		}else
@@ -692,6 +694,21 @@ public class LagMeter extends JavaPlugin{
 		if(time<1)
 			throw new InvalidTimeFormatException("The time or command for the uptime command string "+timeString+" is invalid.");
 		return time;
+	}
+
+	/**
+	 * Parses the timeString given and returns milliseconds instead of ticks. Works in the same fashion as parseTime(String).
+	 * 
+	 * @see LagMeter#parseTime(String)
+	 * 
+	 * @param timeString - The string of time, where:<ul><b>s</b> is seconds;<br><b>m</b> is minutes;<br><b>h</b> is hours;<br><b>d</b> is days; and finally,<br><b>w</b> is weeks.</ul>
+	 * 
+	 * @return The amount of milliseconds that would equate to the time string given.
+	 * 
+	 * @throws InvalidTimeFormatException
+	 */
+	public long parseTimeMS(String timeString) throws InvalidTimeFormatException{
+		return (this.parseTime(timeString)*50L);
 	}
 
 	public boolean permit(final CommandSender sender, final String perm){

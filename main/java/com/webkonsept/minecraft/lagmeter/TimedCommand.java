@@ -22,7 +22,7 @@ public class TimedCommand implements Runnable{
 
 	public void process(String s){
 		try{
-			Thread.sleep(this.plugin.parseTime(s));
+			Thread.sleep(this.plugin.parseTimeMS(s));
 		}catch(final InvalidTimeFormatException e){
 		}catch(final InterruptedException e){
 		}
