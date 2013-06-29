@@ -610,6 +610,8 @@ public class LagMeter extends JavaPlugin{
 		this.poller = new LagMeterPoller(this);
 		this.history = new LagMeterStack();
 		this.asyncLagListeners = new ArrayList<LagListener>();
+		this.syncLagListeners = new ArrayList<LagListener>();
+		this.syncMemListeners = new ArrayList<MemoryListener>();
 		this.asyncMemListeners = new ArrayList<MemoryListener>();
 		this.updateConfiguration();
 		if(!logsFolder.exists()&&this.useLogsFolder&&this.enableLogging){
@@ -651,14 +653,18 @@ public class LagMeter extends JavaPlugin{
 	}
 
 	/**
+	 * Parses a string
+	 * 
+	 * @params timeString - The string to grab the amount of milliseconds from.
 	 * 
 	 * @return Amount of ticks which corresponds to this string of time.
+	 * 
 	 * @throws InvalidTimeFormatException If the time format given is invalid
 	 */
 	public long parseTime(final String timeString) throws InvalidTimeFormatException{
 		long time = 0L;
-		if(timeString.split(";").length==2){
-			String x = timeString.split(";")[1].toLowerCase();
+		if(timeString.split("<>").length==2){
+			String x = timeString.split("<>")[1].toLowerCase();
 			String z = "";
 			for(int i = 0; i<x.length(); i++){
 				final String c = x.substring(i, i+1);
