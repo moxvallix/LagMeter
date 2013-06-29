@@ -218,23 +218,21 @@ public class LagMeter extends JavaPlugin{
 
 	private String getHops(final CommandSender sender, final String[] args){
 		if(args.length>0){
-			if(this.permit(sender, "lagmeter.commands.ping.unlimited")){
+			if(this.permit(sender, "lagmeter.commands.ping.unlimited"))
 				try{
-					if(Integer.parseInt(args[0])>10){
+					if(Integer.parseInt(args[0])>10)
 						this.sendMessage(sender, 1, "This might take a while...");
-					}
 					return args[0];
 				}catch(final NumberFormatException e){
 					this.sendMessage(sender, 1, "You entered an invalid amount of hops; therefore, 1 will be used instead.");
 					return "1";
 				}
-			}else{
+			else{
 				this.sendMessage(sender, 1, "You don't have access to specifying ping hops!");
 				return "1";
 			}
-		}else{
+		}else
 			return "1";
-		}
 	}
 
 	/**
@@ -308,9 +306,8 @@ public class LagMeter extends JavaPlugin{
 	 * @return ticksPerSecond
 	 */
 	public float getTPS(){
-		if(this.useAverage){
+		if(this.useAverage)
 			return this.history.getAverage();
-		}
 		return this.ticksPerSecond;
 	}
 
@@ -333,42 +330,31 @@ public class LagMeter extends JavaPlugin{
 			if(this.permit(sender, "lagmeter.command.lagmeter.help")||this.permit(sender, "lagmeter.help")){
 				if(args.length==1||args[1].trim().equals("0")||args[1].trim().equals("1")){
 					this.sendMessage(sender, 0, "*           *Help for LagMeter [1/2]*           *");
-					if(this.permit(sender, "lagmeter.command.lag")){
+					if(this.permit(sender, "lagmeter.command.lag"))
 						this.sendMessage(sender, 0, ChatColor.DARK_GREEN+"/lag"+ChatColor.GOLD+" - Check the server's TPS. If configuChatColor.RED, may also display chunks loaded and/or entities alive.");
-					}
-					if(this.permit(sender, "lagmeter.command.mem")){
+					if(this.permit(sender, "lagmeter.command.mem"))
 						this.sendMessage(sender, 0, ChatColor.DARK_GREEN+"/mem"+ChatColor.GOLD+" - Displays how much memory the server currently has free.");
-					}
-					if(this.permit(sender, "lagmeter.command.lagmem")||this.permit(sender, "lagmeter.command.lm")){
+					if(this.permit(sender, "lagmeter.command.lagmem")||this.permit(sender, "lagmeter.command.lm"))
 						this.sendMessage(sender, 0, ChatColor.DARK_GREEN+"/lagmem|/lm"+ChatColor.GOLD+" - A combination of both /lag and /mem.");
-					}
-					if(this.permit(sender, "lagmeter.command.lchunks")){
+					if(this.permit(sender, "lagmeter.command.lchunks"))
 						this.sendMessage(sender, 0, ChatColor.DARK_GREEN+"/lchunks"+ChatColor.GOLD+" - Shows how many chunks are currently loaded in each world, then with a total.");
-					}
-					if(this.permit(sender, "lagmeter.command.lmobs")||this.permit(sender, "lagmeter.command.lentities")){
+					if(this.permit(sender, "lagmeter.command.lmobs")||this.permit(sender, "lagmeter.command.lentities"))
 						this.sendMessage(sender, 0, ChatColor.DARK_GREEN+"/lmobs|/lentities"+ChatColor.GOLD+" - Shows how many entities are currently alive in each world, then with a total.");
-					}
-					if(this.permit(sender, "lagmeter.command.lmp")){
+					if(this.permit(sender, "lagmeter.command.lmp"))
 						this.sendMessage(sender, 0, ChatColor.DARK_GREEN+"/lmp"+ChatColor.GOLD+" - Has the same function as /lagmem, but includes a player count.");
-					}
-					if(this.permit(sender, "lagmeter.command.lagmeter")){
+					if(this.permit(sender, "lagmeter.command.lagmeter"))
 						this.sendMessage(sender, 0, ChatColor.DARK_GREEN+"/lagmeter|/lm"+ChatColor.GOLD+" - Shows the current version and gives sub-commands.");
-					}
-					if(this.permit(sender, "lagmeter.command.lagmeter.reload")||this.permit(sender, "lagmeter.reload")){
+					if(this.permit(sender, "lagmeter.command.lagmeter.reload")||this.permit(sender, "lagmeter.reload"))
 						this.sendMessage(sender, 0, ChatColor.DARK_GREEN+"/lagmeter|/lm"+ChatColor.GREEN+" <reload|r> "+ChatColor.GOLD+" - Allows the player to reload the configuration.");
-					}
 				}else if(args.length>1&&args[1].trim().equals("2")){
 					this.sendMessage(sender, 0, "*           *Help for LagMeter [2/2]*           *");
 					this.sendMessage(sender, 0, ChatColor.DARK_GREEN+"/lagmeter|/lm"+ChatColor.GREEN+" <help|?> [page]"+ChatColor.GOLD+" - This command. Gives the user a list of commands that they are able to use in this plugin.");
-					if(this.permit(sender, "lagmeter.command.ping")||this.permit(sender, "lagmeter.command.lping")){
+					if(this.permit(sender, "lagmeter.command.ping")||this.permit(sender, "lagmeter.command.lping"))
 						this.sendMessage(sender, 0, ChatColor.DARK_GREEN+"/ping|/lping"+ChatColor.GREEN+" [hops] "+ChatColor.GOLD+" - Pings google.com from the server. Specify an amount of hops to specify more packets."+ChatColor.RED+" Warning: server-intensive above 4 hops.");
-					}
-				}else{
+				}else
 					this.sendMessage(sender, 1, "Invalid page number.");
-				}
-			}else{
+			}else
 				this.sendMessage(sender, 1, "Sorry, but you don't have access to the help command.");
-			}
 		}else{
 			this.sendMessage(sender, 1, "Invalid sub-command. "+ChatColor.GOLD+"Try one of these:");
 			this.sendMessage(sender, 0, "Available sub-commands: /lagmeter|lm <reload|r>|/lagmeter|lm <help|?>");
@@ -489,30 +475,26 @@ public class LagMeter extends JavaPlugin{
 
 	protected void notifyAsyncLagListeners(){
 		final HighLagEvent e = new HighLagEvent(this.getTPS());
-		for(final LagListener l: this.getAsyncLagListeners()){
-			if(l!=null){
+		for(final LagListener l: this.getAsyncLagListeners())
+			if(l!=null)
 				new Thread(new Runnable(){
 					@Override
 					public void run(){
 						l.onHighLagEvent(e);
 					}
 				}).start();
-			}
-		}
 	}
 
 	protected void notifyAsyncMemoryListeners(){
 		final LowMemoryEvent e = new LowMemoryEvent(this.getMemory(), this.getTPS());
-		for(final MemoryListener m: this.getAsyncMemoryListeners()){
-			if(m!=null){
+		for(final MemoryListener m: this.getAsyncMemoryListeners())
+			if(m!=null)
 				new Thread(new Runnable(){
 					@Override
 					public void run(){
 						m.onLowMemoryEvent(e);
 					}
 				}).start();
-			}
-		}
 	}
 
 	protected void notifyLagListeners(){
@@ -527,27 +509,22 @@ public class LagMeter extends JavaPlugin{
 
 	protected void notifySyncLagListeners(){
 		final HighLagEvent e = new HighLagEvent(this.getTPS());
-		for(final LagListener l: this.getSyncLagListeners()){
-			if(l!=null){
+		for(final LagListener l: this.getSyncLagListeners())
+			if(l!=null)
 				l.onHighLagEvent(e);
-			}
-		}
 	}
 
 	protected void notifySyncMemoryListeners(){
 		final LowMemoryEvent e = new LowMemoryEvent(this.getMemory(), this.getTPS());
-		for(final MemoryListener m: this.getSyncMemoryListeners()){
-			if(m!=null){
+		for(final MemoryListener m: this.getSyncMemoryListeners())
+			if(m!=null)
 				m.onLowMemoryEvent(e);
-			}
-		}
 	}
 
 	@Override
 	public boolean onCommand(final CommandSender sender, final Command command, final String commandLabel, final String[] args){
-		if(!this.isEnabled()){
+		if(!this.isEnabled())
 			return false;
-		}
 		boolean success = false;
 		if(this.permit(sender, "lagmeter.command."+command.getName().toLowerCase())||!(sender instanceof Player)){
 			if(command.getName().equalsIgnoreCase("lag")){
@@ -569,9 +546,8 @@ public class LagMeter extends JavaPlugin{
 				if(args.length==0){
 					this.sendLagMeter(sender);
 					this.sendMemMeter(sender);
-				}else{
+				}else
 					this.handleBaseCommand(sender, args);
-				}
 			}else if(command.getName().equalsIgnoreCase("lmp")){
 				success = true;
 				this.sendLagMeter(sender);
@@ -594,9 +570,8 @@ public class LagMeter extends JavaPlugin{
 				if(args.length==0){
 					this.sendMessage(sender, 0, "Version: "+this.getDescription().getVersion());
 					this.sendMessage(sender, 0, "Available sub-commands: /lagmeter|lm <reload|r>|/lagmeter|lm <help|?>");
-				}else{
+				}else
 					this.handleBaseCommand(sender, args);
-				}
 			}
 			return success;
 		}else{
@@ -612,7 +587,7 @@ public class LagMeter extends JavaPlugin{
 		this.lagWatcher.stop();
 		this.cancelAllLagListeners();
 		this.cancelAllMemoryListeners();
-		if(this.logger.isEnabled()){
+		if(this.logger.isEnabled())
 			try{
 				this.logger.disable();
 			}catch(final FileNotFoundException e){
@@ -622,7 +597,6 @@ public class LagMeter extends JavaPlugin{
 			}catch(final Exception e){
 				e.printStackTrace();
 			}
-		}
 		super.getServer().getScheduler().cancelTasks(this);
 		this.info("Disabled!");
 	}
@@ -641,17 +615,15 @@ public class LagMeter extends JavaPlugin{
 		if(!logsFolder.exists()&&this.useLogsFolder&&this.enableLogging){
 			this.info("Logs folder not found. Attempting to create one for you.");
 			logsFolder.mkdir();
-			if(!logsFolder.exists()){
+			if(!logsFolder.exists())
 				this.severe("Error! Couldn't create the folder!");
-			}else{
+			else
 				this.info("Logs folder created.");
-			}
 		}
 		if(this.enableLogging){
 			this.poller.setLogInterval(this.logInterval);
-			if(!this.logger.enable()){
+			if(!this.logger.enable())
 				this.severe("Logging is disabled because: "+this.logger.getError());
-			}
 		}
 		this.history.setMaxSize(this.averageLength);
 		this.info("Enabled! Polling every "+this.interval+" server ticks."+(this.isLoggingEnabled() ? " Logging to "+this.logger.getFilename()+"." : ""));
@@ -690,62 +662,54 @@ public class LagMeter extends JavaPlugin{
 			String z = "";
 			for(int i = 0; i<x.length(); i++){
 				final String c = x.substring(i, i+1);
-				if(c.matches("[^wdhms]")){
+				if(c.matches("[^wdhms]"))
 					z += c;
-				}else{
+				else
 					try{
-						if(c.equalsIgnoreCase("w")){
+						if(c.equalsIgnoreCase("w"))
 							time += 12096000L*Long.parseLong(z);
-						}else if(c.equalsIgnoreCase("d")){
+						else if(c.equalsIgnoreCase("d"))
 							time += 1728000L*Long.parseLong(z);
-						}else if(c.equalsIgnoreCase("h")){
+						else if(c.equalsIgnoreCase("h"))
 							time += 7200L*Long.parseLong(z);
-						}else if(c.equalsIgnoreCase("m")){
+						else if(c.equalsIgnoreCase("m"))
 							time += 1200L*Long.parseLong(z);
-						}else if(c.equalsIgnoreCase("s")){
+						else if(c.equalsIgnoreCase("s"))
 							time += 20L*Long.parseLong(z);
-						}
 						z = x = "";
 					}catch(final NumberFormatException e){
 						throw new InvalidTimeFormatException("The time for the uptime command "+timeString.split(";")[0]+" is invalid: the time string contains characters other than 0-9, w/d/h/m/s.");
 					}
-				}
 			}
-		}else{
+		}else
 			time = -1L;
-		}
-		if(time<1){
+		if(time<1)
 			throw new InvalidTimeFormatException("The time or command for the uptime command string "+timeString+" is invalid.");
-		}
 		return time;
 	}
 
 	public boolean permit(final CommandSender sender, final String perm){
 		if(sender instanceof Player){
-			if(sender.hasPermission("lagmeter.*")){
+			if(sender.hasPermission("lagmeter.*"))
 				return true;
-			}else if(sender.hasPermission(perm)){
+			else if(sender.hasPermission(perm))
 				return true;
-			}else{
+			else
 				return sender.isOp();
-			}
-		}else{
+		}else
 			return true;
-		}
 	}
 
 	public boolean permit(final Player player, final String perm){
 		if(player!=null&&player instanceof Player){
-			if(player.hasPermission("lagmeter.*")){
+			if(player.hasPermission("lagmeter.*"))
 				return true;
-			}else if(player.hasPermission(perm)){
+			else if(player.hasPermission(perm))
 				return true;
-			}else{
+			else
 				return player.isOp();
-			}
-		}else{
+		}else
 			return true;
-		}
 	}
 
 	/**
@@ -793,9 +757,8 @@ public class LagMeter extends JavaPlugin{
 					result = new BufferedReader(new InputStreamReader(p.getInputStream()));
 					errorStream = new BufferedReader(new InputStreamReader(p.getErrorStream()));
 					while((s = result.readLine())!=null){
-						if(s.trim().length()!=0){
+						if(s.trim().length()!=0)
 							output = s;
-						}
 						if(s.indexOf(windowsPingSummary)!=-1){
 							output = s.substring(s.indexOf(windowsPingSummary)+windowsPingSummary.length());
 							break;
@@ -805,14 +768,12 @@ public class LagMeter extends JavaPlugin{
 							break;
 						}
 					}
-					if(output!=null){
+					if(output!=null)
 						new SyncSendMessage(sender, 0, "Average response time for the server for "+hops+" ping hop(s) to "+domain+": "+output).runTask(LagMeter.this);
-					}else{
+					else
 						new SyncSendMessage(sender, 0, "Error running ping command").runTask(LagMeter.this);
-					}
-					while((s = errorStream.readLine())!=null){
+					while((s = errorStream.readLine())!=null)
 						new SyncSendMessage(sender, 1, s).runTask(LagMeter.this);
-					}
 					p.destroy();
 				}catch(final IOException e){
 					new SyncSendMessage(sender, 0, "Error running ping command").runTask(LagMeter.this);
@@ -823,7 +784,7 @@ public class LagMeter extends JavaPlugin{
 	}
 
 	/**
-	 * Registers a listener for when LagMeter finds that the server's TPS has dropped below the user's specified threshold for the event to be fired. When this happens, the event method in the class which implements LagListener will be run.
+	 * Registers a listener for when LagMeter finds that the server's TPS has dropped below the user's specified threshold for the event to be fired. When this happens, the event method in the class which implements LagListener will be run. Code will be executed asynchronously in a new thread; therefore, only <b>thread-safe</b> code should be used.
 	 * 
 	 * @param listener - The listener which implements LagListener which should be notified of the event when (if) it happens.
 	 * @return The ID of the listener in LagMeter's allocated memory. This is used to cancel the registration of the listener, etc.
@@ -832,13 +793,12 @@ public class LagMeter extends JavaPlugin{
 		if(!this.asyncLagListeners.contains(listener)){
 			this.asyncLagListeners.add(listener);
 			return this.asyncLagListeners.indexOf(listener);
-		}else{
+		}else
 			return -1;
-		}
 	}
 
 	/**
-	 * Registers a listener for when LagMeter finds that the free memory has dropped below the user's specified threshold for the evnt to be fired. When this happens, the event method in the class which implements MemoryListener will be run.
+	 * Registers a listener for when LagMeter finds that the free memory has dropped below the user's specified threshold for the evnt to be fired. When this happens, the event method in the class which implements MemoryListener will be run. Code will be executed asynchronously; therefore, <b>only thread-safe</b> code should be produced.
 	 * 
 	 * @param listener The listener which implements MemoryListener which should be notified of the event when (if) it happens.
 	 * @return The ID of the listener in LagMeter's allocated memory. This is used to cancel the registration of the listener, etc.
@@ -847,13 +807,12 @@ public class LagMeter extends JavaPlugin{
 		if(!this.asyncMemListeners.contains(listener)){
 			this.asyncMemListeners.add(listener);
 			return this.asyncMemListeners.indexOf(listener);
-		}else{
+		}else
 			return -1;
-		}
 	}
 
 	/**
-	 * Registers a listener for when LagMeter finds that the server's TPS has dropped below the user's specified threshold for the event to be fired. When this happens, the event method in the class which implements LagListener will be run.
+	 * Registers a listener for when LagMeter finds that the server's TPS has dropped below the user's specified threshold for the event to be fired. When this happens, the event method in the class which implements LagListener will be run. Code will be executed synchronously, with the main server thread; therefore, thread-unsafe code may be used.
 	 * 
 	 * @param listener - The listener which implements LagListener which should be notified of the event when (if) it happens.
 	 * @return The ID of the listener in LagMeter's allocated memory. This is used to cancel the registration of the listener, etc.
@@ -862,13 +821,12 @@ public class LagMeter extends JavaPlugin{
 		if(!this.syncLagListeners.contains(listener)){
 			this.syncLagListeners.add(listener);
 			return this.syncLagListeners.indexOf(listener);
-		}else{
+		}else
 			return -1;
-		}
 	}
 
 	/**
-	 * Registers a listener for when LagMeter finds that the free memory has dropped below the user's specified threshold for the evnt to be fired. When this happens, the event method in the class which implements MemoryListener will be run.
+	 * Registers a listener for when LagMeter finds that the free memory has dropped below the user's specified threshold for the evnt to be fired. When this happens, the event method in the class which implements MemoryListener will be run. Code will be executed synchronously, with the main server thread; therefore, thread-unsafe methods and code may be used.
 	 * 
 	 * @param listener The listener which implements MemoryListener which should be notified of the event when (if) it happens.
 	 * @return The ID of the listener in LagMeter's allocated memory. This is used to cancel the registration of the listener, etc.
@@ -877,45 +835,38 @@ public class LagMeter extends JavaPlugin{
 		if(!this.syncMemListeners.contains(listener)){
 			this.syncMemListeners.add(listener);
 			return this.syncMemListeners.indexOf(listener);
-		}else{
+		}else
 			return -1;
-		}
 	}
 
 	private void registerTasks(){
 		super.getServer().getScheduler().cancelTasks(this);
-		if(this.memWatcher!=null){
+		if(this.memWatcher!=null)
 			this.memWatcher.stop();
-		}
-		if(this.lagWatcher!=null){
+		if(this.lagWatcher!=null)
 			this.lagWatcher.stop();
-		}
 		super.getServer().getScheduler().scheduleSyncRepeatingTask(this, this.poller, 0, this.interval);
 		this.lagNotifyInterval *= 60000;
 		this.memNotifyInterval *= 60000;
 		new Thread(this.lagWatcher = new LagWatcher(this)).start();
 		new Thread(this.memWatcher = new MemoryWatcher(this)).start();
-		if(this.AutomaticLagNotificationsEnabled){
+		if(this.AutomaticLagNotificationsEnabled)
 			this.registerSyncLagListener(new DefaultHighLag(this));
-		}
-		if(this.AutomaticMemoryNotificationsEnabled){
+		if(this.AutomaticMemoryNotificationsEnabled)
 			this.registerSyncMemoryListener(new DefaultLowMemory(this));
-		}
-		if(this.uptimeCommands!=null){
+		if(this.uptimeCommands!=null)
 			for(final String s: this.uptimeCommands){
 				long time;
 				try{
 					time = this.parseTime(s);
-					if(this.repeatingUptimeCommands){
+					if(this.repeatingUptimeCommands)
 						super.getServer().getScheduler().scheduleSyncRepeatingTask(this, new UptimeCommand(s.split(";")[0]), time, time);
-					}else{
+					else
 						super.getServer().getScheduler().scheduleSyncDelayedTask(this, new UptimeCommand(s.split(";")[0]), time);
-					}
 				}catch(final InvalidTimeFormatException e){
 					e.printStackTrace();
 				}
 			}
-		}
 	}
 
 	/**
@@ -930,9 +881,8 @@ public class LagMeter extends JavaPlugin{
 			final String s = world.getName();
 			final int i = super.getServer().getWorld(s).getLoadedChunks().length;
 			totalChunks += i;
-			if(i!=0){
+			if(i!=0)
 				this.sendMessage(sender, 0, ChatColor.GOLD+"Chunks in world \""+s+"\": "+i);
-			}
 		}
 		this.sendMessage(sender, 0, ChatColor.GOLD+"Total chunks loaded on the server: "+totalChunks);
 	}
@@ -949,9 +899,8 @@ public class LagMeter extends JavaPlugin{
 			final String worldName = world.getName();
 			final int i = super.getServer().getWorld(worldName).getEntities().size();
 			totalEntities += i;
-			if(i!=0){
+			if(i!=0)
 				this.sendMessage(sender, 0, ChatColor.GOLD+"Entities in world \""+worldName+"\": "+i);
-			}
 		}
 		this.sendMessage(sender, 0, ChatColor.GOLD+"Total entities: "+totalEntities);
 	}
@@ -964,25 +913,20 @@ public class LagMeter extends JavaPlugin{
 	public void sendLagMeter(final CommandSender sender){
 		String lagMeter = "";
 		final float tps;
-		if(this.displayEntities){
+		if(this.displayEntities)
 			this.sendEntities(sender);
-		}
-		if(this.displayChunks){
+		if(this.displayChunks)
 			this.sendChunks(sender);
-		}
-		if(this.useAverage){
+		if(this.useAverage)
 			tps = this.history.getAverage();
-		}else{
+		else
 			tps = this.ticksPerSecond;
-		}
 		if(tps<21){
 			int looped = 0;
-			while(looped++<tps){
+			while(looped++<tps)
 				lagMeter += "#";
-			}
-			while(looped++<=20){
+			while(looped++<=20)
 				lagMeter += "_";
-			}
 		}else{
 			this.sendMessage(sender, 1, "LagMeter just loaded, please wait for polling.");
 			return;
@@ -999,18 +943,16 @@ public class LagMeter extends JavaPlugin{
 		String bar = "";
 		int looped = 0;
 		this.updateMemoryStats();
-		while(looped++<this.percentageFree/5){
+		while(looped++<this.percentageFree/5)
 			bar += '#';
-		}
 		bar += ChatColor.WHITE;
-		while(looped++<=20){
+		while(looped++<=20)
 			bar += '_';
-		}
 		this.sendMessage(sender, 0, ChatColor.GOLD+"["+(this.percentageFree>=60 ? ChatColor.GREEN : this.percentageFree>=35 ? ChatColor.YELLOW : ChatColor.RED)+bar+ChatColor.GOLD+"] "+String.format("%3,.2f", this.memFree)+"MB/"+String.format("%3,.2f", this.memMax)+"MB ("+String.format("%3,.2f", this.percentageFree)+"%) free");
 	}
 
 	protected void sendMessage(final CommandSender sender, final int severity, final String message){
-		if(sender!=null){
+		if(sender!=null)
 			switch(severity){
 				case 0:
 					sender.sendMessage(ChatColor.GOLD+"[LagMeter] "+ChatColor.GREEN+message);
@@ -1022,7 +964,7 @@ public class LagMeter extends JavaPlugin{
 					sender.sendMessage(ChatColor.GOLD+"[LagMeter] "+ChatColor.DARK_RED+message);
 					break;
 			}
-		}else{
+		else
 			switch(severity){
 				case 0:
 					this.info(message);
@@ -1034,7 +976,6 @@ public class LagMeter extends JavaPlugin{
 					this.severe(message);
 					break;
 			}
-		}
 	}
 
 	protected void sendMessage(final Player player, final int severity, final String message){
