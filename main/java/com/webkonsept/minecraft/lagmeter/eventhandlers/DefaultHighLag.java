@@ -14,8 +14,7 @@ public class DefaultHighLag implements LagListener{
 
 	@Override
 	public void onHighLagEvent(final HighLagEvent evt){
-		final Player[] players = Bukkit.getServer().getOnlinePlayers();
-		for(final Player p: players)
+		for(final Player p: Bukkit.getServer().getOnlinePlayers())
 			if(this.plugin.permit(p, "lagmeter.notify.lag")||p.isOp())
 				p.sendMessage(ChatColor.GOLD+"[LagMeter] "+ChatColor.RED+"The server's TPS has dropped below "+this.plugin.getTpsNotificationThreshold()+"!");
 		this.plugin.severe("The server's TPS has dropped below "+this.plugin.getTpsNotificationThreshold()+"! Executing command (if configured).");

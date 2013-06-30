@@ -705,7 +705,6 @@ public class LagMeter extends JavaPlugin{
 			time = -1L;
 		if(time<1)
 			throw new InvalidTimeFormatException("The time \""+timeString+"\" is invalid and couldn't be parsed.");
-		System.out.println(time);
 		return time;
 	}
 

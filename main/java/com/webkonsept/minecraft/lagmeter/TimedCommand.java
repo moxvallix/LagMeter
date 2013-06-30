@@ -24,6 +24,7 @@ public class TimedCommand implements Runnable{
 		try{
 			Thread.sleep(this.plugin.parseTimeMS(s));
 		}catch(final InvalidTimeFormatException e){
+			e.printStackTrace();
 		}catch(final InterruptedException e){
 		}
 		new SyncCommand(s.split("<>")[0]).runTask(this.plugin);
