@@ -69,6 +69,14 @@ public class LagMeter extends JavaPlugin{
 	private static LagMeter p;
 
 	/**
+	 * Obviously, as this is a bukkit plugin, the constructor is not intended to be used by anything except for Bukkit.
+	 * 
+	 * Constructing a new LagMeter object will likely break a <i>lot</i> of stuff.
+	 */
+	public LagMeter(){
+	}
+
+	/**
 	 * This method gets the current instance of LagMeter.
 	 * 
 	 * @return The current instance of the plugin's main class.
@@ -969,7 +977,7 @@ public class LagMeter extends JavaPlugin{
 		bar += ChatColor.WHITE;
 		while(looped++<=20)
 			bar += '_';
-		this.sendMessage(sender, 0, ChatColor.GOLD+"["+(this.percentageFree>=60 ? ChatColor.GREEN : this.percentageFree>=35 ? ChatColor.YELLOW : ChatColor.RED)+bar+ChatColor.GOLD+"] "+String.format("%3,.2f", this.memFree)+"MB/"+String.format("%3,.2f", this.memMax)+"MB ("+String.format("%3,.2f", this.percentageFree)+"%) free");
+		this.sendMessage(sender, 0, ChatColor.GOLD+"["+(this.percentageFree>=60 ? ChatColor.GREEN : this.percentageFree>=35 ? ChatColor.YELLOW : ChatColor.RED)+bar+ChatColor.GOLD+"] "+String.format("%,.2f", this.memFree)+"MB/"+String.format("%,.2f", this.memMax)+"MB ("+String.format("%,.2f", this.percentageFree)+"%) free");
 	}
 
 	protected void sendMessage(final CommandSender sender, final int severity, final String message){
