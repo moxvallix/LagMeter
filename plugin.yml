@@ -1,12 +1,10 @@
 name: LagMeter
 main: main.java.com.webkonsept.minecraft.lagmeter.LagMeter
-version: 1.13.1-SNAPSHOT
+version: 1.15.0-SNAPSHOT
 thread: http://dev.bukkit.org/server-mods/lagmeter/
 database: false
 description: Lets you check the server lag, in ticks-per-second
 dev-url: http://dev.bukkit.org/server-mods/lagmeter/
-categories: [INFO]
-authors: [TheLunarFrog, DemmyDemon]
 commands:
     lag: 
         description: Check current lag
@@ -53,7 +51,7 @@ permissions:
             lagmeter.command.lagmem: true
             lagmeter.command.lm: true
             lagmeter.command.ping: true
-            lagmeter.command.ping.unlimited: true
+            lagmeter.command.lping: true
     lagmeter.command.lag:
         description: Gives access to the /lag command
         default: op
@@ -86,22 +84,6 @@ permissions:
     lagmeter.command.lagmeter.reload:
         description: Gives access to the /lm reload command, which reloads the plugin configuration.
         default: op
-    lagmeter.command.ping:
-        description: Gives access to the /ping command, which pings Google.com with one packet of 32 bytes.
-        children:
-            lagmeter.command.lping: true
-        default: true
-    lagmeter.command.lping:
-        description: Gives access to the /ping command, which pings Google.com with one packet of 32 bytes.
-        default: true
-    lagmeter.command.ping.unlimited:
-        description: Allows the user to specify the amount of packets the command should send.
-        children:
-            lagmeter.command.lping.unlimited: true
-        default: op
-    lagmeter.command.lping.unlimited:
-        description: Allows the user to specify the amount of packets the command should send.
-        default: op
     lagmeter.help:
         description: Gives access to the /lm help command, which shows commands the sender has access to.
         default: op
@@ -114,3 +96,6 @@ permissions:
     lagmeter.notify.mem:
         description: Allows the player/group to receive memory notifications.
         default: op
+generators: [bukget]
+categories: [INFO]
+authors: [TheLunarFrog, DemmyDemon]
