@@ -25,7 +25,7 @@
 			<resource>
 				<targetPath>.</targetPath>
 				<filtering>true</filtering>
-				<directory>${basedir}/main/resources</directory>
+				<directory>${basedir}</directory>
 				<includes>
 					<include>plugin.yml</include>
 				</includes>
@@ -51,7 +51,7 @@
 		<dependency>
 			<groupId>org.bukkit</groupId>
 			<artifactId>bukkit</artifactId>
-			<version>1.4.7-R1.0</version>
+			<version>1.5.2-R1.0</version>
 			<type>jar</type>
 		</dependency>
 	</dependencies>
