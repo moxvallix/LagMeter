@@ -724,27 +724,13 @@ public class LagMeter extends JavaPlugin{
 	}
 
 	public boolean permit(final CommandSender sender, final String perm){
-		if(sender instanceof Player){
-			if(sender.hasPermission("lagmeter.*"))
-				return true;
-			else if(sender.hasPermission(perm))
-				return true;
-			else
-				return sender.isOp();
-		}else
+		if(sender.hasPermission("lagmeter.*"))
 			return true;
+		return sender.hasPermission(perm);
 	}
 
 	public boolean permit(final Player player, final String perm){
-		if(player!=null&&player instanceof Player){
-			if(player.hasPermission("lagmeter.*"))
-				return true;
-			else if(player.hasPermission(perm))
-				return true;
-			else
-				return player.isOp();
-		}else
-			return true;
+		return this.permit((CommandSender) player, perm);
 	}
 
 	/**
