@@ -1,6 +1,6 @@
 package main.java.com.webkonsept.minecraft.lagmeter.exceptions;
 
-public class InvalidTimeFormatException extends Throwable{
+public class InvalidTimeFormatException extends Exception{
 	private static final long serialVersionUID = 4210399963053309020L;
 	private final String message;
 

@@ -36,7 +36,7 @@ public class LagMeter extends JavaPlugin{
 	private float ticksPerSecond = 20;
 	private long uptime;
 	private int averageLength = 10;
-	private double memUsed = (Runtime.getRuntime().totalMemory()-Runtime.getRuntime().freeMemory())/1048576, memMax = Runtime.getRuntime().maxMemory()/1048576, memFree = this.memMax-this.memUsed, percentageFree = 100/this.memMax*this.memFree;
+	private double memUsed = (Runtime.getRuntime().totalMemory()-Runtime.getRuntime().freeMemory())/1048576D, memMax = Runtime.getRuntime().maxMemory()/1048576D, memFree = this.memMax-this.memUsed, percentageFree = 100D/this.memMax*this.memFree;
 	// Configurable Values - mostly booleans
 	private int interval = 40;
 	private int logInterval = 150;
@@ -636,8 +636,7 @@ public class LagMeter extends JavaPlugin{
 		this.updateConfiguration();
 		if(!logsFolder.exists()&&this.useLogsFolder&&this.enableLogging){
 			this.info("Logs folder not found. Attempting to create one for you.");
-			logsFolder.mkdir();
-			if(!logsFolder.exists())
+			if(!logsFolder.mkdir())
 				this.severe("Error! Couldn't create the folder!");
 			else
 				this.info("Logs folder created.");
@@ -803,6 +802,8 @@ public class LagMeter extends JavaPlugin{
 						new SyncSendMessage(sender, 0, "Error running ping command").runTask(LagMeter.this);
 					while((s = errorStream.readLine())!=null)
 						new SyncSendMessage(sender, 1, s).runTask(LagMeter.this);
+					errorStream.close();
+					result.close();
 					p.destroy();
 				}catch(final IOException e){
 					new SyncSendMessage(sender, 0, "Error running ping command").runTask(LagMeter.this);
@@ -940,7 +941,7 @@ public class LagMeter extends JavaPlugin{
 	 * @param sender The CommandSender to send the LagMeter to.
 	 */
 	public void sendLagMeter(final CommandSender sender){
-		String lagMeter = "";
+		final StringBuilder lagMeter = new StringBuilder();
 		final float tps;
 		if(this.displayEntities)
 			this.sendEntities(sender);
@@ -953,14 +954,14 @@ public class LagMeter extends JavaPlugin{
 		if(tps<21){
 			int looped = 0;
 			while(looped++<tps)
-				lagMeter += "#";
+				lagMeter.append("#");
 			while(looped++<=20)
-				lagMeter += "_";
+				lagMeter.append("_");
 		}else{
 			this.sendMessage(sender, 1, "LagMeter just loaded, please wait for polling.");
 			return;
 		}
-		this.sendMessage(sender, 0, ChatColor.GOLD+"["+(tps>=18 ? ChatColor.GREEN : tps>=15 ? ChatColor.YELLOW : ChatColor.RED)+lagMeter+ChatColor.GOLD+"] "+String.format("%3.2f", tps)+" TPS");
+		this.sendMessage(sender, 0, ChatColor.GOLD+"["+(tps>=18 ? ChatColor.GREEN : tps>=15 ? ChatColor.YELLOW : ChatColor.RED)+lagMeter.toString()+ChatColor.GOLD+"] "+String.format("%3.2f", tps)+" TPS");
 	}
 
 	/**
@@ -969,15 +970,15 @@ public class LagMeter extends JavaPlugin{
 	 * @param sender - The ConsoleSender object to send the memory meter to.
 	 */
 	public void sendMemMeter(final CommandSender sender){
-		String bar = "";
+		final StringBuilder bar = new StringBuilder();
 		int looped = 0;
 		this.updateMemoryStats();
 		while(looped++<this.percentageFree/5)
-			bar += '#';
-		bar += ChatColor.WHITE;
+			bar.append('#');
+		bar.append(ChatColor.WHITE);
 		while(looped++<=20)
-			bar += '_';
-		this.sendMessage(sender, 0, ChatColor.GOLD+"["+(this.percentageFree>=60 ? ChatColor.GREEN : this.percentageFree>=35 ? ChatColor.YELLOW : ChatColor.RED)+bar+ChatColor.GOLD+"] "+String.format("%,.2f", this.memFree)+"MB/"+String.format("%,.2f", this.memMax)+"MB ("+String.format("%,.2f", this.percentageFree)+"%) free");
+			bar.append('_');
+		this.sendMessage(sender, 0, ChatColor.GOLD+"["+(this.percentageFree>=60 ? ChatColor.GREEN : this.percentageFree>=35 ? ChatColor.YELLOW : ChatColor.RED)+bar.toString()+ChatColor.GOLD+"] "+String.format("%,.2f", this.memFree)+"MB/"+String.format("%,.2f", this.memMax)+"MB ("+String.format("%,.2f", this.percentageFree)+"%) free");
 	}
 
 	protected void sendMessage(final CommandSender sender, final int severity, final String message){
@@ -995,6 +996,7 @@ public class LagMeter extends JavaPlugin{
 			}
 		else
 			switch(severity){
+				default:
 				case 0:
 					this.info(message);
 					break;
@@ -1055,10 +1057,10 @@ public class LagMeter extends JavaPlugin{
 	 * This method updates the plugin's stored statistics for memory.
 	 */
 	public synchronized void updateMemoryStats(){
-		this.memUsed = (Runtime.getRuntime().totalMemory()-Runtime.getRuntime().freeMemory())/1048576;
-		this.memMax = Runtime.getRuntime().maxMemory()/1048576;
+		this.memUsed = (Runtime.getRuntime().totalMemory()-Runtime.getRuntime().freeMemory())/1048576D;
+		this.memMax = Runtime.getRuntime().maxMemory()/1048576D;
 		this.memFree = this.memMax-this.memUsed;
-		this.percentageFree = 100/this.memMax*this.memFree;
+		this.percentageFree = 100D/this.memMax*this.memFree;
 	}
 
 	private void warn(final String message){

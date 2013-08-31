@@ -17,18 +17,15 @@ public class LagMeterConfig extends LagMeter{
 		try{
 			final byte[] buf = new byte[1024];
 			int i = 0;
-			while((i = fis.read(buf))!=-1){
+			while((i = fis.read(buf))!=-1)
 				fos.write(buf, 0, i);
-			}
 		}catch(final Exception e){
 			throw e;
 		}finally{
-			if(fis!=null){
+			if(fis!=null)
 				fis.close();
-			}
-			if(fos!=null){
+			if(fos!=null)
 				fos.close();
-			}
 		}
 	}
 
@@ -54,18 +51,19 @@ public class LagMeterConfig extends LagMeter{
 				ex.printStackTrace();
 			}
 			return new YamlConfiguration();
-		}else{
+		}else
 			try{
-				Bukkit.getServer().getPluginManager().getPlugin("LagMeter").getDataFolder().mkdir();
-				final InputStream jarURL = LagMeterConfig.class.getResourceAsStream("/main/resources/settings.yml");
-				LagMeterConfig.copyFile(jarURL, configFile);
-				config = new YamlConfiguration();
-				config.load(configFile);
-				return config;
+				if(Bukkit.getServer().getPluginManager().getPlugin("LagMeter").getDataFolder().mkdir()){
+					final InputStream jarURL = LagMeterConfig.class.getResourceAsStream("/main/resources/settings.yml");
+					LagMeterConfig.copyFile(jarURL, configFile);
+					config = new YamlConfiguration();
+					config.load(configFile);
+					return config;
+				}else
+					this.severe("Failed to create the directory for configuration.");
 			}catch(final Exception e){
 				e.printStackTrace();
 			}
-		}
 		return new YamlConfiguration();
 	}
 }

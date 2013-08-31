@@ -21,7 +21,7 @@ public class LagMeterLogger{
 	private File logfile;
 	private PrintWriter log;
 
-	private boolean beginLogging(){
+	private boolean beginLogging() throws Exception{
 		boolean ret = true;
 		if(this.logfile==null){
 			this.error("Logfile is null");
@@ -32,7 +32,8 @@ public class LagMeterLogger{
 		}else
 			try{
 				if(!this.logfile.exists())
-					this.logfile.createNewFile();
+					if(!this.logfile.createNewFile())
+						throw new Exception("");
 				this.log = new PrintWriter(new FileWriter(this.logfile, true));
 				this.log("Logging enabled.");
 			}catch(final IOException e){
@@ -70,7 +71,12 @@ public class LagMeterLogger{
 
 	public boolean enable(final File logTo){
 		this.logfile = logTo;
-		return this.beginLogging();
+		try{
+			return this.beginLogging();
+		}catch(final Exception e){
+			e.printStackTrace();
+		}
+		return false;
 	}
 
 	private void error(final String errorMessage){
