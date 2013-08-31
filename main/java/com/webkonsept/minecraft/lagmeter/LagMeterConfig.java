@@ -53,7 +53,7 @@ public class LagMeterConfig extends LagMeter{
 			return new YamlConfiguration();
 		}else
 			try{
-				if(Bukkit.getServer().getPluginManager().getPlugin("LagMeter").getDataFolder().mkdir()){
+				if(Bukkit.getPluginManager().getPlugin("LagMeter").getDataFolder().exists()||Bukkit.getServer().getPluginManager().getPlugin("LagMeter").getDataFolder().mkdir()){
 					final InputStream jarURL = LagMeterConfig.class.getResourceAsStream("/main/resources/settings.yml");
 					LagMeterConfig.copyFile(jarURL, configFile);
 					config = new YamlConfiguration();
