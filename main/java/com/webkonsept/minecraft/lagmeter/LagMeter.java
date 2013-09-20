@@ -1081,7 +1081,7 @@ public class LagMeter extends JavaPlugin {
 		if (this.lagWatcher != null) {
 			this.lagWatcher.stop();
 		}
-		Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(this, this.poller, 0, this.interval);
+		Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(this, this.poller, 1500L, this.interval);
 		this.lagNotifyInterval *= 60000;
 		this.memNotifyInterval *= 60000;
 		new Thread(this.lagWatcher = new LagWatcher(this)).start();
