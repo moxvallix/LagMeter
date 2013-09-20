@@ -1,4 +1,4 @@
-package main.java.com.webkonsept.minecraft.lagmeter;
+package main.java.com.webkonsept.minecraft.lagmeter.util;
 
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitRunnable;

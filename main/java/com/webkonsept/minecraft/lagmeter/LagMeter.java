@@ -22,6 +22,7 @@ import main.java.com.webkonsept.minecraft.lagmeter.events.LowMemoryEvent;
 import main.java.com.webkonsept.minecraft.lagmeter.exceptions.InvalidTimeFormatException;
 import main.java.com.webkonsept.minecraft.lagmeter.listeners.LagListener;
 import main.java.com.webkonsept.minecraft.lagmeter.listeners.MemoryListener;
+import main.java.com.webkonsept.minecraft.lagmeter.util.SyncSendMessage;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -267,15 +268,15 @@ public class LagMeter extends JavaPlugin {
 			if (this.permit(sender, "lagmeter.commands.ping.unlimited")) {
 				try {
 					if (Integer.parseInt(args[0]) > 10) {
-						this.sendMessage(sender, 1, "This might take a while...");
+						this.sendMessage(sender, Severity.WARNING, "This might take a while...");
 					}
 					return args[0];
 				} catch (final NumberFormatException e) {
-					this.sendMessage(sender, 1, "You entered an invalid amount of hops; therefore, 1 will be used instead.");
+					this.sendMessage(sender, Severity.WARNING, "You entered an invalid amount of hops; therefore, 1 will be used instead.");
 					return "1";
 				}
 			} else {
-				this.sendMessage(sender, 1, "You don't have access to specifying ping hops!");
+				this.sendMessage(sender, Severity.WARNING, "You don't have access to specifying ping hops!");
 				return "1";
 			}
 		} else {
@@ -424,51 +425,51 @@ public class LagMeter extends JavaPlugin {
 		if (args[0].equalsIgnoreCase("reload")) {
 			if (this.permit(sender, "lagmeter.command.lagmeter.reload") || this.permit(sender, "lagmeter.reload")) {
 				this.updateConfiguration();
-				this.sendMessage(sender, 0, "Configuration reloaded!");
+				this.sendMessage(sender, Severity.INFO, "Configuration reloaded!");
 			}
 		} else if (args[0].equalsIgnoreCase("help")) {
 			if (this.permit(sender, "lagmeter.command.lagmeter.help") || this.permit(sender, "lagmeter.help")) {
 				if ((args.length == 1) || args[1].trim().equals("0") || args[1].trim().equals("1")) {
-					this.sendMessage(sender, 0, "*           *Help for LagMeter [1/2]*           *");
+					this.sendMessage(sender, Severity.INFO, "*           *Help for LagMeter [1/2]*           *");
 					if (this.permit(sender, "lagmeter.command.lag")) {
-						this.sendMessage(sender, 0, ChatColor.DARK_GREEN + "/lag" + ChatColor.GOLD + " - Check the server's TPS. If configuChatColor.RED, may also display chunks loaded and/or entities alive.");
+						this.sendMessage(sender, Severity.INFO, ChatColor.DARK_GREEN + "/lag" + ChatColor.GOLD + " - Check the server's TPS. If configuChatColor.RED, may also display chunks loaded and/or entities alive.");
 					}
 					if (this.permit(sender, "lagmeter.command.mem")) {
-						this.sendMessage(sender, 0, ChatColor.DARK_GREEN + "/mem" + ChatColor.GOLD + " - Displays how much memory the server currently has free.");
+						this.sendMessage(sender, Severity.INFO, ChatColor.DARK_GREEN + "/mem" + ChatColor.GOLD + " - Displays how much memory the server currently has free.");
 					}
 					if (this.permit(sender, "lagmeter.command.lagmem") || this.permit(sender, "lagmeter.command.lm")) {
-						this.sendMessage(sender, 0, ChatColor.DARK_GREEN + "/lagmem|/lm" + ChatColor.GOLD + " - A combination of both /lag and /mem.");
+						this.sendMessage(sender, Severity.INFO, ChatColor.DARK_GREEN + "/lagmem|/lm" + ChatColor.GOLD + " - A combination of both /lag and /mem.");
 					}
 					if (this.permit(sender, "lagmeter.command.lchunks")) {
-						this.sendMessage(sender, 0, ChatColor.DARK_GREEN + "/lchunks" + ChatColor.GOLD + " - Shows how many chunks are currently loaded in each world, then with a total.");
+						this.sendMessage(sender, Severity.INFO, ChatColor.DARK_GREEN + "/lchunks" + ChatColor.GOLD + " - Shows how many chunks are currently loaded in each world, then with a total.");
 					}
 					if (this.permit(sender, "lagmeter.command.lmobs") || this.permit(sender, "lagmeter.command.lentities")) {
-						this.sendMessage(sender, 0, ChatColor.DARK_GREEN + "/lmobs|/lentities" + ChatColor.GOLD + " - Shows how many entities are currently alive in each world, then with a total.");
+						this.sendMessage(sender, Severity.INFO, ChatColor.DARK_GREEN + "/lmobs|/lentities" + ChatColor.GOLD + " - Shows how many entities are currently alive in each world, then with a total.");
 					}
 					if (this.permit(sender, "lagmeter.command.lmp")) {
-						this.sendMessage(sender, 0, ChatColor.DARK_GREEN + "/lmp" + ChatColor.GOLD + " - Has the same function as /lagmem, but includes a player count.");
+						this.sendMessage(sender, Severity.INFO, ChatColor.DARK_GREEN + "/lmp" + ChatColor.GOLD + " - Has the same function as /lagmem, but includes a player count.");
 					}
 					if (this.permit(sender, "lagmeter.command.lagmeter")) {
-						this.sendMessage(sender, 0, ChatColor.DARK_GREEN + "/lagmeter|/lm" + ChatColor.GOLD + " - Shows the current version and gives sub-commands.");
+						this.sendMessage(sender, Severity.INFO, ChatColor.DARK_GREEN + "/lagmeter|/lm" + ChatColor.GOLD + " - Shows the current version and gives sub-commands.");
 					}
 					if (this.permit(sender, "lagmeter.command.lagmeter.reload") || this.permit(sender, "lagmeter.reload")) {
-						this.sendMessage(sender, 0, ChatColor.DARK_GREEN + "/lagmeter|/lm" + ChatColor.GREEN + " <reload|r> " + ChatColor.GOLD + " - Allows the player to reload the configuration.");
+						this.sendMessage(sender, Severity.INFO, ChatColor.DARK_GREEN + "/lagmeter|/lm" + ChatColor.GREEN + " <reload|r> " + ChatColor.GOLD + " - Allows the player to reload the configuration.");
 					}
 				} else if ((args.length > 1) && args[1].trim().equals("2")) {
-					this.sendMessage(sender, 0, "*           *Help for LagMeter [2/2]*           *");
-					this.sendMessage(sender, 0, ChatColor.DARK_GREEN + "/lagmeter|/lm" + ChatColor.GREEN + " <help|?> [page]" + ChatColor.GOLD + " - This command. Gives the user a list of commands that they are able to use in this plugin.");
+					this.sendMessage(sender, Severity.INFO, "*           *Help for LagMeter [2/2]*           *");
+					this.sendMessage(sender, Severity.INFO, ChatColor.DARK_GREEN + "/lagmeter|/lm" + ChatColor.GREEN + " <help|?> [page]" + ChatColor.GOLD + " - This command. Gives the user a list of commands that they are able to use in this plugin.");
 					if (this.permit(sender, "lagmeter.command.ping") || this.permit(sender, "lagmeter.command.lping")) {
-						this.sendMessage(sender, 0, ChatColor.DARK_GREEN + "/ping|/lping" + ChatColor.GREEN + " [hops] " + ChatColor.GOLD + " - Pings google.com from the server. Specify an amount of hops to specify more packets." + ChatColor.RED + " Warning: server-intensive above 4 hops.");
+						this.sendMessage(sender, Severity.INFO, ChatColor.DARK_GREEN + "/ping|/lping" + ChatColor.GREEN + " [hops] " + ChatColor.GOLD + " - Pings google.com from the server. Specify an amount of hops to specify more packets." + ChatColor.RED + " Warning: server-intensive above 4 hops.");
 					}
 				} else {
-					this.sendMessage(sender, 1, "Invalid page number.");
+					this.sendMessage(sender, Severity.WARNING, "Invalid page number.");
 				}
 			} else {
-				this.sendMessage(sender, 1, "Sorry, but you don't have access to the help command.");
+				this.sendMessage(sender, Severity.WARNING, "Sorry, but you don't have access to the help command.");
 			}
 		} else {
-			this.sendMessage(sender, 1, "Invalid sub-command. " + ChatColor.GOLD + "Try one of these:");
-			this.sendMessage(sender, 0, "Available sub-commands: /lagmeter|lm <reload|r>|/lagmeter|lm <help|?>");
+			this.sendMessage(sender, Severity.WARNING, "Invalid sub-command. " + ChatColor.GOLD + "Try one of these:");
+			this.sendMessage(sender, Severity.INFO, "Available sub-commands: /lagmeter|lm <reload|r>|/lagmeter|lm <help|?>");
 		}
 	}
 
@@ -682,7 +683,7 @@ public class LagMeter extends JavaPlugin {
 			} else if (command.getName().equalsIgnoreCase("uptime")) {
 				success = true;
 				final int[] i = this.getCurrentServerUptime();
-				this.sendMessage(sender, 0, "Current server uptime: " + i[3] + " day(s), " + i[2] + " hour(s), " + i[1] + " minute(s), and " + i[0] + " second(s)");
+				this.sendMessage(sender, Severity.INFO, "Current server uptime: " + i[3] + " day(s), " + i[2] + " hour(s), " + i[1] + " minute(s), and " + i[0] + " second(s)");
 			} else if (command.getName().equalsIgnoreCase("lm")) {
 				success = true;
 				if (args.length == 0) {
@@ -695,7 +696,7 @@ public class LagMeter extends JavaPlugin {
 				success = true;
 				this.sendLagMeter(sender);
 				this.sendMemMeter(sender);
-				this.sendMessage(sender, 0, "Players online: " + ChatColor.GOLD + Bukkit.getServer().getOnlinePlayers().length);
+				this.sendMessage(sender, Severity.INFO, "Players online: " + ChatColor.GOLD + Bukkit.getServer().getOnlinePlayers().length);
 			} else if (command.getName().equalsIgnoreCase("lchunks")) {
 				success = true;
 				this.sendChunks(sender);
@@ -711,8 +712,8 @@ public class LagMeter extends JavaPlugin {
 			} else if (command.getName().equalsIgnoreCase("LagMeter")) {
 				success = true;
 				if (args.length == 0) {
-					this.sendMessage(sender, 0, "Version: " + this.getDescription().getVersion());
-					this.sendMessage(sender, 0, "Available sub-commands: /lagmeter|lm <reload|r>|/lagmeter|lm <help|?>");
+					this.sendMessage(sender, Severity.INFO, "Version: " + this.getDescription().getVersion());
+					this.sendMessage(sender, Severity.INFO, "Available sub-commands: /lagmeter|lm <reload|r>|/lagmeter|lm <help|?>");
 				} else {
 					this.handleBaseCommand(sender, args);
 				}
@@ -720,7 +721,7 @@ public class LagMeter extends JavaPlugin {
 			return success;
 		} else {
 			success = true;
-			this.sendMessage(sender, 1, "Sorry, permission lagmeter.command." + command.getName().toLowerCase() + " was denied.");
+			this.sendMessage(sender, Severity.WARNING, "Sorry, permission lagmeter.command." + command.getName().toLowerCase() + " was denied.");
 		}
 		return success;
 	}
@@ -920,22 +921,7 @@ public class LagMeter extends JavaPlugin {
 		processCmd.add(System.getProperty("os.name").startsWith("Windows") ? "-n" : "-c");
 		processCmd.add(hops);
 		processCmd.add(domain);
-		final class SyncSendMessage extends BukkitRunnable {
-			CommandSender	sender;
-			int				severity;
-			String			message;
 
-			@Override
-			public void run() {
-				LagMeter.this.sendMessage(this.sender, this.severity, this.message);
-			}
-
-			SyncSendMessage(final CommandSender sender, final int severity, final String message) {
-				this.sender = sender;
-				this.severity = severity;
-				this.message = message;
-			}
-		}
 		this.getServer().getScheduler().runTaskAsynchronously(this, new Runnable() {
 			@Override
 			public void run() {
@@ -964,18 +950,18 @@ public class LagMeter extends JavaPlugin {
 						}
 					}
 					if (output != null) {
-						new SyncSendMessage(sender, 0, "Average response time for the server for " + hops + " ping hop(s) to " + domain + ": " + output).runTask(LagMeter.this);
+						new SyncSendMessage(sender, Severity.INFO, "Average response time for the server for " + hops + " ping hop(s) to " + domain + ": " + output).runTask(LagMeter.this);
 					} else {
-						new SyncSendMessage(sender, 0, "Error running ping command").runTask(LagMeter.this);
+						new SyncSendMessage(sender, Severity.INFO, "Error running ping command").runTask(LagMeter.this);
 					}
 					while ((s = errorStream.readLine()) != null) {
-						new SyncSendMessage(sender, 1, s).runTask(LagMeter.this);
+						new SyncSendMessage(sender, Severity.WARNING, s).runTask(LagMeter.this);
 					}
 					errorStream.close();
 					result.close();
 					p.destroy();
 				} catch (final IOException e) {
-					new SyncSendMessage(sender, 0, "Error running ping command").runTask(LagMeter.this);
+					new SyncSendMessage(sender, Severity.INFO, "Error running ping command").runTask(LagMeter.this);
 					e.printStackTrace();
 				}
 			}
@@ -1101,7 +1087,7 @@ public class LagMeter extends JavaPlugin {
 						Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this, new UptimeCommand(s.split(";")[0]), time);
 					}
 				} catch (final InvalidTimeFormatException e) {
-					this.sendMessage(Bukkit.getConsoleSender(), 2, e.getMessage());
+					this.sendMessage(Bukkit.getConsoleSender(), Severity.SEVERE, e.getMessage());
 				}
 			}
 		}
@@ -1138,10 +1124,10 @@ public class LagMeter extends JavaPlugin {
 			final int i = Bukkit.getServer().getWorld(s).getLoadedChunks().length;
 			totalChunks += i;
 			if (i != 0) {
-				this.sendMessage(sender, 0, ChatColor.GOLD + "Chunks in world \"" + s + "\": " + i);
+				this.sendMessage(sender, Severity.INFO, ChatColor.GOLD + "Chunks in world \"" + s + "\": " + i);
 			}
 		}
-		this.sendMessage(sender, 0, ChatColor.GOLD + "Total chunks loaded on the server: " + totalChunks);
+		this.sendMessage(sender, Severity.INFO, ChatColor.GOLD + "Total chunks loaded on the server: " + totalChunks);
 	}
 
 	/**
@@ -1160,10 +1146,10 @@ public class LagMeter extends JavaPlugin {
 			final int i = Bukkit.getServer().getWorld(worldName).getEntities().size();
 			totalEntities += i;
 			if (i != 0) {
-				this.sendMessage(sender, 0, ChatColor.GOLD + "Entities in world \"" + worldName + "\": " + i);
+				this.sendMessage(sender, Severity.INFO, ChatColor.GOLD + "Entities in world \"" + worldName + "\": " + i);
 			}
 		}
-		this.sendMessage(sender, 0, ChatColor.GOLD + "Total entities: " + totalEntities);
+		this.sendMessage(sender, Severity.INFO, ChatColor.GOLD + "Total entities: " + totalEntities);
 	}
 
 	/**
@@ -1191,10 +1177,10 @@ public class LagMeter extends JavaPlugin {
 				lagMeter.append("_");
 			}
 		} else {
-			this.sendMessage(sender, 1, "LagMeter has a 75 second delay before it begins polling. Please wait.");
+			this.sendMessage(sender, Severity.WARNING, "LagMeter has a 75 second delay before it begins polling. Please wait.");
 			return;
 		}
-		this.sendMessage(sender, 0, ChatColor.GOLD + "[" + (tps >= 18 ? ChatColor.GREEN : tps >= 15 ? ChatColor.YELLOW : ChatColor.RED) + lagMeter.toString() + ChatColor.GOLD + "] " + String.format("%3.2f", tps) + " TPS");
+		this.sendMessage(sender, Severity.INFO, ChatColor.GOLD + "[" + (tps >= 18 ? ChatColor.GREEN : tps >= 15 ? ChatColor.YELLOW : ChatColor.RED) + lagMeter.toString() + ChatColor.GOLD + "] " + String.format("%3.2f", tps) + " TPS");
 	}
 
 	/**
@@ -1215,39 +1201,59 @@ public class LagMeter extends JavaPlugin {
 		while (looped++ <= 20) {
 			bar.append('_');
 		}
-		this.sendMessage(sender, 0, ChatColor.GOLD + "[" + (this.percentageFree >= 60 ? ChatColor.GREEN : this.percentageFree >= 35 ? ChatColor.YELLOW : ChatColor.RED) + bar.toString() + ChatColor.GOLD + "] " + String.format("%,.2f", this.memFree) + "MB/" + String.format("%,.2f", this.memMax) + "MB (" + String.format("%,.2f", this.percentageFree) + "%) free");
+		this.sendMessage(sender, Severity.INFO, ChatColor.GOLD + "[" + (this.percentageFree >= 60 ? ChatColor.GREEN : this.percentageFree >= 35 ? ChatColor.YELLOW : ChatColor.RED) + bar.toString() + ChatColor.GOLD + "] " + String.format("%,.2f", this.memFree) + "MB/" + String.format("%,.2f", this.memMax) + "MB (" + String.format("%,.2f", this.percentageFree) + "%) free");
 	}
 
-	protected void sendMessage(final CommandSender sender, final int severity, final String message) {
+	/**
+	 * Sends a message to a CommandSender, using LagMeter's plugin tag/colour
+	 * and severity colours. <br />
+	 * <br />
+	 * The severity identifiers are:
+	 * <ul>
+	 * <li>{@link Severity#INFO} is information;</li>
+	 * <li>{@link Severity#WARNING} is a warning; and finally,</li>
+	 * <li>{@link Severity#SEVERE} is an error.</li>
+	 * </ul>
+	 * All other values are interpreted as if it were {@code 0}.
+	 * 
+	 * @param sender
+	 *            - The CommandSender to send the message to.
+	 * @param severity
+	 *            - The Severity of the message.
+	 * @param message
+	 *            - The message itself.
+	 */
+	public void sendMessage(final CommandSender sender, final Severity severity, final String message) {
 		if (sender != null) {
 			switch (severity) {
-			case 0:
+			default:
+			case INFO:
 				sender.sendMessage(ChatColor.GOLD + "[LagMeter] " + ChatColor.GREEN + message);
 				break;
-			case 1:
+			case WARNING:
 				sender.sendMessage(ChatColor.GOLD + "[LagMeter] " + ChatColor.RED + message);
 				break;
-			case 2:
+			case SEVERE:
 				sender.sendMessage(ChatColor.GOLD + "[LagMeter] " + ChatColor.DARK_RED + message);
 				break;
 			}
 		} else {
 			switch (severity) {
 			default:
-			case 0:
+			case INFO:
 				this.info(message);
 				break;
-			case 1:
+			case WARNING:
 				this.warn(message);
 				break;
-			case 2:
+			case SEVERE:
 				this.severe(message);
 				break;
 			}
 		}
 	}
 
-	protected void sendMessage(final Player player, final int severity, final String message) {
+	protected void sendMessage(final Player player, final Severity severity, final String message) {
 		this.sendMessage((CommandSender) player, severity, message);
 	}
 
@@ -1312,5 +1318,24 @@ public class LagMeter extends JavaPlugin {
 	 * stuff.
 	 */
 	public LagMeter() {
+	}
+
+	public enum Severity {
+		/**
+		 * Represents an information message.
+		 */
+		INFO,
+		/**
+		 * Represents a warning message, where something went wrong (perhaps,
+		 * the recipient typed something wrong, or the configuration is using
+		 * default values).
+		 */
+		WARNING,
+		/**
+		 * Represents an error message, where something failed catastrophically.
+		 * Should be used sparingly, i.e. in cases of complete and total
+		 * inability to do something, such as create default configuration.
+		 */
+		SEVERE
 	}
 }

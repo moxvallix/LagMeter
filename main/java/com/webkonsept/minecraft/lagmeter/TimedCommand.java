@@ -1,6 +1,7 @@
 package main.java.com.webkonsept.minecraft.lagmeter;
 
 import main.java.com.webkonsept.minecraft.lagmeter.exceptions.InvalidTimeFormatException;
+import main.java.com.webkonsept.minecraft.lagmeter.util.SyncCommand;
 
 public class TimedCommand implements Runnable{
 	private final String command;
