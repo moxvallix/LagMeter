@@ -635,7 +635,7 @@ public class LagMeter extends JavaPlugin {
 	}
 
 	protected void notifySyncLagListeners() {
-		class C extends BukkitRunnable {
+		new BukkitRunnable() {
 			@Override
 			public void run() {
 				final HighLagEvent e = new HighLagEvent(LagMeter.this.getTPS());
@@ -645,12 +645,11 @@ public class LagMeter extends JavaPlugin {
 					}
 				}
 			}
-		}
-		new C().runTask(this);
+		}.runTask(this);
 	}
 
 	protected void notifySyncMemoryListeners() {
-		class C extends BukkitRunnable {
+		new BukkitRunnable() {
 			@Override
 			public void run() {
 				final LowMemoryEvent e = new LowMemoryEvent(LagMeter.this.getMemory(), LagMeter.this.getTPS());
@@ -660,8 +659,7 @@ public class LagMeter extends JavaPlugin {
 					}
 				}
 			}
-		}
-		new C().runTask(this);
+		}.runTask(this);
 	}
 
 	@Override
