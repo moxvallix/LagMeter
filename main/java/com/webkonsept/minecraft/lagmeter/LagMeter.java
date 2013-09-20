@@ -697,7 +697,7 @@ public class LagMeter extends JavaPlugin {
 				success = true;
 				this.sendLagMeter(sender);
 				this.sendMemMeter(sender);
-				this.sendMessage(sender, 0, "Players online: " + ChatColor.GOLD + super.getServer().getOnlinePlayers().length);
+				this.sendMessage(sender, 0, "Players online: " + ChatColor.GOLD + Bukkit.getServer().getOnlinePlayers().length);
 			} else if (command.getName().equalsIgnoreCase("lchunks")) {
 				success = true;
 				this.sendChunks(sender);
@@ -744,7 +744,7 @@ public class LagMeter extends JavaPlugin {
 				e.printStackTrace();
 			}
 		}
-		super.getServer().getScheduler().cancelTasks(this);
+		Bukkit.getServer().getScheduler().cancelTasks(this);
 		this.info("Disabled!");
 	}
 
@@ -772,7 +772,7 @@ public class LagMeter extends JavaPlugin {
 		if (this.enableLogging) {
 			this.poller.setLogInterval(this.logInterval);
 			if (!this.logger.enable()) {
-				this.severe("Logging is disabled because: " + this.logger.getError());
+				this.severe("Logging is disabled due to an error while attempting to enable it: " + this.logger.getError());
 			}
 		}
 		this.history.setMaxSize(this.averageLength);
@@ -781,7 +781,7 @@ public class LagMeter extends JavaPlugin {
 		if (this.displayChunksOnLoad) {
 			this.info("Chunks loaded:");
 			int total = 0;
-			for (final World world : super.getServer().getWorlds()) {
+			for (final World world : Bukkit.getServer().getWorlds()) {
 				final int chunks = world.getLoadedChunks().length;
 				this.info("World \"" + world.getName() + "\": " + chunks + ".");
 				total += chunks;
@@ -791,7 +791,7 @@ public class LagMeter extends JavaPlugin {
 		if (this.displayEntitiesOnLoad) {
 			this.info("Entities:");
 			int total = 0;
-			for (final World world : super.getServer().getWorlds()) {
+			for (final World world : Bukkit.getServer().getWorlds()) {
 				final int entities = world.getEntities().size();
 				this.info("World \"" + world.getName() + "\": " + entities + ".");
 				total += entities;
@@ -1074,14 +1074,14 @@ public class LagMeter extends JavaPlugin {
 	}
 
 	private void registerTasks() {
-		super.getServer().getScheduler().cancelTasks(this);
+		Bukkit.getServer().getScheduler().cancelTasks(this);
 		if (this.memWatcher != null) {
 			this.memWatcher.stop();
 		}
 		if (this.lagWatcher != null) {
 			this.lagWatcher.stop();
 		}
-		super.getServer().getScheduler().scheduleSyncRepeatingTask(this, this.poller, 0, this.interval);
+		Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(this, this.poller, 0, this.interval);
 		this.lagNotifyInterval *= 60000;
 		this.memNotifyInterval *= 60000;
 		new Thread(this.lagWatcher = new LagWatcher(this)).start();
@@ -1098,9 +1098,9 @@ public class LagMeter extends JavaPlugin {
 				try {
 					time = this.parseTime(s);
 					if (this.repeatingUptimeCommands) {
-						super.getServer().getScheduler().scheduleSyncRepeatingTask(this, new UptimeCommand(s.split(";")[0]), time, time);
+						Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(this, new UptimeCommand(s.split(";")[0]), time, time);
 					} else {
-						super.getServer().getScheduler().scheduleSyncDelayedTask(this, new UptimeCommand(s.split(";")[0]), time);
+						Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this, new UptimeCommand(s.split(";")[0]), time);
 					}
 				} catch (final InvalidTimeFormatException e) {
 					e.printStackTrace();
@@ -1134,10 +1134,10 @@ public class LagMeter extends JavaPlugin {
 	 */
 	public void sendChunks(final CommandSender sender) {
 		int totalChunks = 0;
-		final List<World> worlds = super.getServer().getWorlds();
+		final List<World> worlds = Bukkit.getServer().getWorlds();
 		for (final World world : worlds) {
 			final String s = world.getName();
-			final int i = super.getServer().getWorld(s).getLoadedChunks().length;
+			final int i = Bukkit.getServer().getWorld(s).getLoadedChunks().length;
 			totalChunks += i;
 			if (i != 0) {
 				this.sendMessage(sender, 0, ChatColor.GOLD + "Chunks in world \"" + s + "\": " + i);
@@ -1156,10 +1156,10 @@ public class LagMeter extends JavaPlugin {
 	 */
 	public void sendEntities(final CommandSender sender) {
 		int totalEntities = 0;
-		final List<World> worlds = super.getServer().getWorlds();
+		final List<World> worlds = Bukkit.getServer().getWorlds();
 		for (final World world : worlds) {
 			final String worldName = world.getName();
-			final int i = super.getServer().getWorld(worldName).getEntities().size();
+			final int i = Bukkit.getServer().getWorld(worldName).getEntities().size();
 			totalEntities += i;
 			if (i != 0) {
 				this.sendMessage(sender, 0, ChatColor.GOLD + "Entities in world \"" + worldName + "\": " + i);
