@@ -10,60 +10,65 @@ import org.bukkit.Bukkit;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 
-public class LagMeterConfig extends LagMeter{
-	private static void copyFile(final InputStream in, final File out) throws Exception{
+public class LagMeterConfig extends LagMeter {
+	private static void copyFile(final InputStream in, final File out) throws Exception {
 		final InputStream fis = in;
 		final FileOutputStream fos = new FileOutputStream(out);
-		try{
+		try {
 			final byte[] buf = new byte[1024];
 			int i = 0;
-			while((i = fis.read(buf))!=-1)
+			while ((i = fis.read(buf)) != -1) {
 				fos.write(buf, 0, i);
-		}catch(final Exception e){
+			}
+		} catch (final Exception e) {
 			throw e;
-		}finally{
-			if(fis!=null)
+		} finally {
+			if (fis != null) {
 				fis.close();
-			if(fos!=null)
+			}
+			if (fos != null) {
 				fos.close();
+			}
 		}
 	}
 
 	@Override
-	public YamlConfiguration getConfig(){
+	public YamlConfiguration getConfig() {
 		return this.loadConfig();
 	}
 
-	public YamlConfiguration loadConfig(){
+	public YamlConfiguration loadConfig() {
 		final YamlConfiguration config;
 		final File configFile;
 		configFile = new File(Bukkit.getServer().getPluginManager().getPlugin("LagMeter").getDataFolder(), "settings.yml");
-		if(configFile.exists()){
+		if (configFile.exists()) {
 			config = new YamlConfiguration();
-			try{
+			try {
 				config.load(configFile);
 				return config;
-			}catch(final FileNotFoundException ex){
+			} catch (final FileNotFoundException ex) {
 				ex.printStackTrace();
-			}catch(final IOException ex){
+			} catch (final IOException ex) {
 				ex.printStackTrace();
-			}catch(final InvalidConfigurationException ex){
+			} catch (final InvalidConfigurationException ex) {
 				ex.printStackTrace();
 			}
 			return new YamlConfiguration();
-		}else
-			try{
-				if(Bukkit.getPluginManager().getPlugin("LagMeter").getDataFolder().exists()||Bukkit.getServer().getPluginManager().getPlugin("LagMeter").getDataFolder().mkdir()){
+		} else {
+			try {
+				if (Bukkit.getPluginManager().getPlugin("LagMeter").getDataFolder().exists() || Bukkit.getServer().getPluginManager().getPlugin("LagMeter").getDataFolder().mkdir()) {
 					final InputStream jarURL = LagMeterConfig.class.getResourceAsStream("/main/resources/settings.yml");
 					LagMeterConfig.copyFile(jarURL, configFile);
 					config = new YamlConfiguration();
 					config.load(configFile);
 					return config;
-				}else
-					this.severe("Failed to create the directory for configuration.");
-			}catch(final Exception e){
+				} else {
+					this.sendConsoleMessage(Severity.SEVERE, "Failed to create the directory for configuration.");
+				}
+			} catch (final Exception e) {
 				e.printStackTrace();
 			}
+		}
 		return new YamlConfiguration();
 	}
 }

@@ -473,10 +473,6 @@ public class LagMeter extends JavaPlugin {
 		}
 	}
 
-	protected void info(final String message) {
-		this.getServer().getConsoleSender().sendMessage(ChatColor.GOLD + "[LagMeter " + this.getDescription().getVersion() + "] " + ChatColor.GREEN + message);
-	}
-
 	/**
 	 * Whether or not the plugin is taking an average of TPS when outputting.
 	 * 
@@ -744,7 +740,7 @@ public class LagMeter extends JavaPlugin {
 			}
 		}
 		Bukkit.getServer().getScheduler().cancelTasks(this);
-		this.info("Disabled!");
+		this.sendConsoleMessage(Severity.INFO, "Disabled!");
 	}
 
 	@Override
@@ -761,41 +757,41 @@ public class LagMeter extends JavaPlugin {
 		this.asyncMemListeners = new ArrayList<MemoryListener>();
 		this.updateConfiguration();
 		if (!logsFolder.exists() && this.useLogsFolder && this.enableLogging) {
-			this.info("Logs folder not found. Attempting to create one for you.");
+			this.sendConsoleMessage(Severity.INFO, "Logs folder not found. Attempting to create one for you.");
 			if (!logsFolder.mkdir()) {
-				this.severe("Error! Couldn't create the folder!");
+				this.sendConsoleMessage(Severity.SEVERE, "Error! Couldn't create the folder!");
 			} else {
-				this.info("Logs folder created.");
+				this.sendConsoleMessage(Severity.INFO, "Logs folder created.");
 			}
 		}
 		if (this.enableLogging) {
 			this.poller.setLogInterval(this.logInterval);
 			if (!this.logger.enable()) {
-				this.severe("Logging is disabled due to an error while attempting to enable it: " + this.logger.getError());
+				this.sendConsoleMessage(Severity.SEVERE, "Logging is disabled due to an error while attempting to enable it: " + this.logger.getError());
 			}
 		}
 		this.history.setMaxSize(this.averageLength);
-		this.info("Enabled! Polling every " + this.interval + " server ticks." + (this.isLoggingEnabled() ? " Logging to " + this.logger.getFilename() + "." : ""));
+		this.sendConsoleMessage(Severity.INFO, "Enabled! Polling every " + this.interval + " server ticks." + (this.isLoggingEnabled() ? " Logging to " + this.logger.getFilename() + "." : ""));
 		this.registerTasks();
 		if (this.displayChunksOnLoad) {
-			this.info("Chunks loaded:");
+			this.sendConsoleMessage(Severity.INFO, "Chunks loaded:");
 			int total = 0;
 			for (final World world : Bukkit.getServer().getWorlds()) {
 				final int chunks = world.getLoadedChunks().length;
-				this.info("World \"" + world.getName() + "\": " + chunks + ".");
+				this.sendConsoleMessage(Severity.INFO, "World \"" + world.getName() + "\": " + chunks + ".");
 				total += chunks;
 			}
-			this.info("Total chunks loaded: " + total);
+			this.sendConsoleMessage(Severity.INFO, "Total chunks loaded: " + total);
 		}
 		if (this.displayEntitiesOnLoad) {
-			this.info("Entities:");
+			this.sendConsoleMessage(Severity.INFO, "Entities:");
 			int total = 0;
 			for (final World world : Bukkit.getServer().getWorlds()) {
 				final int entities = world.getEntities().size();
-				this.info("World \"" + world.getName() + "\": " + entities + ".");
+				this.sendConsoleMessage(Severity.INFO, "World \"" + world.getName() + "\": " + entities + ".");
 				total += entities;
 			}
-			this.info("Total entities: " + total);
+			this.sendConsoleMessage(Severity.INFO, "Total entities: " + total);
 		}
 		this.pingDomains = new HashMap<String, String>();
 		Bukkit.getServer().getPluginManager().registerEvents(new PlayerJoinListener(), this);
@@ -1130,6 +1126,10 @@ public class LagMeter extends JavaPlugin {
 		this.sendMessage(sender, Severity.INFO, ChatColor.GOLD + "Total chunks loaded on the server: " + totalChunks);
 	}
 
+	public void sendConsoleMessage(Severity severity, String message) {
+		this.sendMessage(Bukkit.getServer().getConsoleSender(), severity, message);
+	}
+
 	/**
 	 * This method sends the specified CommandSender a message, with the amount
 	 * of entities currently living on the server, for each world, followed by a
@@ -1210,11 +1210,10 @@ public class LagMeter extends JavaPlugin {
 	 * <br />
 	 * The severity identifiers are:
 	 * <ul>
-	 * <li>{@link Severity#INFO} is information;</li>
-	 * <li>{@link Severity#WARNING} is a warning; and finally,</li>
-	 * <li>{@link Severity#SEVERE} is an error.</li>
+	 * <li>{@link LagMeter.Severity#INFO} is information;</li>
+	 * <li>{@link LagMeter.Severity#WARNING} is a warning; and finally,</li>
+	 * <li>{@link LagMeter.Severity#SEVERE} is an error.</li>
 	 * </ul>
-	 * All other values are interpreted as if it were {@code 0}.
 	 * 
 	 * @param sender
 	 *            - The CommandSender to send the message to.
@@ -1224,32 +1223,17 @@ public class LagMeter extends JavaPlugin {
 	 *            - The message itself.
 	 */
 	public void sendMessage(final CommandSender sender, final Severity severity, final String message) {
-		if (sender != null) {
-			switch (severity) {
-			default:
-			case INFO:
-				sender.sendMessage(ChatColor.GOLD + "[LagMeter] " + ChatColor.GREEN + message);
-				break;
-			case WARNING:
-				sender.sendMessage(ChatColor.GOLD + "[LagMeter] " + ChatColor.RED + message);
-				break;
-			case SEVERE:
-				sender.sendMessage(ChatColor.GOLD + "[LagMeter] " + ChatColor.DARK_RED + message);
-				break;
-			}
-		} else {
-			switch (severity) {
-			default:
-			case INFO:
-				this.info(message);
-				break;
-			case WARNING:
-				this.warn(message);
-				break;
-			case SEVERE:
-				this.severe(message);
-				break;
-			}
+		switch (severity) {
+		default:
+		case INFO:
+			sender.sendMessage(ChatColor.GOLD + "[LagMeter] " + ChatColor.GREEN + message);
+			break;
+		case WARNING:
+			sender.sendMessage(ChatColor.GOLD + "[LagMeter] " + ChatColor.RED + message);
+			break;
+		case SEVERE:
+			sender.sendMessage(ChatColor.GOLD + "[LagMeter] " + ChatColor.DARK_RED + message);
+			break;
 		}
 	}
 
@@ -1259,10 +1243,6 @@ public class LagMeter extends JavaPlugin {
 
 	protected void setTicksPerSecond(final float f) {
 		this.ticksPerSecond = f;
-	}
-
-	public void severe(final String message) {
-		this.getServer().getConsoleSender().sendMessage(ChatColor.GOLD + "[LagMeter " + this.getDescription().getVersion() + "] " + ChatColor.DARK_RED + message);
 	}
 
 	private void updateConfiguration() {
@@ -1306,10 +1286,6 @@ public class LagMeter extends JavaPlugin {
 		this.percentageFree = (100D / this.memMax) * this.memFree;
 	}
 
-	private void warn(final String message) {
-		this.getServer().getConsoleSender().sendMessage(ChatColor.GOLD + "[LagMeter " + this.getDescription().getVersion() + "] " + ChatColor.RED + message);
-	}
-
 	/**
 	 * Obviously, as this is a bukkit plugin, the constructor is not intended to
 	 * be used by anything except for Bukkit.
@@ -1320,6 +1296,9 @@ public class LagMeter extends JavaPlugin {
 	public LagMeter() {
 	}
 
+	/**
+	 * Represents severity of messages sent by LagMeter.
+	 */
 	public enum Severity {
 		/**
 		 * Represents an information message.
