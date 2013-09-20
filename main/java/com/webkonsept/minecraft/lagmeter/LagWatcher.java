@@ -1,19 +1,20 @@
 package main.java.com.webkonsept.minecraft.lagmeter;
 
 final class LagWatcher implements Runnable{
-	private final LagMeter plugin;
-	private boolean stop;
+	private final LagMeter	plugin;
+	private boolean			stop;
 
 	@Override
 	public void run(){
 		while(!this.stop){
-			if(this.plugin.getTpsNotificationThreshold()>=this.plugin.getTPS()){
+			if(this.plugin.getTpsNotificationThreshold() >= this.plugin.getTPS()){
 				this.plugin.notifyLagListeners();
 			}
 			try{
 				Thread.sleep(this.plugin.getCheckMemoryInterval());
 			}catch(final InterruptedException e){
-				// do nothing, interruption probably means the server is shutting down or reloading.
+				// do nothing, interruption probably means the server is
+				// shutting down or reloading.
 			}
 		}
 	}

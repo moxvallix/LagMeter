@@ -3,11 +3,11 @@ package main.java.com.webkonsept.minecraft.lagmeter.events;
 import main.java.com.webkonsept.minecraft.lagmeter.LagMeter;
 
 public class LowMemoryEvent{
-	private final double freeMemory;
-	private final double usedMemory;
-	private final double maxMemory;
-	private final double percentageFree;
-	private final float currentTPS;
+	private final double	freeMemory;
+	private final double	usedMemory;
+	private final double	maxMemory;
+	private final double	percentageFree;
+	private final float		currentTPS;
 
 	public float getCurrentTPS(){
 		return this.currentTPS;

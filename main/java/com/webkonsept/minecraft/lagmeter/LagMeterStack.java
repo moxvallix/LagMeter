@@ -3,13 +3,13 @@ package main.java.com.webkonsept.minecraft.lagmeter;
 import java.util.LinkedList;
 
 public class LagMeterStack{
-	private int maxSize = 0;
-	private final LinkedList<Float> stack = new LinkedList<Float>();
+	private int						maxSize	= 0;
+	private final LinkedList<Float>	stack	= new LinkedList<Float>();
 
 	public void add(final Float item){
-		if(item!=null&&item<=20){
+		if((item != null) && (item <= 20)){
 			this.stack.add(item);
-			if(this.stack.size()>this.maxSize){
+			if(this.stack.size() > this.maxSize){
 				this.stack.poll();
 			}
 		}
@@ -21,16 +21,15 @@ public class LagMeterStack{
 
 	public float getAverage(){
 		float total = 0f;
-		for(final Float f: this.stack){
-			if(f!=null){
+		for(final Float f : this.stack){
+			if(f != null){
 				total += f;
 			}
 		}
-		if(total!=0){
-			return total/this.stack.size();
-		}else{
+		if(total != 0)
+			return total / this.stack.size();
+		else
 			return 0;
-		}
 	}
 
 	public int getMaxSize(){
