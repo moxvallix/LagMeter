@@ -34,8 +34,9 @@ public class LagMeterLogger{
 		}else{
 			try{
 				if(!this.logfile.exists()){
-					if(!this.logfile.createNewFile())
-						throw new Exception("");
+					if(!this.logfile.createNewFile()){
+						throw new Exception("Unable to create new logfile!");
+					}
 				}
 				this.log = new PrintWriter(new FileWriter(this.logfile, true));
 				this.log("Logging enabled.");
@@ -93,10 +94,11 @@ public class LagMeterLogger{
 	}
 
 	public String getFilename(){
-		if(this.logfile != null)
+		if(this.logfile != null){
 			return this.logfile.getAbsolutePath();
-		else
+		}else{
 			return "!! UNKNOWN !!";
+		}
 	}
 
 	public String getTimeFormat(){

@@ -7,7 +7,7 @@ final class LagWatcher implements Runnable{
 	@Override
 	public void run(){
 		while(!this.stop){
-			if(this.plugin.getTpsNotificationThreshold() >= this.plugin.getTPS()){
+			if((this.plugin.getTpsNotificationThreshold() >= this.plugin.getTPS()) && (this.plugin.getTPS() >= 0)){
 				this.plugin.notifyLagListeners();
 			}
 			try{

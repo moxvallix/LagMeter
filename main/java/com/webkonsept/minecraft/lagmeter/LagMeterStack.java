@@ -7,7 +7,7 @@ public class LagMeterStack{
 	private final LinkedList<Float>	stack	= new LinkedList<Float>();
 
 	public void add(final Float item){
-		if((item != null) && (item <= 20)){
+		if((item != null) && (item <= 20) && (item >= 0)){
 			this.stack.add(item);
 			if(this.stack.size() > this.maxSize){
 				this.stack.poll();
@@ -21,15 +21,19 @@ public class LagMeterStack{
 
 	public float getAverage(){
 		float total = 0f;
+		if(this.stack.size() == 0){
+			return -1F;
+		}
 		for(final Float f : this.stack){
 			if(f != null){
 				total += f;
 			}
 		}
-		if(total != 0)
+		if(total != 0){
 			return total / this.stack.size();
-		else
+		}else{
 			return 0;
+		}
 	}
 
 	public int getMaxSize(){
