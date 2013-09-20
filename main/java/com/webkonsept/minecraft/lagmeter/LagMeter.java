@@ -1177,17 +1177,12 @@ public class LagMeter extends JavaPlugin {
 	 */
 	public void sendLagMeter(final CommandSender sender) {
 		final StringBuilder lagMeter = new StringBuilder();
-		final float tps;
+		final float tps = this.getTPS();
 		if (this.displayEntities) {
 			this.sendEntities(sender);
 		}
 		if (this.displayChunks) {
 			this.sendChunks(sender);
-		}
-		if (this.useAverage) {
-			tps = this.history.getAverage();
-		} else {
-			tps = this.ticksPerSecond;
 		}
 		if ((tps < 21) && (tps >= 0)) {
 			int looped = 0;
