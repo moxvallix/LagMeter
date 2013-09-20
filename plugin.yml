@@ -1,6 +1,6 @@
 name: LagMeter
 main: main.java.com.webkonsept.minecraft.lagmeter.LagMeter
-version: 1.14.1
+version: 1.15.0
 thread: http://dev.bukkit.org/server-mods/lagmeter/
 database: false
 description: Lets you check the server lag, in ticks-per-second
@@ -37,10 +37,10 @@ commands:
         description: Shows how long the server has been online.
         usage: /<command>
     ping:
-        description: Pings Google.com, from the server.
+        description: Pings or, if the console, google.com, from the server.
         usage: /<command> [amount of packets]
     lping:
-        description: Pings Google.com, from the server.
+        description: Pings the sender, or, if the console, google.com, from the server.
         usage: /<command> [amount of packets]
 permissions:
     lagmeter.*:

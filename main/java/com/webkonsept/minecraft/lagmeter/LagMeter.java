@@ -40,7 +40,7 @@ public class LagMeter extends JavaPlugin {
 	private float					ticksPerSecond	= 20;
 	private long					uptime;
 	private int						averageLength	= 10;
-	private double					memUsed			= (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1048576D, memMax = Runtime.getRuntime().maxMemory() / 1048576D, memFree = this.memMax - this.memUsed, percentageFree = (100D / this.memMax) * this.memFree;
+	private double					memUsed, memMax, memFree, percentageFree;
 	private LagWatcher				lagWatcher;
 	private MemoryWatcher			memWatcher;
 	private List<LagListener>		syncLagListeners, asyncLagListeners;
@@ -103,7 +103,7 @@ public class LagMeter extends JavaPlugin {
 		} catch (final UnsupportedLookAndFeelException e) {
 			e.printStackTrace();
 		} finally {
-			JOptionPane.showMessageDialog(null, "Sorry, but LagMeter is a Bukkit plugin, and cannot be run directly like you've attempted.\nTo use the plugin, download and set up a Bukkit Minecraft server, and in the root directory, create a folder called\n\"plugins\" (no quotes, and assuming it hasn't already been created for you), and put this JAR file (LagMeter.jar) there.\nWhen you've done that, start the Bukkit server using the command line java -jar \"path to Bukkit.jar\",\nor if it's already running, type \"reload\" (no quotes) into the command-line.", "LagMeter", JOptionPane.OK_OPTION);
+			JOptionPane.showMessageDialog(null, "Sorry, but LagMeter is a Bukkit plugin, and cannot be run directly like you've attempted.\nTo use the plugin, download and set up a Bukkit Minecraft server, and in the root directory, create a folder called\n\"plugins\" (no quotes, and assuming it hasn't already been created for you), and put this JAR file (LagMeter.jar) there.\nWhen you've done that, start the Bukkit server using the command line java -jar \"path to Bukkit.jar\",\nor if it's already running, type \"reload\" (no quotes) into the command-line.", "LagMeter", JOptionPane.ERROR_MESSAGE);
 			System.exit(0);
 		}
 	}
@@ -1103,7 +1103,7 @@ public class LagMeter extends JavaPlugin {
 						Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this, new UptimeCommand(s.split(";")[0]), time);
 					}
 				} catch (final InvalidTimeFormatException e) {
-					e.printStackTrace();
+					this.sendMessage(Bukkit.getConsoleSender(), 2, e.getMessage());
 				}
 			}
 		}
@@ -1189,7 +1189,7 @@ public class LagMeter extends JavaPlugin {
 		} else {
 			tps = this.ticksPerSecond;
 		}
-		if (tps < 21) {
+		if ((tps < 21) && (tps >= 0)) {
 			int looped = 0;
 			while (looped++ < tps) {
 				lagMeter.append("#");
@@ -1198,7 +1198,7 @@ public class LagMeter extends JavaPlugin {
 				lagMeter.append("_");
 			}
 		} else {
-			this.sendMessage(sender, 1, "LagMeter just loaded, please wait for polling.");
+			this.sendMessage(sender, 1, "LagMeter has a 75 second delay before it begins polling. Please wait.");
 			return;
 		}
 		this.sendMessage(sender, 0, ChatColor.GOLD + "[" + (tps >= 18 ? ChatColor.GREEN : tps >= 15 ? ChatColor.YELLOW : ChatColor.RED) + lagMeter.toString() + ChatColor.GOLD + "] " + String.format("%3.2f", tps) + " TPS");
