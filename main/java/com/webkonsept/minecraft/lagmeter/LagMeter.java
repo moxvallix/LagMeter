@@ -400,9 +400,14 @@ public class LagMeter extends JavaPlugin{
 	/**
 	 * Gets the ticks per second.
 	 * 
+	 * @deprecated This method is deprecated because it will soon return a double, instead of a float.<br />
+	 * For this reason, it is recommended that you cast to double, and when the time comes that this method is changed, it would only be an unnecessary cast; not a program-breaking change.<br />
+	 * This change will occur quite some time after 1.16.0 is released, so developers who depend on this method will have time to change.
+	 * 
 	 * @since 1.8
-	 * @return ticksPerSecond
+	 * @return The servers's ticks per second, out of 20 (20 being perfect, 0 being the server has reached an absolute halt [and for that reason, it will never be 0]), as of last poll. If the plugin is set to average the TPS, it will return the average instead.
 	 */
+	@Deprecated
 	public float getTPS(){
 		if(this.useAverage)
 			return this.history.getAverage();
