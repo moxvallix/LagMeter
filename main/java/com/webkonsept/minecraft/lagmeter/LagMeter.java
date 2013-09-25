@@ -383,7 +383,7 @@ public class LagMeter extends JavaPlugin{
 	 * 
 	 * @param player
 	 *            - The player's name to get the IP of.
-	 * @return The specified player's IP, in String form..
+	 * @return The specified player's IP, in String form.
 	 */
 	public String getPlayerIP(String player){
 		return this.pingDomains.get(player);
