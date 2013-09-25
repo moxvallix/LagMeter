@@ -11,16 +11,22 @@ import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 public class LagMeterConfig extends LagMeter{
-	private static void copyFile(final InputStream in, final File out) throws Exception{
-		final InputStream fis = in;
-		final FileOutputStream fos = new FileOutputStream(out);
+	private final File configFile;
+	private YamlConfiguration config;
+
+	public LagMeterConfig(){
+		this.configFile = new File(Bukkit.getServer().getPluginManager().getPlugin("LagMeter").getDataFolder(), "settings.yml");
+	}
+
+	private static void copyFile(InputStream fis, File out) throws Exception{
+		FileOutputStream fos = new FileOutputStream(out);
 		try{
-			final byte[] buf = new byte[1024];
+			byte[] buffer = new byte[1024];
 			int i = 0;
-			while((i = fis.read(buf)) != -1){
-				fos.write(buf, 0, i);
+			while((i = fis.read(buffer)) != -1){
+				fos.write(buffer, 0, i);
 			}
-		}catch(final Exception e){
+		}catch(Exception e){
 			throw e;
 		}finally{
 			if(fis != null){
@@ -34,39 +40,28 @@ public class LagMeterConfig extends LagMeter{
 
 	@Override
 	public YamlConfiguration getConfig(){
-		return this.loadConfig();
+		try{
+			return this.loadConfig();
+		}catch(Exception e){
+			this.sendConsoleMessage(Severity.SEVERE, "Execption occurred while loading LagMeter's configuration: "+e.getMessage());
+			return new YamlConfiguration();
+		}
 	}
 
-	public YamlConfiguration loadConfig(){
-		final YamlConfiguration config;
-		final File configFile;
-		configFile = new File(Bukkit.getServer().getPluginManager().getPlugin("LagMeter").getDataFolder(), "settings.yml");
+	public YamlConfiguration loadConfig() throws Exception{
 		if(configFile.exists()){
-			config = new YamlConfiguration();
-			try{
-				config.load(configFile);
-				return config;
-			}catch(final FileNotFoundException ex){
-				ex.printStackTrace();
-			}catch(final IOException ex){
-				ex.printStackTrace();
-			}catch(final InvalidConfigurationException ex){
-				ex.printStackTrace();
-			}
-			return new YamlConfiguration();
+			this.config = new YamlConfiguration();
+			this.config.load(configFile);
+			return this.config;
 		}else{
-			try{
-				if(Bukkit.getPluginManager().getPlugin("LagMeter").getDataFolder().exists() || Bukkit.getServer().getPluginManager().getPlugin("LagMeter").getDataFolder().mkdir()){
-					final InputStream jarURL = LagMeterConfig.class.getResourceAsStream("/main/resources/settings.yml");
-					LagMeterConfig.copyFile(jarURL, configFile);
-					config = new YamlConfiguration();
-					config.load(configFile);
-					return config;
-				}else{
-					this.sendConsoleMessage(Severity.SEVERE, "Failed to create the directory for configuration.");
-				}
-			}catch(final Exception e){
-				e.printStackTrace();
+			if(Bukkit.getPluginManager().getPlugin("LagMeter").getDataFolder().exists() || Bukkit.getServer().getPluginManager().getPlugin("LagMeter").getDataFolder().mkdir()){
+				final InputStream jarURL = LagMeterConfig.class.getResourceAsStream("/main/resources/settings.yml");
+				LagMeterConfig.copyFile(jarURL, configFile);
+				this.config = new YamlConfiguration();
+				this.config.load(configFile);
+				return this.config;
+			}else{
+				this.sendConsoleMessage(Severity.SEVERE, "Failed to create the directory for configuration.");
 			}
 		}
 		return new YamlConfiguration();
