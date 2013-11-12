@@ -8,8 +8,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 public class PlayerQuitListener implements Listener{
-	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-	public void onPlayerQuitEvent(PlayerQuitEvent evt){
-		LagMeter.getInstance().removePlayerIP(evt.getPlayer().getName());
-	}
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onPlayerQuitEvent(PlayerQuitEvent evt){
+        LagMeter.getInstance().removePlayerIP(evt.getPlayer().getName());
+    }
 }
