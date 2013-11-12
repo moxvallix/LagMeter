@@ -2,7 +2,7 @@ package main.java.com.webkonsept.minecraft.lagmeter;
 
 import org.bukkit.Bukkit;
 
-final class UptimeCommand implements Runnable{
+public final class UptimeCommand implements Runnable{
 	private String	command;
 
 	public String getCommand(){

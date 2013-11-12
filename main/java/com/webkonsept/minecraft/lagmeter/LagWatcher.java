@@ -1,6 +1,6 @@
 package main.java.com.webkonsept.minecraft.lagmeter;
 
-final class LagWatcher implements Runnable{
+public final class LagWatcher implements Runnable{
 	private final LagMeter	plugin;
 	private boolean			stop;
 
