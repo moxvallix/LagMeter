@@ -140,6 +140,16 @@ public class LagMeter extends JavaPlugin{
         this.syncMemListeners.clear();
     }
 
+    @Override
+    public YamlConfiguration getConfig(){
+        return new LagMeterConfig().getConfig();
+    }
+
+    @Override
+    public void reloadConfig(){
+        this.updateConfiguration();
+    }
+
     /**
      * Uses an ID obtained from the registerLagListener(LagListener) method to
      * cancel recurring notification of your observer object.
