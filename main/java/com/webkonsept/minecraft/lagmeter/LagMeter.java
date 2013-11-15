@@ -142,7 +142,12 @@ public class LagMeter extends JavaPlugin{
 
     @Override
     public YamlConfiguration getConfig(){
-        return new LagMeterConfig().getConfig();
+        try{
+            return new LagMeterConfig().getConfig();
+        }catch(Exception e){
+            this.sendConsoleMessage(Severity.SEVERE, "An error occurred while loading the configuration: " + e.getMessage());
+        }
+        return new YamlConfiguration();
     }
 
     @Override
@@ -1228,7 +1233,7 @@ public class LagMeter extends JavaPlugin{
     }
 
     private void updateConfiguration(){
-        final YamlConfiguration yml = new LagMeterConfig().getConfig();
+        final YamlConfiguration yml = this.getConfig();
         this.useAverage = yml.getBoolean("useAverage", true);
         this.averageLength = yml.getInt("averageLength", 10);
         this.interval = yml.getInt("interval", 40);
