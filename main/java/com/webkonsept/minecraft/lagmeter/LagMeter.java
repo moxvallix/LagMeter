@@ -123,8 +123,8 @@ public class LagMeter extends JavaPlugin{
      * Adds a specified player to a HashMap so that they can be pinged later
      * without depending on {@code CraftPlayer}.
      *
-     * @param name        - The name of the player to add
-     * @param hostAddress - The player's IP
+     * @param name        The name of the player to add
+     * @param hostAddress The player's IP
      */
     public void addPlayerIP(String name, String hostAddress){
         this.pingDomains.put(name, hostAddress);
@@ -354,7 +354,7 @@ public class LagMeter extends JavaPlugin{
      * This method is an overloaded version of {@link #getPlayerIP(String)}.
      * This method invokes that method, and returns its return, unmodified.
      *
-     * @param p - The player to get the IP of.
+     * @param p The player to get the IP of.
      *
      * @return The IP of the player specified, in String form.
      *
@@ -374,7 +374,7 @@ public class LagMeter extends JavaPlugin{
      * <br />
      * This method is invoked by {@link#getPlayerIP(Player)}.
      *
-     * @param player - The player's name to get the IP of.
+     * @param player The player's name to get the IP of.
      *
      * @return The specified player's IP, in String form.
      */
@@ -797,7 +797,7 @@ public class LagMeter extends JavaPlugin{
      * Parses a string to get the amount of ticks equal to what the string
      * passed represents.
      *
-     * @param timeString - The "human-readable" representation of time, where:
+     * @param timeString The "human-readable" representation of time, where:
      *                   <ul>
      *                   <b>s</b> is seconds;<br>
      *                   <b>m</b> is minutes;<br>
@@ -852,7 +852,7 @@ public class LagMeter extends JavaPlugin{
      * Parses the timeString given and returns milliseconds instead of ticks.
      * Works in the same fashion as parseTime(String).
      *
-     * @param timeString - The string of time, where:
+     * @param timeString The string of time, where:
      *                   <ul>
      *                   <b>s</b> is seconds;<br>
      *                   <b>m</b> is minutes;<br>
@@ -885,7 +885,7 @@ public class LagMeter extends JavaPlugin{
     /**
      * This method pings google.com, telling the player what the result is.
      *
-     * @param sender - The CommandSender object to output to.
+     * @param sender The CommandSender object to output to.
      * @param args   <br />
      *               <ul>
      *               [0]: hops
@@ -955,7 +955,7 @@ public class LagMeter extends JavaPlugin{
      * LagListener will be run. Code will be executed asynchronously in a new
      * thread; therefore, only <b>thread-safe</b> code should be used.
      *
-     * @param listener - The listener which implements LagListener which should be
+     * @param listener The listener which implements LagListener which should be
      *                 notified of the event when (if) it happens.
      *
      * @return The ID of the listener in LagMeter's allocated memory. This is
@@ -997,7 +997,7 @@ public class LagMeter extends JavaPlugin{
      * LagListener will be run. Code will be executed synchronously, with the
      * main server thread; therefore, thread-unsafe code may be used.
      *
-     * @param listener - The listener which implements LagListener which should be
+     * @param listener The listener which implements LagListener which should be
      *                 notified of the event when (if) it happens.
      *
      * @return The ID of the listener in LagMeter's allocated memory. This is
@@ -1077,7 +1077,7 @@ public class LagMeter extends JavaPlugin{
      * player's IP other than on login requires the use of an NMS class,
      * {@code CraftPlayer}.
      *
-     * @param name - The player to remove from the HashMap.
+     * @param name The player to remove from the HashMap.
      */
     public void removePlayerIP(String name){
         this.pingDomains.remove(name);
@@ -1088,7 +1088,7 @@ public class LagMeter extends JavaPlugin{
      * of chunks currently loaded on the server, for each world, followed by a
      * grand total.
      *
-     * @param sender - The CommandSender to send output to.
+     * @param sender The CommandSender to send output to.
      */
     public void sendChunks(final CommandSender sender){
         int totalChunks = 0;
@@ -1113,7 +1113,7 @@ public class LagMeter extends JavaPlugin{
      * of entities currently living on the server, for each world, followed by a
      * grand total.
      *
-     * @param sender - The CommandSender to send output to.
+     * @param sender The CommandSender to send output to.
      */
     public void sendEntities(final CommandSender sender){
         int totalEntities = 0;
@@ -1163,7 +1163,7 @@ public class LagMeter extends JavaPlugin{
      * This sends the other original function of this plugin, the memory meter,
      * to the specified ConsoleSender.
      *
-     * @param sender - The ConsoleSender object to send the memory meter to.
+     * @param sender The ConsoleSender object to send the memory meter to.
      */
     public void sendMemMeter(final CommandSender sender){
         final StringBuilder bar = new StringBuilder();
@@ -1190,9 +1190,9 @@ public class LagMeter extends JavaPlugin{
      * <li>{@link LagMeter.Severity#SEVERE} is an error.</li>
      * </ul>
      *
-     * @param sender   - The CommandSender to send the message to.
-     * @param severity - The Severity of the message.
-     * @param message  - The message itself.
+     * @param sender   The CommandSender to send the message to.
+     * @param severity The Severity of the message.
+     * @param message  The message itself.
      */
     public void sendMessage(final CommandSender sender, final Severity severity, final String message){
         switch(severity){

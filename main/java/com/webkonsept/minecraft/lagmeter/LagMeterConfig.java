@@ -11,11 +11,10 @@ import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 public class LagMeterConfig extends LagMeter{
-    private final File configFile;
     private YamlConfiguration config;
 
     public LagMeterConfig(){
-        this.configFile = new File(Bukkit.getServer().getPluginManager().getPlugin("LagMeter").getDataFolder(), "settings.yml");
+        this.config = null;
     }
 
     private static void copyFile(InputStream fis, File out) throws Exception{
@@ -39,31 +38,28 @@ public class LagMeterConfig extends LagMeter{
     }
 
     @Override
-    public YamlConfiguration getConfig(){
-        try{
+    public YamlConfiguration getConfig() throws Exception{
+        if(this.config == null)
             return this.loadConfig();
-        }catch(Exception e){
-            this.sendConsoleMessage(Severity.SEVERE, "Execption occurred while loading LagMeter's configuration: " + e.getMessage());
-            return new YamlConfiguration();
-        }
+        return this.config;
     }
 
-    public YamlConfiguration loadConfig() throws Exception{
+    public void loadConfig() throws Exception{
+        File configFile = new File(Bukkit.getServer().getPluginManager().getPlugin("LagMeter").getDataFolder(), "settings.yml");
         if(configFile.exists()){
             this.config = new YamlConfiguration();
             this.config.load(configFile);
-            return this.config;
+            return;
         }else{
             if(Bukkit.getPluginManager().getPlugin("LagMeter").getDataFolder().exists() || Bukkit.getServer().getPluginManager().getPlugin("LagMeter").getDataFolder().mkdir()){
                 final InputStream jarURL = LagMeterConfig.class.getResourceAsStream("/main/resources/settings.yml");
                 LagMeterConfig.copyFile(jarURL, configFile);
                 this.config = new YamlConfiguration();
                 this.config.load(configFile);
-                return this.config;
+                return;
             }else{
                 this.sendConsoleMessage(Severity.SEVERE, "Failed to create the directory for configuration.");
             }
         }
-        return new YamlConfiguration();
     }
 }
