@@ -385,9 +385,7 @@ public class LagMeter extends JavaPlugin{
      * <br />
      * This method gets the IP of a player, which is stored in a HashMap when
      * they log in, and removed when they log out. This is to avoid use of an
-     * NMS class, {@code CraftPlayer}. <br />
-     * <br />
-     * This method is invoked by {@link#getPlayerIP(Player)}.
+     * NMS class, {@code CraftPlayer}.
      *
      * @param player The player's name to get the IP of.
      *
@@ -517,7 +515,7 @@ public class LagMeter extends JavaPlugin{
      * @return The plugin's setting for logging chunks.
      */
     public boolean isLoggingChunks(){
-        return this.isLoggingEnabled() ? this.logChunks : false;
+        return this.isLoggingEnabled() && this.logChunks;
     }
 
     /**
@@ -536,7 +534,7 @@ public class LagMeter extends JavaPlugin{
      * @return The plugin's setting for logging entities.
      */
     public boolean isLoggingEntities(){
-        return this.isLoggingEnabled() ? this.logEntities : false;
+        return this.isLoggingEnabled() && this.logEntities;
     }
 
     /**
@@ -548,7 +546,7 @@ public class LagMeter extends JavaPlugin{
      *         chunks option is off.
      */
     public boolean isLoggingTotalChunksOnly(){
-        return this.isLoggingChunks() ? this.logTotalChunksOnly : false;
+        return this.isLoggingChunks() && this.logTotalChunksOnly;
     }
 
     /**
@@ -560,7 +558,7 @@ public class LagMeter extends JavaPlugin{
      *         entities option is off.
      */
     public boolean isLoggingTotalEntitiesOnly(){
-        return this.isLoggingEntities() ? this.logTotalEntitiesOnly : false;
+        return this.isLoggingEntities() && this.logTotalEntitiesOnly;
     }
 
     /**
@@ -781,7 +779,7 @@ public class LagMeter extends JavaPlugin{
             }
         }
         this.history.setMaxSize(this.averageLength);
-        this.sendConsoleMessage(Severity.INFO, "Enabled! Polling every " + this.interval + " server ticks." + (this.isLoggingEnabled() ? " Logging to " + this.logger.getFilename() + "." : ""));
+        this.sendConsoleMessage(Severity.INFO, "Enabled! Polling every " + this.interval + " server ticks." + (this.isLoggingEnabled() ? (" Logging to " + this.logger.getFilename() + ".") : ""));
         this.registerTasks();
         if(this.displayChunksOnLoad){
             this.sendConsoleMessage(Severity.INFO, "Chunks loaded:");
@@ -823,9 +821,9 @@ public class LagMeter extends JavaPlugin{
      *
      * @return Amount of ticks which corresponds to this string of time.
      *
-     * @throws InvalidTimeFormatException If the time format given is invalid or the tick amount which
+     * @throws main.java.com.webkonsept.minecraft.lagmeter.exceptions.InvalidTimeFormatException If the time format given is invalid or the tick amount which
      *                                    results is less than 1
-     * @see LagMeter#parseTimeMS(String)
+     * @see main.java.com.webkonsept.minecraft.lagmeter.LagMeter#parseTimeMS(String)
      */
     public long parseTime(String timeString) throws InvalidTimeFormatException{
         long time = 0L;
@@ -879,9 +877,9 @@ public class LagMeter extends JavaPlugin{
      * @return The amount of milliseconds that would equate to the time string
      *         given.
      *
-     * @throws InvalidTimeFormatException If the timeString is in an invalid format (i.e. invalid
+     * @throws main.java.com.webkonsept.minecraft.lagmeter.exceptions.InvalidTimeFormatException If the timeString is in an invalid format (i.e. invalid
      *                                    characters) or the result is less than 1.
-     * @see LagMeter#parseTime(String)
+     * @see main.java.com.webkonsept.minecraft.lagmeter.LagMeter#parseTime(String)
      */
     public long parseTimeMS(String timeString) throws InvalidTimeFormatException{
         return (this.parseTime(timeString) * 50L);
@@ -909,7 +907,7 @@ public class LagMeter extends JavaPlugin{
     public void ping(final CommandSender sender, final String[] args){
         final List<String> processCmd = new ArrayList<String>();
         final String hops = this.getHops(sender, args);
-        final String domain = (sender instanceof Player ? this.getPlayerIP(sender.getName()) : "google.com");
+        final String domain = ((sender instanceof Player) ? this.getPlayerIP(sender.getName()) : "google.com");
         if((domain == null) || domain.isEmpty())
             return;
         processCmd.add("ping");
@@ -935,11 +933,11 @@ public class LagMeter extends JavaPlugin{
                         if(s.trim().length() != 0){
                             output = s;
                         }
-                        if(s.indexOf(windowsPingSummary) != -1){
+                        if(s.contains(windowsPingSummary)){
                             output = s.substring(s.indexOf(windowsPingSummary) + windowsPingSummary.length());
                             break;
                         }
-                        if(s.indexOf(unixPingSummary) != -1){
+                        if(s.contains(unixPingSummary)){
                             output = s.substring(unixPingSummary.length()).split("/")[1];
                             break;
                         }
@@ -1200,9 +1198,9 @@ public class LagMeter extends JavaPlugin{
      * <br />
      * The severity identifiers are:
      * <ul>
-     * <li>{@link LagMeter.Severity#INFO} is information;</li>
-     * <li>{@link LagMeter.Severity#WARNING} is a warning; and finally,</li>
-     * <li>{@link LagMeter.Severity#SEVERE} is an error.</li>
+     * <li>{@link main.java.com.webkonsept.minecraft.lagmeter.LagMeter.Severity#INFO} is information;</li>
+     * <li>{@link main.java.com.webkonsept.minecraft.lagmeter.LagMeter.Severity#WARNING} is a warning; and finally,</li>
+     * <li>{@link main.java.com.webkonsept.minecraft.lagmeter.LagMeter.Severity#SEVERE} is an error.</li>
      * </ul>
      *
      * @param sender   The CommandSender to send the message to.
