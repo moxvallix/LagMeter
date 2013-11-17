@@ -15,7 +15,7 @@ public class LagMeterStack{
         }
     }
 
-    public void clear(final int i){
+    public void clear(){
         this.stack.clear();
     }
 

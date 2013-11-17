@@ -50,7 +50,7 @@ public class LagMeterLogger{
         return ret;
     }
 
-    private void closeLog() throws IOException, Exception, FileNotFoundException{
+    private void closeLog() throws Exception{
         if((this.log != null) && this.enabled){
             this.log.flush();
             this.log.close();
@@ -59,7 +59,7 @@ public class LagMeterLogger{
         }
     }
 
-    public void disable() throws IOException, FileNotFoundException, Exception{
+    public void disable() throws Exception{
         if(this.plugin.isLoggingEnabled()){
             this.closeLog();
         }
@@ -148,7 +148,7 @@ public class LagMeterLogger{
 
     public void logMemory(final boolean set){
         this.logMemory = set;
-        if((this.logMemory == false) && (this.logTPS == false)){
+        if((!this.logMemory) && (!this.logTPS)){
             try{
                 this.disable();
             }catch(final FileNotFoundException e){
@@ -168,7 +168,7 @@ public class LagMeterLogger{
 
     public void logTPS(final boolean set){
         this.logTPS = set;
-        if((this.logMemory == false) && (this.logTPS == false)){
+        if((!this.logMemory) && (!this.logTPS)){
             try{
                 this.disable();
             }catch(final FileNotFoundException e){
