@@ -886,8 +886,6 @@ public class LagMeter extends JavaPlugin{
     }
 
     public boolean permit(final CommandSender sender, final String perm){
-        if(sender.hasPermission("lagmeter.*"))
-            return true;
         return sender.hasPermission(perm);
     }
 
