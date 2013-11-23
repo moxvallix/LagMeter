@@ -7,9 +7,9 @@ public class LowMemoryEvent{
     private final double usedMemory;
     private final double maxMemory;
     private final double percentageFree;
-    private final float currentTPS;
+    private final double currentTPS;
 
-    public float getCurrentTPS(){
+    public double getCurrentTPS(){
         return this.currentTPS;
     }
 
@@ -33,7 +33,7 @@ public class LowMemoryEvent{
         return this.usedMemory;
     }
 
-    public LowMemoryEvent(final double[] values, final float tps){
+    public LowMemoryEvent(final double[] values, final double tps){
         this.usedMemory = values[0];
         this.maxMemory = values[1];
         this.freeMemory = values[2];

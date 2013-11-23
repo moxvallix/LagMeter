@@ -4,9 +4,9 @@ import java.util.LinkedList;
 
 public class LagMeterStack{
     private int maxSize = 0;
-    private final LinkedList<Float> stack = new LinkedList<Float>();
+    private final LinkedList<Double> stack = new LinkedList<Double>();
 
-    public void add(final Float item){
+    public void add(final Double item){
         if((item != null) && (item <= 20) && (item >= 0)){
             this.stack.add(item);
             if(this.stack.size() > this.maxSize){
@@ -19,12 +19,12 @@ public class LagMeterStack{
         this.stack.clear();
     }
 
-    public float getAverage(){
+    public double getAverage(){
         float total = 0f;
         if(this.stack.size() == 0){
             return -1F;
         }
-        for(final Float f : this.stack){
+        for(final Double f : this.stack){
             if(f != null){
                 total += f;
             }

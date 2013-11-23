@@ -113,7 +113,7 @@ public class LagMeter extends JavaPlugin{
      *
      * @param tps The TPS value to add.
      */
-    public void addHistory(final float tps){
+    public void addHistory(final double tps){
         this.history.add(tps);
     }
 
@@ -414,7 +414,7 @@ public class LagMeter extends JavaPlugin{
      *             This change will occur quite some time after 1.16.0 is released, so developers who depend on this method will have time to change.
      */
     @Deprecated
-    public float getTPS(){
+    public double getTPS(){
         if(this.useAverage)
             return this.history.getAverage();
         return this.ticksPerSecond;
@@ -1148,7 +1148,7 @@ public class LagMeter extends JavaPlugin{
      */
     public void sendLagMeter(final CommandSender sender){
         final StringBuilder lagMeter = new StringBuilder();
-        final float tps = this.getTPS();
+        final double tps = this.getTPS();
         if(this.displayEntities){
             this.sendEntities(sender);
         }

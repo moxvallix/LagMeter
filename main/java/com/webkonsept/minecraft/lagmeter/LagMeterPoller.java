@@ -22,7 +22,7 @@ public class LagMeterPoller implements Runnable{
         this.polls++;
         if(this.plugin.getLMLogger().isEnabled() && ((this.polls % this.logInterval) == 0)){
             this.plugin.updateMemoryStats();
-            float aTPS;
+            double aTPS;
             if(this.plugin.isAveraging()){
                 aTPS = this.plugin.getHistory().getAverage();
             }else{

@@ -3,9 +3,9 @@ package main.java.com.webkonsept.minecraft.lagmeter.events;
 import main.java.com.webkonsept.minecraft.lagmeter.LagMeter;
 
 public class HighLagEvent{
-    private final float TPS;
+    private final double TPS;
 
-    public float getCurrentTPS(){
+    public double getCurrentTPS(){
         return this.TPS;
     }
 
@@ -13,7 +13,7 @@ public class HighLagEvent{
         return LagMeter.getInstance();
     }
 
-    public HighLagEvent(final float tps){
+    public HighLagEvent(final double tps){
         this.TPS = tps;
     }
 }
