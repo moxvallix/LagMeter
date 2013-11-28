@@ -1,5 +1,5 @@
 name: LagMeter
-main: main.java.com.webkonsept.minecraft.lagmeter.LagMeter
+main: com.webkonsept.minecraft.lagmeter.LagMeter
 version: ${project.version}
 thread: http://dev.bukkit.org/server-mods/lagmeter/
 database: false

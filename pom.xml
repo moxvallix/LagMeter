@@ -1,81 +1,81 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
 						http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<groupId>com.webkonsept.minecraft</groupId>
-	<artifactId>LagMeter</artifactId>
-	<version>1.16.0</version>
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.webkonsept.minecraft</groupId>
+    <artifactId>LagMeter</artifactId>
+    <version>1.16.0</version>
 
-	<!-- Build Settings -->
-	<build>
-		<sourceDirectory>main</sourceDirectory>
-		<resources>
-			<!-- settings.yml -->
-			<resource>
-				<targetPath>main/resources</targetPath>
-				<filtering>true</filtering>
-				<directory>${basedir}/main/resources</directory>
-				<includes>
-					<include>settings.yml</include>
-				</includes>
-				<excludes>
-				</excludes>
-			</resource>
+    <!-- Build Settings -->
+    <build>
+        <sourceDirectory>main/java</sourceDirectory>
+        <resources>
+            <!-- settings.yml -->
+            <resource>
+                <targetPath>main/resources</targetPath>
+                <filtering>true</filtering>
+                <directory>${basedir}/main/resources</directory>
+                <includes>
+                    <include>settings.yml</include>
+                </includes>
+                <excludes>
+                </excludes>
+            </resource>
 
-			<!-- plugin.yml -->
-			<resource>
-				<targetPath>.</targetPath>
-				<filtering>true</filtering>
-				<directory>${basedir}/main/resources</directory>
-				<includes>
-					<include>plugin.yml</include>
-				</includes>
-				<excludes>
-				</excludes>
-			</resource>
-		</resources>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.1</version>
-				<configuration>
-					<source>1.6</source>
-					<target>1.6</target>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
+            <!-- plugin.yml -->
+            <resource>
+                <targetPath>.</targetPath>
+                <filtering>true</filtering>
+                <directory>main/resources</directory>
+                <includes>
+                    <include>plugin.yml</include>
+                </includes>
+                <excludes>
+                </excludes>
+            </resource>
+        </resources>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.1</version>
+                <configuration>
+                    <source>1.6</source>
+                    <target>1.6</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
-	<dependencies>
-		<!-- Bukkit -->
-		<dependency>
-			<groupId>org.bukkit</groupId>
-			<artifactId>bukkit</artifactId>
-			<version>1.6.4-R2.0</version>
-			<type>jar</type>
-		</dependency>
-	</dependencies>
+    <dependencies>
+        <!-- Bukkit -->
+        <dependency>
+            <groupId>org.bukkit</groupId>
+            <artifactId>bukkit</artifactId>
+            <version>1.6.4-R2.0</version>
+            <type>jar</type>
+        </dependency>
+    </dependencies>
 
-	<repositories>
-		<repository>
-			<id>bukkit-repo</id>
-			<url>http://repo.bukkit.org/content/groups/public</url>
-		</repository>
-	</repositories>
+    <repositories>
+        <repository>
+            <id>bukkit-repo</id>
+            <url>http://repo.bukkit.org/content/groups/public</url>
+        </repository>
+    </repositories>
 
-	<!-- More Project Information -->
-	<name>LagMeter</name>
-	<description>A lag and memory usage meter Minecraft Bukkit servers.
-	</description>
-	<url>http://mc.grminecraft.org:8080/jenkins/job/LagMeter/</url>
-	<inceptionYear>2011</inceptionYear>
-	<issueManagement>
-		<url>http://dev.bukkit.org/server-mods/lagmeter/tickets/</url>
-		<system>BukkitDev Ticket Management</system>
-	</issueManagement>
-	<scm>
-		<url>https://github.com/TheLunarFrog/LagMeter</url>
-		<developerConnection>TheLunarFrog</developerConnection>
-	</scm>
+    <!-- More Project Information -->
+    <name>LagMeter</name>
+    <description>A lag and memory usage meter Minecraft Bukkit servers.
+    </description>
+    <url>http://mc.grminecraft.org:8080/jenkins/job/LagMeter/</url>
+    <inceptionYear>2011</inceptionYear>
+    <issueManagement>
+        <url>http://dev.bukkit.org/server-mods/lagmeter/tickets/</url>
+        <system>BukkitDev Ticket Management</system>
+    </issueManagement>
+    <scm>
+        <url>https://github.com/TheLunarFrog/LagMeter</url>
+        <developerConnection>TheLunarFrog</developerConnection>
+    </scm>
 </project>
