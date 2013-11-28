@@ -665,7 +665,7 @@ public class LagMeter extends JavaPlugin{
 		}.runTask(this);
 	}
 
-	private void turnLagMapOff(Player sender) throws NoActiveLagMapException{
+	public void turnLagMapOff(Player sender) throws NoActiveLagMapException{
 		if(!this.maps.containsKey(sender.getName()))
 			throw new NoActiveLagMapException("You don't have an active LagMap to turn off!");
 		MapView map = this.maps.get(sender.getName());
@@ -676,7 +676,7 @@ public class LagMeter extends JavaPlugin{
 		this.maps.remove(sender.getName());
 	}
 
-	private void turnLagMapOn(Player sender) throws NoMapHeldException{
+	public void turnLagMapOn(Player sender) throws NoMapHeldException{
 		if(sender.getItemInHand().getType().equals(Material.MAP) || sender.getItemInHand().getType().equals(Material.EMPTY_MAP)){
 			MapView map = Bukkit.getMap(sender.getItemInHand().getDurability());
 			this.oldRenderers.put(sender.getName(), map.getRenderers());
