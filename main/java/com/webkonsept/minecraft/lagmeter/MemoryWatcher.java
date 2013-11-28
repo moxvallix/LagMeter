@@ -1,4 +1,4 @@
-package main.java.com.webkonsept.minecraft.lagmeter;
+package com.webkonsept.minecraft.lagmeter;
 
 public final class MemoryWatcher implements Runnable{
 	private final LagMeter plugin;

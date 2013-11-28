@@ -1,7 +1,7 @@
-package main.java.com.webkonsept.minecraft.lagmeter;
+package com.webkonsept.minecraft.lagmeter;
 
-import main.java.com.webkonsept.minecraft.lagmeter.exceptions.InvalidTimeFormatException;
-import main.java.com.webkonsept.minecraft.lagmeter.util.SyncCommand;
+import com.webkonsept.minecraft.lagmeter.exceptions.InvalidTimeFormatException;
+import com.webkonsept.minecraft.lagmeter.util.SyncCommand;
 
 public class TimedCommand implements Runnable{
 	private final String command;
@@ -13,6 +13,7 @@ public class TimedCommand implements Runnable{
 		}catch(final InvalidTimeFormatException e){
 			e.printStackTrace();
 		}catch(final InterruptedException e){
+			//probably interrupted by server shutdown or plugin stop/reload
 		}
 		new SyncCommand(s.split("<>")[0]).runTask(this.plugin);
 	}

@@ -1,6 +1,6 @@
-package main.java.com.webkonsept.minecraft.lagmeter;
+package com.webkonsept.minecraft.lagmeter;
 
-import main.java.com.webkonsept.minecraft.lagmeter.LagMeter.Severity;
+import com.webkonsept.minecraft.lagmeter.LagMeter.Severity;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 

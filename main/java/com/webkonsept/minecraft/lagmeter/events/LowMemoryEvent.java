@@ -1,6 +1,6 @@
-package main.java.com.webkonsept.minecraft.lagmeter.events;
+package com.webkonsept.minecraft.lagmeter.events;
 
-import main.java.com.webkonsept.minecraft.lagmeter.LagMeter;
+import com.webkonsept.minecraft.lagmeter.LagMeter;
 
 public class LowMemoryEvent{
 	private final double freeMemory;

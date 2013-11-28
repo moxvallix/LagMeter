@@ -1,6 +1,6 @@
-package main.java.com.webkonsept.minecraft.lagmeter.listeners;
+package com.webkonsept.minecraft.lagmeter.listeners;
 
-import main.java.com.webkonsept.minecraft.lagmeter.events.HighLagEvent;
+import com.webkonsept.minecraft.lagmeter.events.HighLagEvent;
 
 public interface LagListener{
 	public void onHighLagEvent(HighLagEvent evt);

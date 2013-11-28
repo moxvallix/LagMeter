@@ -1,6 +1,6 @@
-package main.java.com.webkonsept.minecraft.lagmeter.eventhandlers;
+package com.webkonsept.minecraft.lagmeter.eventhandlers;
 
-import main.java.com.webkonsept.minecraft.lagmeter.LagMeter;
+import com.webkonsept.minecraft.lagmeter.LagMeter;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;

@@ -1,15 +1,15 @@
-package main.java.com.webkonsept.minecraft.lagmeter;
+package com.webkonsept.minecraft.lagmeter;
 
-import main.java.com.webkonsept.minecraft.lagmeter.eventhandlers.DefaultHighLag;
-import main.java.com.webkonsept.minecraft.lagmeter.eventhandlers.DefaultLowMemory;
-import main.java.com.webkonsept.minecraft.lagmeter.eventhandlers.PlayerJoinListener;
-import main.java.com.webkonsept.minecraft.lagmeter.eventhandlers.PlayerQuitListener;
-import main.java.com.webkonsept.minecraft.lagmeter.events.HighLagEvent;
-import main.java.com.webkonsept.minecraft.lagmeter.events.LowMemoryEvent;
-import main.java.com.webkonsept.minecraft.lagmeter.exceptions.InvalidTimeFormatException;
-import main.java.com.webkonsept.minecraft.lagmeter.listeners.LagListener;
-import main.java.com.webkonsept.minecraft.lagmeter.listeners.MemoryListener;
-import main.java.com.webkonsept.minecraft.lagmeter.util.SyncSendMessage;
+import com.webkonsept.minecraft.lagmeter.eventhandlers.DefaultHighLag;
+import com.webkonsept.minecraft.lagmeter.eventhandlers.DefaultLowMemory;
+import com.webkonsept.minecraft.lagmeter.eventhandlers.PlayerJoinListener;
+import com.webkonsept.minecraft.lagmeter.eventhandlers.PlayerQuitListener;
+import com.webkonsept.minecraft.lagmeter.events.HighLagEvent;
+import com.webkonsept.minecraft.lagmeter.events.LowMemoryEvent;
+import com.webkonsept.minecraft.lagmeter.exceptions.InvalidTimeFormatException;
+import com.webkonsept.minecraft.lagmeter.listeners.LagListener;
+import com.webkonsept.minecraft.lagmeter.listeners.MemoryListener;
+import com.webkonsept.minecraft.lagmeter.util.SyncSendMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
@@ -809,10 +809,10 @@ public class LagMeter extends JavaPlugin{
 	 *
 	 * @return Amount of ticks which corresponds to this string of time.
 	 *
-	 * @throws main.java.com.webkonsept.minecraft.lagmeter.exceptions.InvalidTimeFormatException
+	 * @throws com.webkonsept.minecraft.lagmeter.exceptions.InvalidTimeFormatException
 	 *          If the time format given is invalid or the tick amount which
 	 *          results is less than 1
-	 * @see main.java.com.webkonsept.minecraft.lagmeter.LagMeter#parseTimeMS(String)
+	 * @see com.webkonsept.minecraft.lagmeter.LagMeter#parseTimeMS(String)
 	 */
 	public long parseTime(String timeString) throws InvalidTimeFormatException{
 		long time = 0L;
@@ -866,10 +866,10 @@ public class LagMeter extends JavaPlugin{
 	 * @return The amount of milliseconds that would equate to the time string
 	 *         given.
 	 *
-	 * @throws main.java.com.webkonsept.minecraft.lagmeter.exceptions.InvalidTimeFormatException
+	 * @throws com.webkonsept.minecraft.lagmeter.exceptions.InvalidTimeFormatException
 	 *          If the timeString is in an invalid format (i.e. invalid
 	 *          characters) or the result is less than 1.
-	 * @see main.java.com.webkonsept.minecraft.lagmeter.LagMeter#parseTime(String)
+	 * @see com.webkonsept.minecraft.lagmeter.LagMeter#parseTime(String)
 	 */
 	public long parseTimeMS(String timeString) throws InvalidTimeFormatException{
 		return (this.parseTime(timeString) * 50L);
@@ -1186,9 +1186,9 @@ public class LagMeter extends JavaPlugin{
 	 * <br />
 	 * The severity identifiers are:
 	 * <ul>
-	 * <li>{@link main.java.com.webkonsept.minecraft.lagmeter.LagMeter.Severity#INFO} is information;</li>
-	 * <li>{@link main.java.com.webkonsept.minecraft.lagmeter.LagMeter.Severity#WARNING} is a warning; and finally,</li>
-	 * <li>{@link main.java.com.webkonsept.minecraft.lagmeter.LagMeter.Severity#SEVERE} is an error.</li>
+	 * <li>{@link LagMeter.Severity#INFO} is information;</li>
+	 * <li>{@link LagMeter.Severity#WARNING} is a warning; and finally,</li>
+	 * <li>{@link LagMeter.Severity#SEVERE} is an error.</li>
 	 * </ul>
 	 *
 	 * @param sender   The CommandSender to send the message to.

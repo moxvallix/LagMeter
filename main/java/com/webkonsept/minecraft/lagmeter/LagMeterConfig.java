@@ -1,4 +1,4 @@
-package main.java.com.webkonsept.minecraft.lagmeter;
+package com.webkonsept.minecraft.lagmeter;
 
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;

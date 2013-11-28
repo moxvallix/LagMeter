@@ -1,10 +1,9 @@
-package main.java.com.webkonsept.minecraft.lagmeter.eventhandlers;
+package com.webkonsept.minecraft.lagmeter.eventhandlers;
 
-import main.java.com.webkonsept.minecraft.lagmeter.LagMeter;
-import main.java.com.webkonsept.minecraft.lagmeter.TimedCommand;
-import main.java.com.webkonsept.minecraft.lagmeter.events.LowMemoryEvent;
-import main.java.com.webkonsept.minecraft.lagmeter.listeners.MemoryListener;
-
+import com.webkonsept.minecraft.lagmeter.LagMeter;
+import com.webkonsept.minecraft.lagmeter.TimedCommand;
+import com.webkonsept.minecraft.lagmeter.events.LowMemoryEvent;
+import com.webkonsept.minecraft.lagmeter.listeners.MemoryListener;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
