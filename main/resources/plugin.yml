@@ -42,6 +42,9 @@ commands:
     lping:
         description: Pings the sender, or, if the console, google.com, from the server.
         usage: /<command> [amount of packets]
+    lagmap:
+        description: Changes the map in the player's hand to an automatically-updating lag and memory meter, or toggles the LagMap back to a normal map.
+        usage: /<command>
 permissions:
     lagmeter.*:
         description: Gives full access

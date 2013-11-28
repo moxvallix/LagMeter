@@ -1,5 +1,20 @@
 package com.webkonsept.minecraft.lagmeter;
 
+import com.webkonsept.minecraft.lagmeter.exceptions.NoActiveLagMapException;
+import com.webkonsept.minecraft.lagmeter.exceptions.NoMapHeldException;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.World;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
+import org.bukkit.map.MapRenderer;
+import org.bukkit.map.MapView;
+import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
+
 import com.webkonsept.minecraft.lagmeter.eventhandlers.DefaultHighLag;
 import com.webkonsept.minecraft.lagmeter.eventhandlers.DefaultLowMemory;
 import com.webkonsept.minecraft.lagmeter.eventhandlers.PlayerJoinListener;
@@ -10,15 +25,6 @@ import com.webkonsept.minecraft.lagmeter.exceptions.InvalidTimeFormatException;
 import com.webkonsept.minecraft.lagmeter.listeners.LagListener;
 import com.webkonsept.minecraft.lagmeter.listeners.MemoryListener;
 import com.webkonsept.minecraft.lagmeter.util.SyncSendMessage;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.World;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.Player;
-import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import javax.swing.*;
 import java.io.*;
@@ -65,6 +71,9 @@ public class LagMeter extends JavaPlugin{
 	private String highLagCommand, lowMemCommand;
 	private static LagMeter p;
 	private HashMap<String, String> pingDomains;
+	private HashMap<String, MapView> maps;
+	private HashMap<String, List<MapRenderer>> oldRenderers;
+	private LagMapRenderer renderer;
 
 	/**
 	 * This method gets the current instance of LagMeter.
@@ -656,6 +665,42 @@ public class LagMeter extends JavaPlugin{
 		}.runTask(this);
 	}
 
+	private void turnLagMapOff(Player sender) throws NoActiveLagMapException{
+		if(!this.maps.containsKey(sender.getName()))
+			throw new NoActiveLagMapException("You don't have an active LagMap to turn off!");
+		MapView map = this.maps.get(sender.getName());
+		map.getRenderers().clear();
+		for(MapRenderer r : this.oldRenderers.get(sender.getName()))
+			map.addRenderer(r);
+		this.oldRenderers.remove(sender.getName());
+		this.maps.remove(sender.getName());
+	}
+
+	private void turnLagMapOn(Player sender) throws NoMapHeldException{
+		if(sender.getItemInHand().getType().equals(Material.MAP) || sender.getItemInHand().getType().equals(Material.EMPTY_MAP)){
+			MapView map = Bukkit.getMap(sender.getItemInHand().getDurability());
+			this.oldRenderers.put(sender.getName(), map.getRenderers());
+			this.maps.put(sender.getName(), map);
+			for(MapRenderer r : map.getRenderers())
+				map.removeRenderer(r);
+			map.addRenderer(this.renderer);
+		}else{
+			throw new NoMapHeldException("You don't have a map in your hand to turn into a LagMap!");
+		}
+	}
+
+	public void returnAllOldMapRenderers(){
+		for(String player : this.maps.keySet()){
+			try{
+				this.turnLagMapOff(Bukkit.getPlayer(player));
+			}catch(NoActiveLagMapException e){
+				if(this.oldRenderers.containsKey(player))
+					this.oldRenderers.remove(player);
+				this.maps.remove(player);
+			}
+		}
+	}
+
 	@Override
 	public boolean onCommand(final CommandSender sender, final Command command, final String commandLabel, final String[] args){
 		if(!this.isEnabled())
@@ -665,6 +710,27 @@ public class LagMeter extends JavaPlugin{
 			if(command.getName().equalsIgnoreCase("lag")){
 				success = true;
 				this.sendLagMeter(sender);
+			}else if(command.getName().equalsIgnoreCase("lagmap")){
+				success = true;
+				if(sender instanceof Player){
+					if(this.maps.containsKey(sender.getName())){
+						try{
+							this.turnLagMapOff((Player)sender);
+							this.sendMessage(sender, Severity.INFO, "You've turned off LagMap and returned the old map view you had.");
+						}catch(final NoActiveLagMapException e){
+							this.sendMessage(sender, Severity.WARNING, e.getMessage());
+						}
+					}else{
+						try{
+							this.turnLagMapOn((Player)sender);
+							this.sendMessage(sender, Severity.INFO, "You've turned on LagMap, replacing your current map's view. Toggle this off by using " + ChatColor.GRAY + "/lagmap" + ChatColor.GREEN + " again.");
+						}catch(final NoMapHeldException e){
+							this.sendMessage(sender, Severity.WARNING, e.getMessage());
+						}
+					}
+				}else{
+					this.sendMessage(sender, Severity.WARNING, "You must be a player to use a LagMap.");
+				}
 			}else if(command.getName().equalsIgnoreCase("mem")){
 				success = true;
 				this.sendMemMeter(sender);
@@ -720,6 +786,7 @@ public class LagMeter extends JavaPlugin{
 
 	@Override
 	public void onDisable(){
+		this.returnAllOldMapRenderers();
 		this.memWatcher.stop();
 		this.lagWatcher.stop();
 		this.cancelAllLagListeners();
@@ -792,6 +859,9 @@ public class LagMeter extends JavaPlugin{
 		this.pingDomains = new HashMap<String, String>();
 		Bukkit.getServer().getPluginManager().registerEvents(new PlayerJoinListener(), this);
 		Bukkit.getServer().getPluginManager().registerEvents(new PlayerQuitListener(), this);
+		this.maps = new HashMap<String, MapView>();
+		this.oldRenderers = new HashMap<String, List<MapRenderer>>();
+		this.renderer = new LagMapRenderer(); // this is a private data member because there is no need for multiple instances of this class
 	}
 
 	/**
