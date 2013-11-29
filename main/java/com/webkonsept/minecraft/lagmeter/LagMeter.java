@@ -1,7 +1,17 @@
 package com.webkonsept.minecraft.lagmeter;
 
+import com.webkonsept.minecraft.lagmeter.eventhandlers.DefaultHighLag;
+import com.webkonsept.minecraft.lagmeter.eventhandlers.DefaultLowMemory;
+import com.webkonsept.minecraft.lagmeter.eventhandlers.PlayerJoinListener;
+import com.webkonsept.minecraft.lagmeter.eventhandlers.PlayerQuitListener;
+import com.webkonsept.minecraft.lagmeter.events.HighLagEvent;
+import com.webkonsept.minecraft.lagmeter.events.LowMemoryEvent;
+import com.webkonsept.minecraft.lagmeter.exceptions.InvalidTimeFormatException;
 import com.webkonsept.minecraft.lagmeter.exceptions.NoActiveLagMapException;
 import com.webkonsept.minecraft.lagmeter.exceptions.NoMapHeldException;
+import com.webkonsept.minecraft.lagmeter.listeners.LagListener;
+import com.webkonsept.minecraft.lagmeter.listeners.MemoryListener;
+import com.webkonsept.minecraft.lagmeter.util.SyncSendMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -14,17 +24,6 @@ import org.bukkit.map.MapRenderer;
 import org.bukkit.map.MapView;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
-
-import com.webkonsept.minecraft.lagmeter.eventhandlers.DefaultHighLag;
-import com.webkonsept.minecraft.lagmeter.eventhandlers.DefaultLowMemory;
-import com.webkonsept.minecraft.lagmeter.eventhandlers.PlayerJoinListener;
-import com.webkonsept.minecraft.lagmeter.eventhandlers.PlayerQuitListener;
-import com.webkonsept.minecraft.lagmeter.events.HighLagEvent;
-import com.webkonsept.minecraft.lagmeter.events.LowMemoryEvent;
-import com.webkonsept.minecraft.lagmeter.exceptions.InvalidTimeFormatException;
-import com.webkonsept.minecraft.lagmeter.listeners.LagListener;
-import com.webkonsept.minecraft.lagmeter.listeners.MemoryListener;
-import com.webkonsept.minecraft.lagmeter.util.SyncSendMessage;
 
 import javax.swing.*;
 import java.io.*;
@@ -677,7 +676,7 @@ public class LagMeter extends JavaPlugin{
 	}
 
 	public void turnLagMapOn(Player sender) throws NoMapHeldException{
-		if(sender.getItemInHand().getType().equals(Material.MAP) || sender.getItemInHand().getType().equals(Material.EMPTY_MAP)){
+		if(sender.getItemInHand().getType().equals(Material.MAP)){
 			MapView map = Bukkit.getMap(sender.getItemInHand().getDurability());
 			this.oldRenderers.put(sender.getName(), map.getRenderers());
 			this.maps.put(sender.getName(), map);
