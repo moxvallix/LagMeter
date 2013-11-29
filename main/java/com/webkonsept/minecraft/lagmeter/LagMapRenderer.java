@@ -34,11 +34,11 @@ public class LagMapRenderer extends MapRenderer{
 				canvas.drawText(0, 16, MinecraftFont.Font, String.format("Memory used: %,.2f MB", d[0]));
 				canvas.drawText(0, 24, MinecraftFont.Font, String.format("Memory free: %,.2f MB", d[1]));
 				canvas.drawText(0, 32, MinecraftFont.Font, String.format("%% of memory used: %,.2f%%", d[3]));
-
-				p.sendMap(map);
 			}catch(NoAvailableTPSException e){
 				canvas.drawText(0, 8, MinecraftFont.Font, "Waiting for polling");
 				canvas.drawText(0, 16, MinecraftFont.Font, "delay to expire...");
+			}finally{
+				p.sendMap(map);
 			}
 	}
 }
