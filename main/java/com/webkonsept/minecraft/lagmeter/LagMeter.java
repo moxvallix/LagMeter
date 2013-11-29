@@ -740,18 +740,14 @@ public class LagMeter extends JavaPlugin{
 	public boolean onCommand(final CommandSender sender, final Command command, final String commandLabel, final String[] args){
 		if(!this.isEnabled())
 			return false;
-		boolean success = false;
 		if(this.permit(sender, "lagmeter.command." + command.getName().toLowerCase()) || !(sender instanceof Player)){
 			if(command.getName().equalsIgnoreCase("lag")){
-				success = true;
 				this.sendLagMeter(sender);
 			}else if(command.getName().equalsIgnoreCase("lagmap")){
 				if(!this.lagmapsEnabled){
 					this.sendMessage(sender, Severity.WARNING, "LagMaps are not enabled in the LagMeter configuration, and thereby cannot be used!");
 					return true;
 				}
-
-				success = true;
 				if(sender instanceof Player){
 					if(this.maps.containsKey(sender.getName())){
 						try{
@@ -772,18 +768,14 @@ public class LagMeter extends JavaPlugin{
 					this.sendMessage(sender, Severity.WARNING, "You must be a player to use a LagMap.");
 				}
 			}else if(command.getName().equalsIgnoreCase("mem")){
-				success = true;
 				this.sendMemMeter(sender);
 			}else if(command.getName().equalsIgnoreCase("lagmem")){
-				success = true;
 				this.sendLagMeter(sender);
 				this.sendMemMeter(sender);
 			}else if(command.getName().equalsIgnoreCase("uptime")){
-				success = true;
 				final int[] i = this.getCurrentServerUptime();
 				this.sendMessage(sender, Severity.INFO, "Current server uptime: " + i[3] + " day(s), " + i[2] + " hour(s), " + i[1] + " minute(s), and " + i[0] + " second(s)");
 			}else if(command.getName().equalsIgnoreCase("lm")){
-				success = true;
 				if(args.length == 0){
 					this.sendLagMeter(sender);
 					this.sendMemMeter(sender);
@@ -791,37 +783,30 @@ public class LagMeter extends JavaPlugin{
 					this.handleBaseCommand(sender, args);
 				}
 			}else if(command.getName().equalsIgnoreCase("lmp")){
-				success = true;
 				this.sendLagMeter(sender);
 				this.sendMemMeter(sender);
 				this.sendMessage(sender, Severity.INFO, "Players online: " + ChatColor.GOLD + Bukkit.getServer().getOnlinePlayers().length);
 			}else if(command.getName().equalsIgnoreCase("lchunks")){
-				success = true;
 				this.sendChunks(sender);
 			}else if(command.getName().equalsIgnoreCase("lentities") || command.getName().equalsIgnoreCase("lmobs")){
-				success = true;
 				this.sendEntities(sender);
 			}else if(command.getName().equalsIgnoreCase("ping")){
-				success = true;
 				this.ping(sender, args);
 			}else if(command.getName().equalsIgnoreCase("lping")){
-				success = true;
 				this.ping(sender, args);
 			}else if(command.getName().equalsIgnoreCase("LagMeter")){
-				success = true;
 				if(args.length == 0){
 					this.sendMessage(sender, Severity.INFO, "Version: " + this.getDescription().getVersion());
 					this.sendMessage(sender, Severity.INFO, "Available sub-commands: /lagmeter|lm <reload|r>|/lagmeter|lm <help|?>");
 				}else{
 					this.handleBaseCommand(sender, args);
 				}
-			}
-			return success;
+			}else
+				return false;
 		}else{
-			success = true;
 			this.sendMessage(sender, Severity.WARNING, "Sorry, permission lagmeter.command." + command.getName().toLowerCase() + " was denied.");
 		}
-		return success;
+		return true;
 	}
 
 	@Override
