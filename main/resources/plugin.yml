@@ -99,6 +99,9 @@ permissions:
     lagmeter.notify.mem:
         description: Allows the player/group to receive memory notifications.
         default: op
+    lagmeter.commands.lagmap:
+        description: Allows the player or group to use LagMaps, which update with the TPS and memory usage automatically.
+        default: op
 generators: [bukget]
 categories: [INFO]
 authors: [TheLunarFrog, DemmyDemon]
