@@ -8,6 +8,7 @@ import com.webkonsept.minecraft.lagmeter.events.HighLagEvent;
 import com.webkonsept.minecraft.lagmeter.events.LowMemoryEvent;
 import com.webkonsept.minecraft.lagmeter.exceptions.InvalidTimeFormatException;
 import com.webkonsept.minecraft.lagmeter.exceptions.NoActiveLagMapException;
+import com.webkonsept.minecraft.lagmeter.exceptions.NoAvailableTPSException;
 import com.webkonsept.minecraft.lagmeter.exceptions.NoMapHeldException;
 import com.webkonsept.minecraft.lagmeter.listeners.LagListener;
 import com.webkonsept.minecraft.lagmeter.listeners.MemoryListener;
@@ -48,6 +49,7 @@ public class LagMeter extends JavaPlugin{
 	private int logInterval = 150;
 	private int lagNotifyInterval;
 	private int memNotifyInterval;
+	private int pollingDelay;
 	private float tpsNotificationThreshold, memoryNotificationThreshold;
 	private boolean useAverage = true;
 	private boolean enableLogging = true;
@@ -272,6 +274,15 @@ public class LagMeter extends JavaPlugin{
 		return this.history;
 	}
 
+	/**
+	 * Gets the delay between the plugin enabling and the plugin starting to poll the server for its TPS. Always in seconds.
+	 *
+	 * @return The delay for the plugin to start polling, in seconds.
+	 */
+	public int getPollingDelay(){
+		return this.pollingDelay;
+	}
+
 	private String getHops(final CommandSender sender, final String[] args){
 		if(args.length > 0){
 			if(this.permit(sender, "lagmeter.commands.ping.unlimited")){
@@ -410,11 +421,18 @@ public class LagMeter extends JavaPlugin{
 	 *
 	 * @return The servers's ticks per second, out of 20 (20 being perfect, 0 being the server has reached an absolute halt [and for that reason, it will never be 0]), as of last poll. If the plugin is set to average the TPS, it will return the average instead.
 	 *
+	 * @throws NoAvailableTPSException If the TPS polling delay has not yet expired. Defaults to 75 seconds.
 	 * @since 1.8
 	 */
-	public double getTPS(){
-		if(this.useAverage)
+	public double getTPS() throws NoAvailableTPSException{
+		if(this.useAverage){
+			if(this.history.getAverage() < 0D)
+				throw new NoAvailableTPSException("The TPS polling pollingDelay (" + this.pollingDelay + " seconds) has not yet expired.");
 			return this.history.getAverage();
+		}
+
+		if(this.ticksPerSecond < 0D)
+			throw new NoAvailableTPSException("The TPS polling pollingDelay (" + this.pollingDelay + " seconds) has not yet expired.");
 		return this.ticksPerSecond;
 	}
 
@@ -601,30 +619,38 @@ public class LagMeter extends JavaPlugin{
 	}
 
 	private void notifyAsyncLagListeners(){
-		final HighLagEvent e = new HighLagEvent(this.getTPS());
-		for(final LagListener l : this.getAsyncLagListeners()){
-			if(l != null){
-				new Thread(new Runnable(){
-					@Override
-					public void run(){
-						l.onHighLagEvent(e);
-					}
-				}).start();
+		try{
+			final HighLagEvent e = new HighLagEvent(this.getTPS());
+			for(final LagListener l : this.getAsyncLagListeners()){
+				if(l != null){
+					new Thread(new Runnable(){
+						@Override
+						public void run(){
+							l.onHighLagEvent(e);
+						}
+					}).start();
+				}
 			}
+		}catch(NoAvailableTPSException e){
+			//do nothing, shouldn't be checking anyways
 		}
 	}
 
 	private void notifyAsyncMemoryListeners(){
-		final LowMemoryEvent e = new LowMemoryEvent(this.getMemory(), this.getTPS());
-		for(final MemoryListener m : this.getAsyncMemoryListeners()){
-			if(m != null){
-				new Thread(new Runnable(){
-					@Override
-					public void run(){
-						m.onLowMemoryEvent(e);
-					}
-				}).start();
+		try{
+			final LowMemoryEvent e = new LowMemoryEvent(this.getMemory(), this.getTPS());
+			for(final MemoryListener m : this.getAsyncMemoryListeners()){
+				if(m != null){
+					new Thread(new Runnable(){
+						@Override
+						public void run(){
+							m.onLowMemoryEvent(e);
+						}
+					}).start();
+				}
 			}
+		}catch(NoAvailableTPSException e){
+			//do nothing, shouldn't be checking anyways
 		}
 	}
 
@@ -642,11 +668,15 @@ public class LagMeter extends JavaPlugin{
 		new BukkitRunnable(){
 			@Override
 			public void run(){
-				final HighLagEvent e = new HighLagEvent(LagMeter.this.getTPS());
-				for(final LagListener l : LagMeter.this.getSyncLagListeners()){
-					if(l != null){
-						l.onHighLagEvent(e);
+				try{
+					final HighLagEvent e = new HighLagEvent(LagMeter.this.getTPS());
+					for(final LagListener l : LagMeter.this.getSyncLagListeners()){
+						if(l != null){
+							l.onHighLagEvent(e);
+						}
 					}
+				}catch(NoAvailableTPSException e){
+					//do nothing, shouldn't be checking anyways
 				}
 			}
 		}.runTask(this);
@@ -656,11 +686,15 @@ public class LagMeter extends JavaPlugin{
 		new BukkitRunnable(){
 			@Override
 			public void run(){
-				final LowMemoryEvent e = new LowMemoryEvent(LagMeter.this.getMemory(), LagMeter.this.getTPS());
-				for(final MemoryListener m : LagMeter.this.getSyncMemoryListeners()){
-					if(m != null){
-						m.onLowMemoryEvent(e);
+				try{
+					final LowMemoryEvent e = new LowMemoryEvent(LagMeter.this.getMemory(), LagMeter.this.getTPS());
+					for(final MemoryListener m : LagMeter.this.getSyncMemoryListeners()){
+						if(m != null){
+							m.onLowMemoryEvent(e);
+						}
 					}
+				}catch(NoAvailableTPSException e){
+					//do nothing, shouldn't be checking anyways
 				}
 			}
 		}.runTask(this);
@@ -867,7 +901,7 @@ public class LagMeter extends JavaPlugin{
 		Bukkit.getServer().getPluginManager().registerEvents(new PlayerQuitListener(), this);
 		this.maps = new HashMap<String, MapView>();
 		this.oldRenderers = new HashMap<String, List<MapRenderer>>();
-		this.renderer = new LagMapRenderer(this.mapRenderInterval); // this is a private data member because there is no need for multiple instances of this class
+		this.renderer = new LagMapRenderer(this.mapRenderInterval);
 	}
 
 	/**
@@ -1118,7 +1152,7 @@ public class LagMeter extends JavaPlugin{
 		if(this.lagWatcher != null){
 			this.lagWatcher.stop();
 		}
-		Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(this, this.poller, 1500L, this.interval);
+		Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(this, this.poller, (this.pollingDelay * 20L), this.interval);
 		this.lagNotifyInterval *= 60000;
 		this.memNotifyInterval *= 60000;
 		new Thread(this.lagWatcher = new LagWatcher(this)).start();
@@ -1213,27 +1247,28 @@ public class LagMeter extends JavaPlugin{
 	 * @param sender The CommandSender to send the LagMeter to.
 	 */
 	public void sendLagMeter(final CommandSender sender){
-		final StringBuilder lagMeter = new StringBuilder();
-		final double tps = this.getTPS();
-		if(this.displayEntities){
-			this.sendEntities(sender);
-		}
-		if(this.displayChunks){
-			this.sendChunks(sender);
-		}
-		if((tps < 21) && (tps >= 0)){
-			int looped = 0;
-			while(looped++ < tps){
-				lagMeter.append("#");
+		try{
+			final StringBuilder lagMeter = new StringBuilder();
+			final double tps = this.getTPS();
+			if(this.displayEntities){
+				this.sendEntities(sender);
 			}
-			while(looped++ <= 20){
-				lagMeter.append("_");
+			if(this.displayChunks){
+				this.sendChunks(sender);
 			}
-		}else{
-			this.sendMessage(sender, Severity.WARNING, "LagMeter has a 75 second delay before it begins polling. Please wait.");
-			return;
+			if(tps < 21){
+				int looped = 0;
+				while(looped++ < tps){
+					lagMeter.append("#");
+				}
+				while(looped++ <= 20){
+					lagMeter.append("_");
+				}
+				this.sendMessage(sender, Severity.INFO, ChatColor.GOLD + "[" + (tps >= 18 ? ChatColor.GREEN : tps >= 15 ? ChatColor.YELLOW : ChatColor.RED) + lagMeter.toString() + ChatColor.GOLD + "] " + String.format("%3.2f", tps) + " TPS");
+			}
+		}catch(NoAvailableTPSException e){
+			this.sendMessage(sender, Severity.WARNING, e.getMessage());
 		}
-		this.sendMessage(sender, Severity.INFO, ChatColor.GOLD + "[" + (tps >= 18 ? ChatColor.GREEN : tps >= 15 ? ChatColor.YELLOW : ChatColor.RED) + lagMeter.toString() + ChatColor.GOLD + "] " + String.format("%3.2f", tps) + " TPS");
 	}
 
 	/**
@@ -1325,6 +1360,7 @@ public class LagMeter extends JavaPlugin{
 		this.lowMemCommand = yml.getString("Notifications.Memory.ConsoleCommand", "/mem");
 		this.lagmapsEnabled = yml.getBoolean("LagMaps.Enabled", true);
 		this.mapRenderInterval = yml.getInt("LagMaps.Interval", 5);
+		this.pollingDelay = yml.getInt("Commands.Lag.PollingDelay", 35);
 	}
 
 	/**

@@ -1,7 +1,6 @@
 package com.webkonsept.minecraft.lagmeter.exceptions;
 
 public class NoActiveLagMapException extends Exception{
-
 	public NoActiveLagMapException(){
 		super("");
 	}

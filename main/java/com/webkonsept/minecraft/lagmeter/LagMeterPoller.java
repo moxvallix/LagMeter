@@ -1,5 +1,7 @@
 package com.webkonsept.minecraft.lagmeter;
 
+import com.webkonsept.minecraft.lagmeter.exceptions.NoAvailableTPSException;
+
 public class LagMeterPoller implements Runnable{
 	private long lastPoll = System.currentTimeMillis() - 3000;
 	private long polls = 0;
@@ -26,7 +28,11 @@ public class LagMeterPoller implements Runnable{
 			if(this.plugin.isAveraging()){
 				aTPS = this.plugin.getHistory().getAverage();
 			}else{
-				aTPS = this.plugin.getTPS();
+				try{
+					aTPS = this.plugin.getTPS();
+				}catch(NoAvailableTPSException e){
+					return;
+				}
 			}
 			final double[] d = this.plugin.getMemory();
 			this.plugin.getLMLogger().log("TPS: " + aTPS + newLine + "Memory free: " + String.format("%,.2f", d[2]) + "/" + String.format("%,.2f", d[1]) + " (" + String.format("%,.2f", d[3]) + "%)" + players);

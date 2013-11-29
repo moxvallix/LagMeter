@@ -35,6 +35,9 @@ UptimeCommands:
 #################
 Commands:
     Lag:
+        #How long should LagMeter wait to poll the server for its TPS? Setting this to 0 will result in erroneous TPS averaging until the first few values are pushed out of the stack, but will not break anything.
+        #Default: 35
+        PollingDelay: 35
         #Should the commands which show the TPS meter also display entities in each world?
         #Default: false
         displayEntities: false
@@ -114,6 +117,8 @@ Notifications:
 ###############
 LagMaps:
     #Whether or not LagMaps should be able to be enabled by players with the lagmeter.command.lagmap permission.
+    #Default: true
     Enabled: true
     #The interval, in seconds, that the plugin should update the LagMaps.
+    #Default: 5
     Interval: 5
