@@ -10,11 +10,11 @@ public final class LagWatcher implements Runnable{
 	public void run(){
 		while(!this.stop){
 			try{
-				if((this.plugin.getTpsNotificationThreshold() >= this.plugin.getTPS()) && (this.plugin.getTPS() >= 0)){
+				if((this.plugin.getTpsNotificationThreshold() >= this.plugin.getTPS())){
 					this.plugin.notifyLagListeners();
 				}
 				try{
-					Thread.sleep(this.plugin.getCheckMemoryInterval());
+					Thread.sleep(this.plugin.getCheckLagInterval());
 				}catch(final InterruptedException e){
 					// do nothing, interruption probably means the server is
 					// shutting down or reloading.
