@@ -2,24 +2,24 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
 						http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.webkonsept.minecraft</groupId>
+    <groupId>com.webkonsept.minecraft.lagmeter</groupId>
     <artifactId>LagMeter</artifactId>
     <version>1.16.0</version>
 
     <!-- Build Settings -->
     <build>
+        <directory>P:/Minecraft Test Server/plugins/</directory>
+        <finalName>LagMeter</finalName>
         <sourceDirectory>main/java</sourceDirectory>
         <resources>
             <!-- settings.yml -->
             <resource>
-                <targetPath>main/resources</targetPath>
+                <targetPath>./resources</targetPath>
                 <filtering>true</filtering>
-                <directory>${basedir}/main/resources</directory>
+                <directory>main/resources</directory>
                 <includes>
                     <include>settings.yml</include>
                 </includes>
-                <excludes>
-                </excludes>
             </resource>
 
             <!-- plugin.yml -->
@@ -30,8 +30,6 @@
                 <includes>
                     <include>plugin.yml</include>
                 </includes>
-                <excludes>
-                </excludes>
             </resource>
         </resources>
         <plugins>
