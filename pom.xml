@@ -2,9 +2,23 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
 						http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+
+    <!-- Project Information -->
+    <version>1.16.0</version>
     <groupId>com.webkonsept.minecraft.lagmeter</groupId>
     <artifactId>LagMeter</artifactId>
-    <version>1.16.0</version>
+    <name>LagMeter</name>
+    <description>A lag and memory usage meter for Minecraft Bukkit servers.</description>
+    <url>http://dev.bukkit.org/bukkit-plugins/lagmeter/</url>
+    <inceptionYear>2011</inceptionYear>
+    <issueManagement>
+        <url>http://dev.bukkit.org/server-mods/lagmeter/tickets/</url>
+        <system>BukkitDev Ticket Management</system>
+    </issueManagement>
+    <scm>
+        <url>https://github.com/TheLunarFrog/LagMeter</url>
+        <developerConnection>TheLunarFrog</developerConnection>
+    </scm>
 
     <!-- Build Settings -->
     <build>
@@ -61,19 +75,4 @@
             <url>http://repo.bukkit.org/content/groups/public</url>
         </repository>
     </repositories>
-
-    <!-- More Project Information -->
-    <name>LagMeter</name>
-    <description>A lag and memory usage meter Minecraft Bukkit servers.
-    </description>
-    <url>http://mc.grminecraft.org:8080/jenkins/job/LagMeter/</url>
-    <inceptionYear>2011</inceptionYear>
-    <issueManagement>
-        <url>http://dev.bukkit.org/server-mods/lagmeter/tickets/</url>
-        <system>BukkitDev Ticket Management</system>
-    </issueManagement>
-    <scm>
-        <url>https://github.com/TheLunarFrog/LagMeter</url>
-        <developerConnection>TheLunarFrog</developerConnection>
-    </scm>
 </project>
