@@ -11,7 +11,7 @@ averageLength: 10
 #Default: 40
 interval: 40
 #Display chunks loaded on plugin (re)load?
-#Default: true 
+#Default: true
 LoadedChunksOnLoad: true
 #Should LagMeter display all of the entities that exist at the time of plugin (re)load?
 #Default: true
@@ -36,7 +36,7 @@ UptimeCommands:
 Commands:
     Lag:
         #Should the commands which show the TPS meter also display entities in each world?
-        #Default: false 
+        #Default: false
         displayEntities: false
         #Should the commands which show the TPS meter also display loaded chunks in each world?
         #Default: false
@@ -109,3 +109,11 @@ Notifications:
         #Specify a command to use when the plugin notices that the free memory is low. Must be usable from console.
         #Default: /mem
         ConsoleCommand: /mem
+###############
+#   LagMaps   #
+###############
+LagMaps:
+    #Whether or not LagMaps should be able to be enabled by players with the lagmeter.command.lagmap permission.
+    Enabled: true
+    #The interval, in seconds, that the plugin should update the LagMaps.
+    Interval: 5

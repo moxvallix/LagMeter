@@ -66,6 +66,7 @@ public class LagMeter extends JavaPlugin{
 	private boolean displayEntitiesOnLoad;
 	private boolean newLineForLogStats;
 	private boolean repeatingUptimeCommands;
+	private boolean lagmapsEnabled;
 	private List<String> uptimeCommands;
 	private String highLagCommand, lowMemCommand;
 	private static LagMeter p;
@@ -73,6 +74,7 @@ public class LagMeter extends JavaPlugin{
 	private HashMap<String, MapView> maps;
 	private HashMap<String, List<MapRenderer>> oldRenderers;
 	private LagMapRenderer renderer;
+	private Integer mapRenderInterval;
 
 	/**
 	 * This method gets the current instance of LagMeter.
@@ -860,7 +862,7 @@ public class LagMeter extends JavaPlugin{
 		Bukkit.getServer().getPluginManager().registerEvents(new PlayerQuitListener(), this);
 		this.maps = new HashMap<String, MapView>();
 		this.oldRenderers = new HashMap<String, List<MapRenderer>>();
-		this.renderer = new LagMapRenderer(); // this is a private data member because there is no need for multiple instances of this class
+		this.renderer = new LagMapRenderer(this.mapRenderInterval); // this is a private data member because there is no need for multiple instances of this class
 	}
 
 	/**
@@ -1316,6 +1318,8 @@ public class LagMeter extends JavaPlugin{
 		this.memoryNotificationThreshold = yml.getInt("Notifications.Memory.Threshold", 25);
 		this.memNotifyInterval = yml.getInt("Notifications.Memory.CheckInterval", 10);
 		this.lowMemCommand = yml.getString("Notifications.Memory.ConsoleCommand", "/mem");
+		this.lagmapsEnabled = yml.getBoolean("LagMaps.Enabled", true);
+		this.mapRenderInterval = yml.getInt("LagMaps.Interval", 5);
 	}
 
 	/**

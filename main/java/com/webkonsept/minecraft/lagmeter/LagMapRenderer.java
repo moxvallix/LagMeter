@@ -5,7 +5,7 @@ import org.bukkit.map.*;
 
 public class LagMapRenderer extends MapRenderer{
 	private int ticks;
-	private int targetTicks;
+	private Integer targetTicks;
 
 	public LagMapRenderer(){
 		this.ticks = 0;
