@@ -712,6 +712,11 @@ public class LagMeter extends JavaPlugin{
 				success = true;
 				this.sendLagMeter(sender);
 			}else if(command.getName().equalsIgnoreCase("lagmap")){
+				if(!this.lagmapsEnabled){
+					this.sendMessage(sender, Severity.WARNING, "LagMaps are not enabled in the LagMeter configuration, and thereby cannot be used!");
+					return true;
+				}
+
 				success = true;
 				if(sender instanceof Player){
 					if(this.maps.containsKey(sender.getName())){
