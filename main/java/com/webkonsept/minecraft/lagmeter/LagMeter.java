@@ -197,11 +197,11 @@ public class LagMeter extends JavaPlugin{
 		this.syncMemListeners.set(id, null);
 	}
 
-	protected List<LagListener> getAsyncLagListeners(){
+	private List<LagListener> getAsyncLagListeners(){
 		return this.asyncLagListeners;
 	}
 
-	protected List<MemoryListener> getAsyncMemoryListeners(){
+	private List<MemoryListener> getAsyncMemoryListeners(){
 		return this.asyncMemListeners;
 	}
 
@@ -397,11 +397,11 @@ public class LagMeter extends JavaPlugin{
 		return this.pingDomains.get(player);
 	}
 
-	protected List<LagListener> getSyncLagListeners(){
+	private List<LagListener> getSyncLagListeners(){
 		return this.syncLagListeners;
 	}
 
-	protected List<MemoryListener> getSyncMemoryListeners(){
+	private List<MemoryListener> getSyncMemoryListeners(){
 		return this.syncMemListeners;
 	}
 
@@ -428,7 +428,7 @@ public class LagMeter extends JavaPlugin{
 		return this.tpsNotificationThreshold;
 	}
 
-	protected void handleBaseCommand(final CommandSender sender, final String[] args){
+	private void handleBaseCommand(final CommandSender sender, final String[] args){
 		if(args[0].equalsIgnoreCase("reload")){
 			if(this.permit(sender, "lagmeter.command.lagmeter.reload") || this.permit(sender, "lagmeter.reload")){
 				this.updateConfiguration();
@@ -600,7 +600,7 @@ public class LagMeter extends JavaPlugin{
 		return this.newLineForLogStats;
 	}
 
-	protected void notifyAsyncLagListeners(){
+	private void notifyAsyncLagListeners(){
 		final HighLagEvent e = new HighLagEvent(this.getTPS());
 		for(final LagListener l : this.getAsyncLagListeners()){
 			if(l != null){
@@ -614,7 +614,7 @@ public class LagMeter extends JavaPlugin{
 		}
 	}
 
-	protected void notifyAsyncMemoryListeners(){
+	private void notifyAsyncMemoryListeners(){
 		final LowMemoryEvent e = new LowMemoryEvent(this.getMemory(), this.getTPS());
 		for(final MemoryListener m : this.getAsyncMemoryListeners()){
 			if(m != null){
@@ -628,17 +628,17 @@ public class LagMeter extends JavaPlugin{
 		}
 	}
 
-	protected void notifyLagListeners(){
+	void notifyLagListeners(){
 		this.notifyAsyncLagListeners();
 		this.notifySyncLagListeners();
 	}
 
-	protected void notifyMemoryListeners(){
+	void notifyMemoryListeners(){
 		this.notifyAsyncMemoryListeners();
 		this.notifySyncMemoryListeners();
 	}
 
-	protected void notifySyncLagListeners(){
+	private void notifySyncLagListeners(){
 		new BukkitRunnable(){
 			@Override
 			public void run(){
@@ -652,7 +652,7 @@ public class LagMeter extends JavaPlugin{
 		}.runTask(this);
 	}
 
-	protected void notifySyncMemoryListeners(){
+	private void notifySyncMemoryListeners(){
 		new BukkitRunnable(){
 			@Override
 			public void run(){
@@ -1286,11 +1286,11 @@ public class LagMeter extends JavaPlugin{
 		}
 	}
 
-	protected void sendMessage(final Player player, final Severity severity, final String message){
+	public void sendMessage(final Player player, final Severity severity, final String message){
 		this.sendMessage((CommandSender)player, severity, message);
 	}
 
-	protected void setTicksPerSecond(final float f){
+	void setTicksPerSecond(final float f){
 		this.ticksPerSecond = f;
 	}
 
