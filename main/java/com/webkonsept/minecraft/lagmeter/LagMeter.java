@@ -914,25 +914,25 @@ public class LagMeter extends JavaPlugin{
 		long time = 0L;
 		if(timeString.split("<>").length == 2){
 			timeString = timeString.split("<>")[1].toLowerCase();
-			String z = "";
+			StringBuilder z = new StringBuilder();
 			for(int i = 0; i < timeString.length(); i++){
 				final String c = timeString.substring(i, i + 1);
 				if(c.matches("[^wdhms]")){
-					z += c;
+					z.append(c);
 				}else{
 					try{
 						if(c.equalsIgnoreCase("w")){
-							time += 12096000L * Long.parseLong(z);
+							time += 12096000L * Long.parseLong(z.toString());
 						}else if(c.equalsIgnoreCase("d")){
-							time += 1728000L * Long.parseLong(z);
+							time += 1728000L * Long.parseLong(z.toString());
 						}else if(c.equalsIgnoreCase("h")){
-							time += 7200L * Long.parseLong(z);
+							time += 7200L * Long.parseLong(z.toString());
 						}else if(c.equalsIgnoreCase("m")){
-							time += 1200L * Long.parseLong(z);
+							time += 1200L * Long.parseLong(z.toString());
 						}else if(c.equalsIgnoreCase("s")){
-							time += 20L * Long.parseLong(z);
+							time += 20L * Long.parseLong(z.toString());
 						}
-						z = "";
+						z = new StringBuilder();
 					}catch(final NumberFormatException e){
 						throw new InvalidTimeFormatException("The time for the uptime command " + timeString.split("<>")[0] + " is invalid: the time string contains characters other than 0-9, w/d/h/m/s.");
 					}
