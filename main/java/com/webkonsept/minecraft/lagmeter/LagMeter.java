@@ -209,9 +209,10 @@ public class LagMeter extends JavaPlugin{
 
 	/**
 	 * This is the getter for the upper limit of length of the history of the
-	 * plugin's TPS averaging.
+	 * plugin's TPS averaging. This value is from the configuration, even if
+	 * averaging is disabled.
 	 *
-	 * @return The max bound for the history.
+	 * @return The max bound for the history. Not necessarily 0 if averaging is disabled.
 	 */
 	public int getAverageLength(){
 		return this.averageLength;
