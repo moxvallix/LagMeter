@@ -714,7 +714,7 @@ public class LagMeter extends JavaPlugin{
 
 	public void turnLagMapOn(Player sender) throws NoMapHeldException{
 		if(sender.getItemInHand().getType().equals(Material.MAP)){
-			MapView map = Bukkit.getMap(sender.getItemInHand().getDurability());
+			@SuppressWarnings("deprecation") MapView map = Bukkit.getMap(sender.getItemInHand().getDurability());
 			this.oldRenderers.put(sender.getName(), map.getRenderers());
 			this.maps.put(sender.getName(), map);
 			for(MapRenderer r : map.getRenderers())
@@ -906,8 +906,7 @@ public class LagMeter extends JavaPlugin{
 	 * @return Amount of ticks which corresponds to this string of time.
 	 *
 	 * @throws com.webkonsept.minecraft.lagmeter.exceptions.InvalidTimeFormatException
-	 *          If the time format given is invalid or the tick amount which
-	 *          results is less than 1
+	 *          If the time format given is invalid (contains time delimiters other than s, m, h, d or w).
 	 * @see com.webkonsept.minecraft.lagmeter.LagMeter#parseTimeMS(String)
 	 */
 	public long parseTime(String timeString) throws InvalidTimeFormatException{
@@ -939,10 +938,8 @@ public class LagMeter extends JavaPlugin{
 				}
 			}
 		}else{
-			time = -1L;
+			return 0L;
 		}
-		if(time < 1)
-			throw new InvalidTimeFormatException("The time \"" + timeString + "\" is invalid and couldn't be parsed.");
 		return time;
 	}
 
