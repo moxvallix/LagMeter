@@ -92,7 +92,7 @@ Notifications:
         Enabled: false
         #If the server is at or below this value for memory free, it will notify OPs and anyone with the permission node lagmeter.notify.lag
         #Default: 17
-        Threshold: 21
+        Threshold: 17
         #How often LagMeter should check on the TPS, in minutes.
         #Default: 5
         CheckInterval: 1
@@ -105,7 +105,7 @@ Notifications:
         Enabled: false
         #If the server is at or below this value for memory free, it will notify OPs and anyone with the permission node lagmeter.notify.mem
         #Default: 25
-        Threshold: 101
+        Threshold: 25
         #How often LagMeter should check on the free memory, in minutes.
         #Default: 10
         CheckInterval: 1
