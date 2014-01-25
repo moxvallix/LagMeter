@@ -22,7 +22,6 @@
 
     <!-- Build Settings -->
     <build>
-        <directory>P:/Minecraft Test Server/plugins/</directory>
         <finalName>LagMeter</finalName>
         <sourceDirectory>main/java</sourceDirectory>
         <resources>
