@@ -1260,7 +1260,7 @@ public class LagMeter extends JavaPlugin{
 	 *
 	 * @param sender The ConsoleSender object to send the memory meter to.
 	 */
-	public void sendMemMeter(final CommandSender sender){
+	public synchronized void sendMemMeter(final CommandSender sender){
 		final StringBuilder bar = new StringBuilder();
 		int looped = 0;
 		this.updateMemoryStats();
