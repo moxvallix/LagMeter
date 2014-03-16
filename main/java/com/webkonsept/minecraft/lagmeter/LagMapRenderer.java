@@ -28,12 +28,14 @@ public class LagMapRenderer extends MapRenderer{
 					for(int y = 0; y < 128; y++)
 						canvas.setPixel(x, y, MapPalette.TRANSPARENT);
 
+
 				canvas.drawText(0, 8, MinecraftFont.Font, String.format("TPS: %,.2f", LagMeter.getInstance().getTPS()));
 
 				d = LagMeter.getInstance().getMemory();
 				canvas.drawText(0, 16, MinecraftFont.Font, String.format("Memory used: %,.2f MB", d[0]));
-				canvas.drawText(0, 24, MinecraftFont.Font, String.format("Memory free: %,.2f MB", d[1]));
-				canvas.drawText(0, 32, MinecraftFont.Font, String.format("%% of memory used: %,.2f%%", d[3]));
+				canvas.drawText(0, 24, MinecraftFont.Font, String.format("Max memory: %,.2f MB", d[1]));
+				canvas.drawText(0, 32, MinecraftFont.Font, String.format("Memory free: %,.2f MB", d[2]));
+				canvas.drawText(0, 40, MinecraftFont.Font, String.format("%% of memory free: %,.2f%%", d[3]));
 			}catch(NoAvailableTPSException e){
 				canvas.drawText(0, 8, MinecraftFont.Font, "Waiting for polling");
 				canvas.drawText(0, 16, MinecraftFont.Font, "delay to expire...");
