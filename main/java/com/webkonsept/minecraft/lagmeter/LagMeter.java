@@ -1157,11 +1157,11 @@ public class LagMeter extends JavaPlugin{
 			for(final String s : this.uptimeCommands){
 				try{
 					long time;
-					time = TimeUtils.parseTime(s);
+					time = TimeUtils.parseTime(s.split("<>")[1]);
 					if(this.repeatingUptimeCommands){
-						Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(this, new UptimeCommand(s.split(";")[0]), time, time);
+						Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(this, new UptimeCommand(s.split("<>")[0]), time, time);
 					}else{
-						Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this, new UptimeCommand(s.split(";")[0]), time);
+						Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this, new UptimeCommand(s.split("<>>")[0]), time);
 					}
 				}catch(final InvalidTimeFormatException e){
 					this.sendMessage(Bukkit.getConsoleSender(), Severity.SEVERE, e.getMessage());

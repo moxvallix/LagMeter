@@ -48,7 +48,7 @@ public class TimeUtils{
 					}
 					z = new StringBuilder();
 				}catch(final NumberFormatException e){
-					throw new InvalidTimeFormatException("The time for the uptime command " + timeString.split("<>")[0] + " is invalid: the time string contains characters other than 0-9, w/d/h/m/s. Top-level exception: " + e.getMessage());
+					throw new InvalidTimeFormatException("The time for the time string " + timeString + " is invalid: the time string contains characters other than 0-9, w/d/h/m/s. Top-level exception: " + e.getMessage());
 				}
 			}
 		}
