@@ -28,6 +28,7 @@
     <build>
         <finalName>LagMeter</finalName>
         <sourceDirectory>main/java</sourceDirectory>
+        <testSourceDirectory>test/java</testSourceDirectory>
         <resources>
             <!-- settings.yml -->
             <resource>
