@@ -13,6 +13,7 @@ import com.webkonsept.minecraft.lagmeter.exceptions.NoMapHeldException;
 import com.webkonsept.minecraft.lagmeter.listeners.LagListener;
 import com.webkonsept.minecraft.lagmeter.listeners.MemoryListener;
 import com.webkonsept.minecraft.lagmeter.util.SyncSendMessage;
+import com.webkonsept.minecraft.lagmeter.util.TimeUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -28,7 +29,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import javax.swing.*;
 import java.io.*;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -295,7 +295,7 @@ public class LagMeter extends JavaPlugin{
 					}
 					return args[0];
 				}catch(final NumberFormatException e){
-					this.sendMessage(sender, Severity.WARNING, "You entered an invalid amount of hops; therefore, 1 will be used instead.");
+					this.sendMessage(sender, Severity.WARNING, "You entered an invalid amount of hops; therefore, 1 will be used instead. "+e.getMessage());
 					return "1";
 				}
 			}else{
@@ -896,6 +896,7 @@ public class LagMeter extends JavaPlugin{
 	}
 
 	/**
+	 * @deprecated Use {@link com.webkonsept.minecraft.lagmeter.util.TimeUtils#parseTime(String)} instead.
 	 * Parses a string to get the amount of ticks equal to what the string
 	 * passed represents.
 	 *
@@ -913,6 +914,7 @@ public class LagMeter extends JavaPlugin{
 	 * @throws com.webkonsept.minecraft.lagmeter.exceptions.InvalidTimeFormatException If the time format given is invalid (contains time delimiters other than s, m, h, d or w).
 	 * @see com.webkonsept.minecraft.lagmeter.LagMeter#parseTimeMS(String)
 	 */
+	@Deprecated
 	public long parseTime(String timeString) throws InvalidTimeFormatException{
 		long time = 0L;
 		if(timeString.split("<>").length == 2){
@@ -948,6 +950,7 @@ public class LagMeter extends JavaPlugin{
 	}
 
 	/**
+	 * @deprecated Use {@link com.webkonsept.minecraft.lagmeter.util.TimeUtils#parseTimeMS(String)} instead.
 	 * Parses the timeString given and returns milliseconds instead of ticks.
 	 * Works in the same fashion as parseTime(String).
 	 *
@@ -967,6 +970,7 @@ public class LagMeter extends JavaPlugin{
 	 *                                                                                 characters) or the result is less than 1.
 	 * @see com.webkonsept.minecraft.lagmeter.LagMeter#parseTime(String)
 	 */
+	@Deprecated
 	public long parseTimeMS(String timeString) throws InvalidTimeFormatException{
 		return (this.parseTime(timeString) * 50L);
 	}
@@ -1153,7 +1157,7 @@ public class LagMeter extends JavaPlugin{
 			for(final String s : this.uptimeCommands){
 				try{
 					long time;
-					time = this.parseTime(s);
+					time = TimeUtils.parseTime(s);
 					if(this.repeatingUptimeCommands){
 						Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(this, new UptimeCommand(s.split(";")[0]), time, time);
 					}else{
