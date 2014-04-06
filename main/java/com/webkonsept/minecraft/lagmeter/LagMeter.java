@@ -929,7 +929,7 @@ public class LagMeter extends JavaPlugin{
 						}else if(c.equalsIgnoreCase("d")){
 							time += 1728000L * Long.parseLong(z.toString());
 						}else if(c.equalsIgnoreCase("h")){
-							time += 7200L * Long.parseLong(z.toString());
+							time += 72000L * Long.parseLong(z.toString());
 						}else if(c.equalsIgnoreCase("m")){
 							time += 1200L * Long.parseLong(z.toString());
 						}else if(c.equalsIgnoreCase("s")){
