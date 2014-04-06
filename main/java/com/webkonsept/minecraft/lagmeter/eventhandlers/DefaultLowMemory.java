@@ -25,4 +25,9 @@ public class DefaultLowMemory implements MemoryListener{
 	public DefaultLowMemory(final LagMeter plugin){
 		this.plugin = plugin;
 	}
+
+	@Override
+	public String toString(){
+		return super.toString();
+	}
 }

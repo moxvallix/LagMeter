@@ -43,12 +43,17 @@ public class LagMeterPoller implements Runnable{
 		this.logInterval = interval;
 	}
 
-	protected LagMeterPoller(final LagMeter instance){
-		this.plugin = instance;
+	LagMeterPoller(final LagMeter instance){
+		this(instance, Integer.MAX_VALUE);
 	}
 
 	protected LagMeterPoller(final LagMeter instance, final int logInterval){
+		super();
 		this.logInterval = logInterval;
 		this.plugin = instance;
+	}
+
+	public String toString(){
+		return "LagMeterPoller@"+hashCode()+"{\n\tlastPoll = "+this.lastPoll+"\n\tpolls = "+this.polls+"\n\tlogInterval = "+this.logInterval+"\n}";
 	}
 }

@@ -40,4 +40,9 @@ public class LowMemoryEvent{
 		this.percentageFree = values[3];
 		this.currentTPS = tps;
 	}
+
+	@Override
+	public String toString(){
+		return "LowMemoryEvent@"+hashCode()+"{\n\tusedMemory = "+this.usedMemory+"\n\tmaxMemory = "+this.maxMemory+"\n\tfreeMemory = "+this.freeMemory+"\n\tpercentageFree = "+this.percentageFree+"\n\tcurrentTPS = "+this.currentTPS+"\n}";
+	}
 }

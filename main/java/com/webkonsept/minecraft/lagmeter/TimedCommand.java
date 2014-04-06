@@ -30,7 +30,12 @@ public class TimedCommand implements Runnable{
 	}
 
 	public TimedCommand(String command, LagMeter plugin){
+		super();
 		this.command = command;
 		this.plugin = plugin;
+	}
+
+	public String toString(){
+		return "TimedCommand@"+hashCode()+"{\n\t"+command+"\n}";
 	}
 }

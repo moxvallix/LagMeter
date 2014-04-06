@@ -9,11 +9,11 @@ public class LagMapRenderer extends MapRenderer{
 	private Integer targetTicks;
 
 	public LagMapRenderer(){
-		this.ticks = 0;
-		this.targetTicks = 100;
+		this(100);
 	}
 
 	public LagMapRenderer(int seconds){
+		super();
 		this.ticks = 0;
 		this.targetTicks = seconds * 20;
 	}
@@ -28,7 +28,6 @@ public class LagMapRenderer extends MapRenderer{
 					for(int y = 0; y < 128; y++)
 						canvas.setPixel(x, y, MapPalette.TRANSPARENT);
 
-
 				canvas.drawText(0, 8, MinecraftFont.Font, String.format("TPS: %,.2f", LagMeter.getInstance().getTPS()));
 
 				d = LagMeter.getInstance().getMemory();
@@ -42,5 +41,10 @@ public class LagMapRenderer extends MapRenderer{
 			}finally{
 				p.sendMap(map);
 			}
+	}
+
+	@Override
+	public String toString(){
+		return "LagMapRenderer@"+hashCode()+"{\n\tticks = "+this.ticks+"\n\ttargetTicks = "+this.targetTicks+"\n}";
 	}
 }

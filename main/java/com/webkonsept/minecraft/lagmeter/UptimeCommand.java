@@ -21,4 +21,8 @@ public final class UptimeCommand implements Runnable{
 	public UptimeCommand(final String command){
 		this.command = command;
 	}
+
+	public String toString(){
+		return "UptimeCommand@"+hashCode()+"{\n\tcommand = "+this.command+"\n}";
+	}
 }

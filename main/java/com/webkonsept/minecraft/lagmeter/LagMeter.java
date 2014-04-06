@@ -28,6 +28,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import javax.swing.*;
 import java.io.*;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -36,24 +37,24 @@ public class LagMeter extends JavaPlugin{
 	private LagMeterLogger logger;
 	private LagMeterPoller poller;
 	private LagMeterStack history;
-	private float ticksPerSecond = 20;
+	private float ticksPerSecond;
 	private long uptime;
-	private int averageLength = 10;
+	private int averageLength;
 	private double memUsed, memMax, memFree, percentageFree;
 	private LagWatcher lagWatcher;
 	private MemoryWatcher memWatcher;
 	private List<LagListener> syncLagListeners, asyncLagListeners;
 	private List<MemoryListener> syncMemListeners, asyncMemListeners;
 	// Configurable Values - mostly booleans
-	private int interval = 40;
-	private int logInterval = 150;
+	private int interval;
+	private int logInterval;
 	private int lagNotifyInterval;
 	private int memNotifyInterval;
 	private int pollingDelay;
 	private float tpsNotificationThreshold, memoryNotificationThreshold;
-	private boolean useAverage = true;
-	private boolean enableLogging = true;
-	private boolean useLogsFolder = true;
+	private boolean useAverage;
+	private boolean enableLogging;
+	private boolean useLogsFolder;
 	private boolean AutomaticLagNotificationsEnabled;
 	private boolean AutomaticMemoryNotificationsEnabled;
 	private boolean displayEntities;
@@ -156,6 +157,7 @@ public class LagMeter extends JavaPlugin{
 
 	@Override
 	public void reloadConfig(){
+		super.reloadConfig();
 		this.updateConfiguration();
 	}
 
@@ -222,7 +224,7 @@ public class LagMeter extends JavaPlugin{
 	 * This is the getter for the sleep interval of the TPS watcher's thread.
 	 *
 	 * @return How often the plugin checks the server's TPS to notify its
-	 *         observers.
+	 * observers.
 	 */
 	public long getCheckLagInterval(){
 		return this.lagNotifyInterval;
@@ -232,7 +234,7 @@ public class LagMeter extends JavaPlugin{
 	 * This is the getter for the sleep interval of the memory watcher's thread.
 	 *
 	 * @return How often the plugin checks the server's memory to notify its
-	 *         observers.
+	 * observers.
 	 */
 	public long getCheckMemoryInterval(){
 		return this.memNotifyInterval;
@@ -244,13 +246,13 @@ public class LagMeter extends JavaPlugin{
 	 * reloaded</b>.
 	 *
 	 * @return An array of <b>int</b>s, i, where:<br />
-	 *         <ul>
-	 *         <b>i[0]</b> is the seconds,<br />
-	 *         <b>i[1]</b> is the minutes,<br />
-	 *         <b>i[2]</b> is the hours,<br />
-	 *         <b>i[3]</b> is the days,
-	 *         </ul>
-	 *         that the server has been online without reloading.
+	 * <ul>
+	 * <b>i[0]</b> is the seconds,<br />
+	 * <b>i[1]</b> is the minutes,<br />
+	 * <b>i[2]</b> is the hours,<br />
+	 * <b>i[3]</b> is the days,
+	 * </ul>
+	 * that the server has been online without reloading.
 	 */
 	public int[] getCurrentServerUptime(){
 		final int[] i = new int[4];
@@ -269,7 +271,7 @@ public class LagMeter extends JavaPlugin{
 	 * Gets the LagMeterStack (the history) of the server TPS.
 	 *
 	 * @return The LagMeterStack for however long the average upper bound
-	 *         allows.
+	 * allows.
 	 */
 	public LagMeterStack getHistory(){
 		return this.history;
@@ -337,13 +339,13 @@ public class LagMeter extends JavaPlugin{
 	 * percentage of memory free. Returned in a single array of doubles.
 	 *
 	 * @return memory[], which is an array of doubles, containing four values,
-	 *         where: <br />
-	 *         <b><i>memory[0]</i></b> is the currently used memory;<br />
-	 *         <b><i>memory[1]</i></b> is the current maximum memory;<br />
-	 *         <b><i>memory[2]</i></b> is the current free memory;<br />
-	 *         <b><i>memory[3]</i></b> is the percentage memory free (note this
-	 *         may be an irrational number, so you might want to truncate it if
-	 *         you use this).
+	 * where: <br />
+	 * <b><i>memory[0]</i></b> is the currently used memory;<br />
+	 * <b><i>memory[1]</i></b> is the current maximum memory;<br />
+	 * <b><i>memory[2]</i></b> is the current free memory;<br />
+	 * <b><i>memory[3]</i></b> is the percentage memory free (note this
+	 * may be an irrational number, so you might want to truncate it if
+	 * you use this).
 	 *
 	 * @since 1.11.0-SNAPSHOT
 	 */
@@ -559,8 +561,8 @@ public class LagMeter extends JavaPlugin{
 	 * a total.
 	 *
 	 * @return Whether or not the plugin will log chunks per-world, or only a
-	 *         total. Will return false if the setting is true, but the logging
-	 *         chunks option is off.
+	 * total. Will return false if the setting is true, but the logging
+	 * chunks option is off.
 	 */
 	public boolean isLoggingTotalChunksOnly(){
 		return this.isLoggingChunks() && this.logTotalChunksOnly;
@@ -571,8 +573,8 @@ public class LagMeter extends JavaPlugin{
 	 * with a total.
 	 *
 	 * @return Whether or not the plugin will log entities per-world, or only a
-	 *         total. Will return false if the setting is true, but the logging
-	 *         entities option is off.
+	 * total. Will return false if the setting is true, but the logging
+	 * entities option is off.
 	 */
 	public boolean isLoggingTotalEntitiesOnly(){
 		return this.isLoggingEntities() && this.logTotalEntitiesOnly;
@@ -592,7 +594,7 @@ public class LagMeter extends JavaPlugin{
 	 * a folder, with today as its date.
 	 *
 	 * @return Whether or not the log will be separated from others, based on
-	 *         the date it was created.
+	 * the date it was created.
 	 */
 	public boolean isUsingLogFolder(){
 		return this.useLogsFolder;
@@ -613,7 +615,7 @@ public class LagMeter extends JavaPlugin{
 	 * extra empty line between logging entities and chunks, etc.
 	 *
 	 * @return If the plugin inserts an extra line feed between logging chunks,
-	 *         etc..
+	 * etc..
 	 */
 	public boolean isUsingNewLineForLogStats(){
 		return this.newLineForLogStats;
@@ -713,7 +715,7 @@ public class LagMeter extends JavaPlugin{
 	}
 
 	public void turnLagMapOn(Player sender) throws NoMapHeldException{
-		if(sender.getItemInHand().getType().equals(Material.MAP)){
+		if(sender.getItemInHand().getType() == Material.MAP){
 			@SuppressWarnings("deprecation") MapView map = Bukkit.getMap(sender.getItemInHand().getDurability());
 			this.oldRenderers.put(sender.getName(), map.getRenderers());
 			this.maps.put(sender.getName(), map);
@@ -730,6 +732,7 @@ public class LagMeter extends JavaPlugin{
 			try{
 				this.turnLagMapOff(Bukkit.getPlayer(player));
 			}catch(NoActiveLagMapException e){
+				//hopefully shouldn't execute, but in case
 				if(this.oldRenderers.containsKey(player))
 					this.oldRenderers.remove(player);
 				this.maps.remove(player);
@@ -830,6 +833,7 @@ public class LagMeter extends JavaPlugin{
 		}
 		Bukkit.getServer().getScheduler().cancelTasks(this);
 		this.sendConsoleMessage(Severity.INFO, "Disabled!");
+		super.onDisable();
 	}
 
 	@Override
@@ -888,6 +892,7 @@ public class LagMeter extends JavaPlugin{
 		this.maps = new HashMap<String, MapView>();
 		this.oldRenderers = new HashMap<String, List<MapRenderer>>();
 		this.renderer = new LagMapRenderer(this.mapRenderInterval);
+		super.onEnable();
 	}
 
 	/**
@@ -905,8 +910,7 @@ public class LagMeter extends JavaPlugin{
 	 *
 	 * @return Amount of ticks which corresponds to this string of time.
 	 *
-	 * @throws com.webkonsept.minecraft.lagmeter.exceptions.InvalidTimeFormatException
-	 *          If the time format given is invalid (contains time delimiters other than s, m, h, d or w).
+	 * @throws com.webkonsept.minecraft.lagmeter.exceptions.InvalidTimeFormatException If the time format given is invalid (contains time delimiters other than s, m, h, d or w).
 	 * @see com.webkonsept.minecraft.lagmeter.LagMeter#parseTimeMS(String)
 	 */
 	public long parseTime(String timeString) throws InvalidTimeFormatException{
@@ -933,7 +937,7 @@ public class LagMeter extends JavaPlugin{
 						}
 						z = new StringBuilder();
 					}catch(final NumberFormatException e){
-						throw new InvalidTimeFormatException("The time for the uptime command " + timeString.split("<>")[0] + " is invalid: the time string contains characters other than 0-9, w/d/h/m/s.");
+						throw new InvalidTimeFormatException("The time for the uptime command " + timeString.split("<>")[0] + " is invalid: the time string contains characters other than 0-9, w/d/h/m/s. Top-level exception: "+e.getMessage());
 					}
 				}
 			}
@@ -957,11 +961,10 @@ public class LagMeter extends JavaPlugin{
 	 *                   </ul>
 	 *
 	 * @return The amount of milliseconds that would equate to the time string
-	 *         given.
+	 * given.
 	 *
-	 * @throws com.webkonsept.minecraft.lagmeter.exceptions.InvalidTimeFormatException
-	 *          If the timeString is in an invalid format (i.e. invalid
-	 *          characters) or the result is less than 1.
+	 * @throws com.webkonsept.minecraft.lagmeter.exceptions.InvalidTimeFormatException If the timeString is in an invalid format (i.e. invalid
+	 *                                                                                 characters) or the result is less than 1.
 	 * @see com.webkonsept.minecraft.lagmeter.LagMeter#parseTime(String)
 	 */
 	public long parseTimeMS(String timeString) throws InvalidTimeFormatException{
@@ -999,14 +1002,14 @@ public class LagMeter extends JavaPlugin{
 		this.getServer().getScheduler().runTaskAsynchronously(this, new Runnable(){
 			@Override
 			public void run(){
-				final BufferedReader result;
-				final BufferedReader errorStream;
-				Process p;
-				String s;
-				String output = null;
-				final String windowsPingSummary = "Average = ";
-				final String unixPingSummary = "rtt min/avg/max/mdev = ";
 				try{
+					BufferedReader result;
+					BufferedReader errorStream;
+					Process p;
+					String s;
+					String output = null;
+					final String windowsPingSummary = "Average = ";
+					final String unixPingSummary = "rtt min/avg/max/mdev = ";
 					p = new ProcessBuilder(processCmd).start();
 					result = new BufferedReader(new InputStreamReader(p.getInputStream()));
 					errorStream = new BufferedReader(new InputStreamReader(p.getErrorStream()));
@@ -1026,7 +1029,7 @@ public class LagMeter extends JavaPlugin{
 					if(output != null){
 						new SyncSendMessage(sender, Severity.INFO, "Average response time for the server for " + hops + " ping hop(s) to " + domain + ": " + output).runTask(LagMeter.this);
 					}else{
-						new SyncSendMessage(sender, Severity.INFO, "Error running ping command").runTask(LagMeter.this);
+						new SyncSendMessage(sender, Severity.INFO, "Error running ping command.").runTask(LagMeter.this);
 					}
 					while((s = errorStream.readLine()) != null){
 						new SyncSendMessage(sender, Severity.WARNING, s).runTask(LagMeter.this);
@@ -1035,7 +1038,7 @@ public class LagMeter extends JavaPlugin{
 					result.close();
 					p.destroy();
 				}catch(final IOException e){
-					new SyncSendMessage(sender, Severity.INFO, "Error running ping command").runTask(LagMeter.this);
+					new SyncSendMessage(sender, Severity.INFO, "Error running ping command.").runTask(LagMeter.this);
 					e.printStackTrace();
 				}
 			}
@@ -1053,7 +1056,7 @@ public class LagMeter extends JavaPlugin{
 	 *                 notified of the event when (if) it happens.
 	 *
 	 * @return The ID of the listener in LagMeter's allocated memory. This is
-	 *         used to cancel the registration of the listener, etc.
+	 * used to cancel the registration of the listener, etc.
 	 */
 	public int registerAsyncLagListener(final LagListener listener){
 		if(!this.asyncLagListeners.contains(listener)){
@@ -1074,7 +1077,7 @@ public class LagMeter extends JavaPlugin{
 	 *                 notified of the event when (if) it happens.
 	 *
 	 * @return The ID of the listener in LagMeter's allocated memory. This is
-	 *         used to cancel the registration of the listener, etc.
+	 * used to cancel the registration of the listener, etc.
 	 */
 	public int registerAsyncMemoryListener(final MemoryListener listener){
 		if(!this.asyncMemListeners.contains(listener)){
@@ -1095,7 +1098,7 @@ public class LagMeter extends JavaPlugin{
 	 *                 notified of the event when (if) it happens.
 	 *
 	 * @return The ID of the listener in LagMeter's allocated memory. This is
-	 *         used to cancel the registration of the listener, etc.
+	 * used to cancel the registration of the listener, etc.
 	 */
 	public int registerSyncLagListener(final LagListener listener){
 		if(!this.syncLagListeners.contains(listener)){
@@ -1117,7 +1120,7 @@ public class LagMeter extends JavaPlugin{
 	 *                 notified of the event when (if) it happens.
 	 *
 	 * @return The ID of the listener in LagMeter's allocated memory. This is
-	 *         used to cancel the registration of the listener, etc.
+	 * used to cancel the registration of the listener, etc.
 	 */
 	public int registerSyncMemoryListener(final MemoryListener listener){
 		if(!this.syncMemListeners.contains(listener)){
@@ -1148,8 +1151,8 @@ public class LagMeter extends JavaPlugin{
 		}
 		if(this.uptimeCommands != null){
 			for(final String s : this.uptimeCommands){
-				long time;
 				try{
+					long time;
 					time = this.parseTime(s);
 					if(this.repeatingUptimeCommands){
 						Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(this, new UptimeCommand(s.split(";")[0]), time, time);
@@ -1291,15 +1294,15 @@ public class LagMeter extends JavaPlugin{
 	 */
 	public void sendMessage(final CommandSender sender, final Severity severity, final String message){
 		switch(severity){
-			default:
-			case INFO:
-				sender.sendMessage(ChatColor.GOLD + "[LagMeter] " + ChatColor.GREEN + message);
-				break;
 			case WARNING:
 				sender.sendMessage(ChatColor.GOLD + "[LagMeter] " + ChatColor.RED + message);
 				break;
 			case SEVERE:
 				sender.sendMessage(ChatColor.GOLD + "[LagMeter] " + ChatColor.DARK_RED + message);
+				break;
+			case INFO:
+			default:
+				sender.sendMessage(ChatColor.GOLD + "[LagMeter] " + ChatColor.GREEN + message);
 				break;
 		}
 	}
@@ -1364,6 +1367,49 @@ public class LagMeter extends JavaPlugin{
 	 * stuff.
 	 */
 	public LagMeter(){
+		super();
+		this.logger = null;
+		this.poller = null;
+		this.history = null;
+		this.uptime = Integer.MAX_VALUE;
+		this.averageLength = 10;
+		this.ticksPerSecond = 20;
+		this.memUsed = this.memMax = this.memFree = this.percentageFree = 0D;
+		this.lagWatcher = null;
+		this.memWatcher = null;
+		this.syncLagListeners = this.asyncLagListeners = null;
+		this.syncMemListeners = this.asyncMemListeners = null;
+		this.lagNotifyInterval = Integer.MAX_VALUE;
+		this.memNotifyInterval = Integer.MAX_VALUE;
+		this.pollingDelay = 300;
+		this.interval = 40;
+		this.logInterval = 150;
+		this.tpsNotificationThreshold = this.memoryNotificationThreshold = 0F;
+		this.useAverage = this.enableLogging = this.useLogsFolder = true;
+		this.AutomaticLagNotificationsEnabled =
+				this.AutomaticMemoryNotificationsEnabled =
+				this.displayEntities = this.playerLoggingEnabled =
+				this.displayChunksOnLoad = this.displayChunks = this.logChunks =
+				this.logTotalChunksOnly = this.logEntities = this.logTotalEntitiesOnly =
+				this.newBlockPerLog = this.displayEntitiesOnLoad =
+				this.newLineForLogStats = this.repeatingUptimeCommands =
+				this.lagmapsEnabled = false;
+		this.uptimeCommands = null;
+		this.highLagCommand = null;
+		this.lowMemCommand = null;
+		this.pingDomains = null;
+		this.maps = null;
+		this.oldRenderers = null;
+		this.renderer = null;
+		this.mapRenderInterval = null;
+	}
+
+	static{
+		p = null;
+	}
+
+	public String toString(){
+		return super.toString();
 	}
 
 	/**

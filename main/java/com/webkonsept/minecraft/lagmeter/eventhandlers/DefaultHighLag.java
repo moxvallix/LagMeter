@@ -25,4 +25,9 @@ public class DefaultHighLag implements LagListener{
 	public DefaultHighLag(final LagMeter plugin){
 		this.plugin = plugin;
 	}
+
+	@Override
+	public String toString(){
+		return super.toString();
+	}
 }

@@ -11,4 +11,9 @@ public class PlayerJoinListener implements Listener{
 	public void onPlayerQuitEvent(PlayerLoginEvent evt){
 		LagMeter.getInstance().addPlayerIP(evt.getPlayer().getName(), evt.getAddress().getHostAddress());
 	}
+
+	@Override
+	public String toString(){
+		return super.toString();
+	}
 }

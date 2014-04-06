@@ -34,7 +34,12 @@ public final class LagWatcher implements Runnable{
 	}
 
 	public LagWatcher(final LagMeter plugin){
+		super();
 		this.plugin = plugin;
 		this.stop = false;
+	}
+
+	public String toString(){
+		return "LagWatcher@"+hashCode()+"{\n\tstopped = "+this.stop+"\n}";
 	}
 }

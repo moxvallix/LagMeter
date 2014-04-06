@@ -16,4 +16,9 @@ public class HighLagEvent{
 	public HighLagEvent(final double tps){
 		this.TPS = tps;
 	}
+
+	@Override
+	public String toString(){
+		return "HighLagEvent@"+hashCode()+"{\n\tTPS = "+this.TPS+"\n}";
+	}
 }

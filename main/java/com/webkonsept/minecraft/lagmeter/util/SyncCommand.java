@@ -12,6 +12,12 @@ public class SyncCommand extends BukkitRunnable{
 	}
 
 	public SyncCommand(String command){
+		super();
 		this.command = command;
+	}
+
+	@Override
+	public String toString(){
+		return "SyncCommand@"+hashCode()+"{\n\tcommand = "+this.command+"\n}";
 	}
 }

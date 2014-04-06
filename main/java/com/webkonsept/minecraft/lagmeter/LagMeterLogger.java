@@ -14,7 +14,7 @@ public class LagMeterLogger{
 	private boolean logMemory = true;
 	private boolean logTPS = true;
 	private boolean enabled = false;
-	private String timeFormat = "MM-dd-yyyy HH:mm:ss";
+	private String timeFormat;
 	private File logfile;
 	private PrintWriter log;
 
@@ -194,13 +194,21 @@ public class LagMeterLogger{
 	}
 
 	protected LagMeterLogger(final LagMeter instance){
-		this.plugin = instance;
+		this(instance, false);
 	}
 
 	protected LagMeterLogger(final LagMeter instance, final boolean enable){
+		super();
 		this.plugin = instance;
-		if(enable){
+		this.timeFormat = "MM-dd-yyyy HH:mm:ss";
+		this.logfile = null;
+		this.log = null;
+
+		if(enable)
 			this.enable();
-		}
+	}
+
+	public String toString(){
+		return "LagMeterLogger@"+hashCode()+"{\n\tlogMemory = "+this.logMemory+"\n\tlogTPS = "+this.logTPS+"\n\tenabled = "+this.enabled+"\n\ttimeFormat = "+this.timeFormat+"logfile = "+this.logfile.getAbsolutePath()+"\n}";
 	}
 }

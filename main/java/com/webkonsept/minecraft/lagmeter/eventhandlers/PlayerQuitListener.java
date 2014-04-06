@@ -17,4 +17,9 @@ public class PlayerQuitListener implements Listener{
 			//do nothing
 		}
 	}
+
+	@Override
+	public String toString(){
+		return super.toString();
+	}
 }

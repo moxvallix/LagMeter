@@ -24,7 +24,12 @@ public final class MemoryWatcher implements Runnable{
 	}
 
 	public MemoryWatcher(final LagMeter plugin){
+		super();
 		this.plugin = plugin;
 		this.stop = false;
+	}
+
+	public String toString(){
+		return "MemoryWatcher@"+hashCode()+"{\n\tstopped = "+this.stop+"\n}";
 	}
 }

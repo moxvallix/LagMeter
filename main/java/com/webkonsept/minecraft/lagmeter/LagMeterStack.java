@@ -1,62 +1,65 @@
 package com.webkonsept.minecraft.lagmeter;
 
+import java.io.Serializable;
 import java.util.LinkedList;
 
-public class LagMeterStack{
+public class LagMeterStack extends LinkedList<Double> implements Serializable{
+	private static final long serialVersionUID = -1386094521320L;
 	private int maxSize = 0;
-	private final LinkedList<Double> stack = new LinkedList<Double>();
 
-	public void add(final Double item){
+	@Override
+	public boolean add(final Double item){
 		if((item != null) && (item <= 20) && (item >= 0)){
-			this.stack.add(item);
-			if(this.stack.size() > this.maxSize){
-				this.stack.poll();
+			super.add(item);
+			if(super.size() > this.maxSize){
+				super.poll();
 			}
+			return true;
 		}
-	}
-
-	public void clear(){
-		this.stack.clear();
+		return false;
 	}
 
 	public double getAverage(){
-		float total = 0f;
-		if(this.stack.size() == 0){
-			return -1F;
+		double total = 0D;
+		if(super.size() == 0){
+			return -1D;
 		}
-		for(final Double f : this.stack){
+		for(Double f : this){
 			if(f != null){
 				total += f;
 			}
 		}
-		if(total != 0){
-			return total / this.stack.size();
-		}else{
-			return 0;
-		}
+		return total / super.size();
 	}
 
 	public int getMaxSize(){
 		return this.maxSize;
 	}
 
-	public void remove(final int i){
-		this.stack.remove(i);
+	public boolean remove(final Double i){
+		return super.remove(i);
 	}
 
 	public void setMaxSize(final int maxSize){
 		this.maxSize = maxSize;
 	}
 
-	public int size(){
-		return this.stack.size();
-	}
-
 	LagMeterStack(){
-		this.maxSize = 10;
+		this(10);
 	}
 
 	LagMeterStack(final int maxSize){
+		super();
 		this.maxSize = maxSize;
+	}
+
+	public String toString(){
+		StringBuilder s = new StringBuilder("[ ");
+		if(super.size() != 0)
+			for(Double d : this)
+				s.append(String.format("%.2f, ", d));
+		else
+			s = new StringBuilder("[ ]");
+		return "LagMeterStack@"+hashCode()+"{\n\tdata = "+(super.size() != 0 ? s.toString().substring(0, s.length() - 2) + " ]" : s.toString())+"\n\tmaxSize = "+this.maxSize+"\n}";
 	}
 }
