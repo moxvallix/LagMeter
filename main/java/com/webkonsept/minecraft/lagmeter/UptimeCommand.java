@@ -11,8 +11,11 @@ public final class UptimeCommand implements Runnable{
 
 	@Override
 	public void run(){
-		for(String s : this.command.split(";"))
+		for(String s : this.command.split(";")){
+			if(s.contains("<>"))
+				s = s.split("<>")[0];
 			Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), s);
+		}
 	}
 
 	public void setCommand(final String newCommand){

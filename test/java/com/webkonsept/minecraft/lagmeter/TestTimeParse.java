@@ -39,4 +39,9 @@ public class TestTimeParse{
 	public void weeks() throws InvalidTimeFormatException{
 		assertEquals(3024000000L, TimeUtils.parseTimeMS("5w"));
 	}
+
+	@Test
+	public void everything() throws InvalidTimeFormatException{
+		assertEquals(3474305000L, TimeUtils.parseTimeMS("5w5d5h5m5s"));
+	}
 }
