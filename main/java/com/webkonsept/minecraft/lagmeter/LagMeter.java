@@ -789,7 +789,7 @@ public class LagMeter extends JavaPlugin{
 			}else if(command.getName().equalsIgnoreCase("lmp")){
 				this.sendLagMeter(sender);
 				this.sendMemMeter(sender);
-				this.sendMessage(sender, Severity.INFO, "Players online: " + ChatColor.GOLD + Bukkit.getServer().getOnlinePlayers().length);
+				this.sendMessage(sender, Severity.INFO, "Players online: " + ChatColor.GOLD + Bukkit.getServer().getOnlinePlayers().size());
 			}else if(command.getName().equalsIgnoreCase("lchunks")){
 				this.sendChunks(sender);
 			}else if(command.getName().equalsIgnoreCase("lentities") || command.getName().equalsIgnoreCase("lmobs")){
