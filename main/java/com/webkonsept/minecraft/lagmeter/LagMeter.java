@@ -715,14 +715,23 @@ public class LagMeter extends JavaPlugin{
 	}
 
 	public void turnLagMapOn(Player sender) throws NoMapHeldException{
-		if(sender.getItemInHand().getType() == Material.MAP){
-			@SuppressWarnings("deprecation") MapView map = Bukkit.getMap(sender.getItemInHand().getDurability());
+		boolean hasMap = false;
+		MapView map = null;
+
+		if(sender.getInventory().getItemInMainHand().getType() == Material.MAP) {
+			map = Bukkit.getMap(sender.getInventory().getItemInMainHand().getDurability());
+		}else if(sender.getInventory().getItemInOffHand().getType() == Material.MAP){
+			map = Bukkit.getMap(sender.getInventory().getItemInOffHand().getDurability());
+		}
+
+		if(hasMap){
 			this.oldRenderers.put(sender.getName(), map.getRenderers());
 			this.maps.put(sender.getName(), map);
 			for(MapRenderer r : map.getRenderers())
 				map.removeRenderer(r);
 			map.addRenderer(this.renderer);
-		}else{
+		}
+		if(!hasMap){
 			throw new NoMapHeldException("You don't have a map in your hand to turn into a LagMap!");
 		}
 	}
