@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <!-- Project Information -->
-    <version>1.18.0</version>
+    <version>1.18.0-SNAPSHOT</version>
     <groupId>com.webkonsept.minecraft.lagmeter</groupId>
     <artifactId>LagMeter</artifactId>
     <name>LagMeter</name>

@@ -10,7 +10,9 @@ public class TimedCommand implements Runnable{
 
 	public void process(String s){
 		try{
-			Thread.sleep(TimeUtils.parseTimeMS(s.split("<>")[1]));
+			String[] n = s.split("<>");
+			if(n.length > 1)
+				Thread.sleep(TimeUtils.parseTimeMS(n[1]));
 		}catch(final InvalidTimeFormatException e){
 			e.printStackTrace();
 		}catch(final InterruptedException e){
