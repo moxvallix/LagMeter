@@ -73,7 +73,7 @@ public class TimeUtils{
 	 *
 	 * @throws com.webkonsept.minecraft.lagmeter.exceptions.InvalidTimeFormatException If the timeString is in an invalid format (i.e. invalid
 	 *                                                                                 characters) or the result is less than 1.
-	 * @see com.webkonsept.minecraft.lagmeter.LagMeter#parseTime(String)
+	 * @see com.webkonsept.minecraft.lagmeter.util.TimeUtils#parseTime(String)
 	 */
 	public static long parseTimeMS(String timeString) throws InvalidTimeFormatException{
 		return (parseTime(timeString) * 50L);

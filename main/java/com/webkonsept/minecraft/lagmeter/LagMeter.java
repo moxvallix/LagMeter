@@ -904,60 +904,6 @@ public class LagMeter extends JavaPlugin{
 	}
 
 	/**
-	 * @deprecated Use {@link com.webkonsept.minecraft.lagmeter.util.TimeUtils#parseTime(String)} instead.
-	 * Parses a string to get the amount of ticks equal to what the string
-	 * passed represents.
-	 *
-	 * @param timeString The "human-readable" representation of time, where:
-	 *                   <ul>
-	 *                   <b>s</b> is seconds;<br>
-	 *                   <b>m</b> is minutes;<br>
-	 *                   <b>h</b> is hours;<br>
-	 *                   <b>d</b> is days; and finally,<br>
-	 *                   <b>w</b> is weeks.
-	 *                   </ul>
-	 *
-	 * @return Amount of ticks which corresponds to this string of time.
-	 *
-	 * @throws com.webkonsept.minecraft.lagmeter.exceptions.InvalidTimeFormatException If the time format given is invalid (contains time delimiters other than s, m, h, d or w).
-	 * @see com.webkonsept.minecraft.lagmeter.LagMeter#parseTimeMS(String)
-	 */
-	@Deprecated
-	public long parseTime(String timeString) throws InvalidTimeFormatException{
-		long time = 0L;
-		if(timeString.split("<>").length == 2){
-			timeString = timeString.split("<>")[1].toLowerCase();
-			StringBuilder z = new StringBuilder();
-			for(int i = 0; i < timeString.length(); i++){
-				final String c = timeString.substring(i, i + 1);
-				if(c.matches("[^wdhms]")){
-					z.append(c);
-				}else{
-					try{
-						if(c.equalsIgnoreCase("w")){
-							time += 12096000L * Long.parseLong(z.toString());
-						}else if(c.equalsIgnoreCase("d")){
-							time += 1728000L * Long.parseLong(z.toString());
-						}else if(c.equalsIgnoreCase("h")){
-							time += 72000L * Long.parseLong(z.toString());
-						}else if(c.equalsIgnoreCase("m")){
-							time += 1200L * Long.parseLong(z.toString());
-						}else if(c.equalsIgnoreCase("s")){
-							time += 20L * Long.parseLong(z.toString());
-						}
-						z = new StringBuilder();
-					}catch(final NumberFormatException e){
-						throw new InvalidTimeFormatException("The time for the uptime command " + timeString.split("<>")[0] + " is invalid: the time string contains characters other than 0-9, w/d/h/m/s. Top-level exception: "+e.getMessage());
-					}
-				}
-			}
-		}else{
-			return 0L;
-		}
-		return time;
-	}
-
-	/**
 	 * @deprecated Use {@link com.webkonsept.minecraft.lagmeter.util.TimeUtils#parseTimeMS(String)} instead.
 	 * Parses the timeString given and returns milliseconds instead of ticks.
 	 * Works in the same fashion as parseTime(String).
@@ -976,11 +922,11 @@ public class LagMeter extends JavaPlugin{
 	 *
 	 * @throws com.webkonsept.minecraft.lagmeter.exceptions.InvalidTimeFormatException If the timeString is in an invalid format (i.e. invalid
 	 *                                                                                 characters) or the result is less than 1.
-	 * @see com.webkonsept.minecraft.lagmeter.LagMeter#parseTime(String)
+	 * @see com.webkonsept.minecraft.lagmeter.util.TimeUtils#parseTime(String)
 	 */
 	@Deprecated
 	public long parseTimeMS(String timeString) throws InvalidTimeFormatException{
-		return (this.parseTime(timeString) * 50L);
+		return (TimeUtils.parseTime(timeString) * 50L);
 	}
 
 	public boolean permit(final CommandSender sender, final String perm){
