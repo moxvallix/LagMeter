@@ -27,6 +27,8 @@
     <!-- Build Settings -->
     <build>
         <finalName>LagMeter</finalName>
+        <defaultGoal>clean package install</defaultGoal>
+        <outputDirectory>output</outputDirectory>
         <sourceDirectory>main/java</sourceDirectory>
         <testSourceDirectory>test/java</testSourceDirectory>
         <resources>
@@ -64,7 +66,7 @@
     </build>
 
     <dependencies>
-        <!-- Bukkit -->
+        <!-- Spigot -->
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
