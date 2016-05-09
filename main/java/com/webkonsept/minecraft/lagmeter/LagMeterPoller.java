@@ -13,7 +13,7 @@ public class LagMeterPoller implements Runnable{
 		final long now = System.currentTimeMillis();
 		long timeSpent = (now - this.lastPoll) / 1000;
 		final String newLine = this.plugin.isUsingNewLineForLogStats() ? "\n" : "  ";
-		final String players = this.plugin.isPlayerLoggingEnabled() ? newLine + "Players online: " + this.plugin.getServer().getOnlinePlayers().length + "/" + this.plugin.getServer().getMaxPlayers() : "";
+		final String players = this.plugin.isPlayerLoggingEnabled() ? newLine + "Players online: " + this.plugin.getServer().getOnlinePlayers().size() + "/" + this.plugin.getServer().getMaxPlayers() : "";
 		if(timeSpent == 0){
 			timeSpent = 1;
 		}
