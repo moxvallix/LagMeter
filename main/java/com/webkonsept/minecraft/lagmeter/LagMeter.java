@@ -730,8 +730,7 @@ public class LagMeter extends JavaPlugin{
 			for(MapRenderer r : map.getRenderers())
 				map.removeRenderer(r);
 			map.addRenderer(this.renderer);
-		}
-		if(!hasMap){
+		}else{
 			throw new NoMapHeldException("You don't have a map in your hand to turn into a LagMap!");
 		}
 	}
