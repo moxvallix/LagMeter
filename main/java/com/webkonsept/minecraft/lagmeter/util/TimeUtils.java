@@ -24,9 +24,9 @@ public class TimeUtils{
 	 * @see com.webkonsept.minecraft.lagmeter.LagMeter#parseTimeMS(String)
 	 */
 	public static long parseTime(String timeString) throws InvalidTimeFormatException{
-		if(timeString.length() == 0){
+		if(timeString.length() == 0)
 			throw new InvalidTimeFormatException("Empty time string provided");
-		}
+
 		long time = 0L;
 		StringBuilder z = new StringBuilder();
 		for(int i = 0; i < timeString.length(); i++){

@@ -3,6 +3,8 @@ package com.webkonsept.minecraft.lagmeter.eventhandlers;
 import com.webkonsept.minecraft.lagmeter.LagMeter;
 import com.webkonsept.minecraft.lagmeter.TimedCommand;
 import com.webkonsept.minecraft.lagmeter.events.HighLagEvent;
+import com.webkonsept.minecraft.lagmeter.exceptions.EmptyCommandException;
+import com.webkonsept.minecraft.lagmeter.exceptions.InvalidTimeFormatException;
 import com.webkonsept.minecraft.lagmeter.listeners.LagListener;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -19,7 +21,11 @@ public class DefaultHighLag implements LagListener{
 			}
 		}
 		this.plugin.sendConsoleMessage(LagMeter.Severity.SEVERE, "The server's TPS has dropped below " + this.plugin.getTpsNotificationThreshold() + "! Executing command (if configured).");
-		new Thread(new TimedCommand(this.plugin.getLagCommand(), this.plugin)).start();
+		try {
+			new Thread(new TimedCommand(this.plugin.getLagCommand(), this.plugin)).start();
+		}catch(EmptyCommandException| InvalidTimeFormatException e){
+			this.plugin.sendConsoleMessage(LagMeter.Severity.SEVERE, "The command configured to run with low TPS/high lag events is improperly configured!");
+		}
 	}
 
 	public DefaultHighLag(final LagMeter plugin){
