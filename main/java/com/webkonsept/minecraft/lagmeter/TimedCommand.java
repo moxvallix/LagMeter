@@ -24,7 +24,8 @@ public class TimedCommand implements Runnable{
 	}
 
 	public String getTimeString(){
-		return this.command.split("<>")[1];
+		String[] s = this.command.split("<>");
+		return s.length > 1 ? s[1] : "0s";
 	}
 
 	public long getInterval() throws InvalidTimeFormatException{

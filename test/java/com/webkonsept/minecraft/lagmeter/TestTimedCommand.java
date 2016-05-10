@@ -28,4 +28,10 @@ public class TestTimedCommand{
 	public void multipleCommandsTime() throws InvalidTimeFormatException{
 		assertEquals(new TimedCommand("/command;/frogs<>500s", null).getInterval(), 500000L);
 	}
+
+	@Test
+	public void noTime() throws InvalidTimeFormatException{
+		assertEquals(0L, new TimedCommand("/command", null).getInterval());
+		assertArrayEquals(new String[]{"/command"}, new TimedCommand("/command", null).getCommands());
+	}
 }
