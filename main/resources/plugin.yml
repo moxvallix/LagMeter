@@ -45,6 +45,9 @@ commands:
     lagmap:
         description: Changes the map in the player's hand to an automatically-updating lag and memory meter, or toggles the LagMap back to a normal map.
         usage: /<command>
+    lms:
+        description: Provides all of the functionality of the other commands, but with output trimmed down to be terse.
+        usage: /<command>
 permissions:
     lagmeter.*:
         description: Gives full access
@@ -55,6 +58,7 @@ permissions:
             lagmeter.command.lm: true
             lagmeter.command.ping: true
             lagmeter.command.lping: true
+            lagmeter.command.lms: true
     lagmeter.command.lag:
         description: Gives access to the /lag command
         default: op
@@ -101,6 +105,9 @@ permissions:
         default: op
     lagmeter.commands.lagmap:
         description: Allows the player or group to use LagMaps, which update with the TPS and memory usage automatically.
+        default: op
+    lagmeter.commands.lms:
+        description: Allows the player or group to use the shortened lagmeter command. Not particularly useful outside of receiving terse output.
         default: op
 generators: [bukget]
 categories: [INFO]

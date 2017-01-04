@@ -451,26 +451,7 @@ public class LagMeter extends JavaPlugin{
 	}
 
 	private void handleBaseCommand(final CommandSender sender, final String[] args){
-		if(args[0].equalsIgnoreCase("short") || args[0].equalsIgnoreCase("s")){
-			try{
-				this.sendMessage(sender, Severity.INFO, String.format("%.2f", this.getTPS()));
-			}catch(NoAvailableTPSException e){
-				this.sendMessage(sender, Severity.INFO, "TPS not yet available");
-			}
-
-			double[] mem = this.getMemory();
-			this.sendMessage(sender, Severity.INFO, String.format("%,.2f MB/%,.2f MB used (%.2f%% free)", mem[0], mem[1], mem[3]));
-
-			this.sendMessage(sender, Severity.INFO, String.format("%,d players online", Bukkit.getOnlinePlayers().size()));
-
-			if(this.displayChunks){
-				this.sendMessage(sender, Severity.INFO, String.format("%,d", this.getChunksLoaded()));
-			}
-
-			if(this.displayEntities){
-				this.sendMessage(sender, Severity.INFO, String.format("%,d", this.getEntitiesAlive()));
-			}
-		}else if(args[0].equalsIgnoreCase("reload")){
+		if(args[0].equalsIgnoreCase("reload")){
 			if(this.permit(sender, "lagmeter.command.lagmeter.reload") || this.permit(sender, "lagmeter.reload")){
 				this.updateConfiguration();
 				this.sendMessage(sender, Severity.INFO, "Configuration reloaded!");
@@ -824,8 +805,27 @@ public class LagMeter extends JavaPlugin{
 				this.sendEntities(sender);
 			}else if(command.getName().equalsIgnoreCase("ping")){
 				this.ping(sender, args);
-			}else if(command.getName().equalsIgnoreCase("lping")){
+			}else if(command.getName().equalsIgnoreCase("lping")) {
 				this.ping(sender, args);
+			}else if(command.getName().equalsIgnoreCase("lms")) {
+				try {
+					this.sendMessage(sender, Severity.INFO, String.format("%.2f", this.getTPS()));
+				} catch (NoAvailableTPSException e) {
+					this.sendMessage(sender, Severity.INFO, "TPS not yet available");
+				}
+
+				double[] mem = this.getMemory();
+				this.sendMessage(sender, Severity.INFO, String.format("%,.2f MB/%,.2f MB used (%.2f%% free)", mem[0], mem[1], mem[3]));
+
+				this.sendMessage(sender, Severity.INFO, String.format("%,d players online", Bukkit.getOnlinePlayers().size()));
+
+				if (this.displayChunks) {
+					this.sendMessage(sender, Severity.INFO, String.format("%,d", this.getChunksLoaded()));
+				}
+
+				if (this.displayEntities) {
+					this.sendMessage(sender, Severity.INFO, String.format("%,d", this.getEntitiesAlive()));
+				}
 			}else
 				return false;
 		}else{
