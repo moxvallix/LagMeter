@@ -70,6 +70,7 @@ public class LagMeter extends JavaPlugin{
 	private boolean newLineForLogStats;
 	private boolean repeatingUptimeCommands;
 	private boolean lagmapsEnabled;
+	private boolean stripConsoleColors;
 	private List<String> uptimeCommands;
 	private String highLagCommand, lowMemCommand;
 	private static LagMeter p;
@@ -450,7 +451,26 @@ public class LagMeter extends JavaPlugin{
 	}
 
 	private void handleBaseCommand(final CommandSender sender, final String[] args){
-		if(args[0].equalsIgnoreCase("reload")){
+		if(args[0].equalsIgnoreCase("short") || args[0].equalsIgnoreCase("s")){
+			try{
+				this.sendMessage(sender, Severity.INFO, String.format("%.2f", this.getTPS()));
+			}catch(NoAvailableTPSException e){
+				this.sendMessage(sender, Severity.INFO, "TPS not yet available");
+			}
+
+			double[] mem = this.getMemory();
+			this.sendMessage(sender, Severity.INFO, String.format("%,.2f MB/%,.2f MB used (%.2f%% free)", mem[0], mem[1], mem[3]));
+
+			this.sendMessage(sender, Severity.INFO, String.format("%,d players online", Bukkit.getOnlinePlayers().size()));
+
+			if(this.displayChunks){
+				this.sendMessage(sender, Severity.INFO, String.format("%,d", this.getChunksLoaded()));
+			}
+
+			if(this.displayEntities){
+				this.sendMessage(sender, Severity.INFO, String.format("%,d", this.getEntitiesAlive()));
+			}
+		}else if(args[0].equalsIgnoreCase("reload")){
 			if(this.permit(sender, "lagmeter.command.lagmeter.reload") || this.permit(sender, "lagmeter.reload")){
 				this.updateConfiguration();
 				this.sendMessage(sender, Severity.INFO, "Configuration reloaded!");
@@ -497,7 +517,7 @@ public class LagMeter extends JavaPlugin{
 			}
 		}else{
 			this.sendMessage(sender, Severity.WARNING, "Invalid sub-command. " + ChatColor.GOLD + "Try one of these:");
-			this.sendMessage(sender, Severity.INFO, "Available sub-commands: /lagmeter|lm <reload|r>|/lagmeter|lm <help|?>");
+			this.sendMessage(sender, Severity.INFO, "Available sub-commands: /lagmeter|lm <reload|r>|/lm short|lm <help|?>");
 		}
 	}
 
@@ -787,7 +807,7 @@ public class LagMeter extends JavaPlugin{
 			}else if(command.getName().equalsIgnoreCase("uptime")){
 				final int[] i = this.getCurrentServerUptime();
 				this.sendMessage(sender, Severity.INFO, "Current server uptime: " + i[3] + " day(s), " + i[2] + " hour(s), " + i[1] + " minute(s), and " + i[0] + " second(s)");
-			}else if(command.getName().equalsIgnoreCase("lm")){
+			}else if(command.getName().equalsIgnoreCase("LagMeter") || command.getName().equalsIgnoreCase("lm")){
 				if(args.length == 0){
 					this.sendLagMeter(sender);
 					this.sendMemMeter(sender);
@@ -806,13 +826,6 @@ public class LagMeter extends JavaPlugin{
 				this.ping(sender, args);
 			}else if(command.getName().equalsIgnoreCase("lping")){
 				this.ping(sender, args);
-			}else if(command.getName().equalsIgnoreCase("LagMeter")){
-				if(args.length == 0){
-					this.sendMessage(sender, Severity.INFO, "Version: " + this.getDescription().getVersion());
-					this.sendMessage(sender, Severity.INFO, "Available sub-commands: /lagmeter|lm <reload|r>|/lagmeter|lm <help|?>");
-				}else{
-					this.handleBaseCommand(sender, args);
-				}
 			}else
 				return false;
 		}else{
@@ -1213,6 +1226,21 @@ public class LagMeter extends JavaPlugin{
 		this.sendMessage(sender, Severity.INFO, ChatColor.GOLD + "Total chunks loaded on the server: " + totalChunks);
 	}
 
+	public int getChunksLoadedInWorld(String world){
+		return Bukkit.getServer().getWorld(world).getLoadedChunks().length;
+	}
+
+	public int getChunksLoaded(){
+		int totalChunks = 0;
+		final List<World> worlds = Bukkit.getServer().getWorlds();
+		for(final World world : worlds){
+			final String s = world.getName();
+			final int i = Bukkit.getServer().getWorld(s).getLoadedChunks().length;
+			totalChunks += i;
+		}
+		return totalChunks;
+	}
+
 	public void sendConsoleMessage(Severity severity, String message){
 		this.sendMessage(Bukkit.getServer().getConsoleSender(), severity, message);
 	}
@@ -1236,6 +1264,21 @@ public class LagMeter extends JavaPlugin{
 			}
 		}
 		this.sendMessage(sender, Severity.INFO, ChatColor.GOLD + "Total entities: " + totalEntities);
+	}
+
+	public int getEntitiesAlive(){
+		int totalEntities = 0;
+		final List<World> worlds = Bukkit.getServer().getWorlds();
+		for(final World world : worlds){
+			final String worldName = world.getName();
+			final int i = Bukkit.getServer().getWorld(worldName).getEntities().size();
+			totalEntities += i;
+		}
+		return totalEntities;
+	}
+
+	public int getEntitiesInWorld(String world){
+		return Bukkit.getServer().getWorld(world).getEntities().size();
 	}
 
 	/**
@@ -1304,19 +1347,27 @@ public class LagMeter extends JavaPlugin{
 	 * @param severity The Severity of the message.
 	 * @param message  The message itself.
 	 */
-	public void sendMessage(final CommandSender sender, final Severity severity, final String message){
-		switch(severity){
+	public void sendMessage(final CommandSender sender, final Severity severity, String message){
+		switch(severity) {
 			case WARNING:
-				sender.sendMessage(ChatColor.GOLD + "[LagMeter] " + ChatColor.RED + message);
+				message = ChatColor.GOLD + "[LagMeter] " + ChatColor.RED + message;
 				break;
 			case SEVERE:
-				sender.sendMessage(ChatColor.GOLD + "[LagMeter] " + ChatColor.DARK_RED + message);
+				message = ChatColor.GOLD + "[LagMeter] " + ChatColor.DARK_RED + message;
 				break;
 			case INFO:
 			default:
-				sender.sendMessage(ChatColor.GOLD + "[LagMeter] " + ChatColor.GREEN + message);
+				message = ChatColor.GOLD + "[LagMeter] " + ChatColor.GREEN + message;
 				break;
 		}
+
+		if(this.stripConsoleColors){
+			if(!(sender instanceof Player)){
+				message = ChatColor.stripColor(message);
+			}
+		}
+
+		sender.sendMessage(message);
 	}
 
 	public void sendMessage(final Player player, final Severity severity, final String message){
@@ -1359,6 +1410,7 @@ public class LagMeter extends JavaPlugin{
 		this.lagmapsEnabled = yml.getBoolean("LagMaps.Enabled", true);
 		this.mapRenderInterval = yml.getInt("LagMaps.Interval", 5);
 		this.pollingDelay = yml.getInt("Commands.Lag.PollingDelay", 35);
+		this.stripConsoleColors = yml.getBoolean("stripConsoleColors", true);
 	}
 
 	/**

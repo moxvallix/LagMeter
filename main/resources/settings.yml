@@ -16,6 +16,9 @@ LoadedChunksOnLoad: true
 #Should LagMeter display all of the entities that exist at the time of plugin (re)load?
 #Default: true
 displayEntitiesOnLoad: true
+#Should LagMeter not attempt to display colors in the console?
+#Default: true
+stripConsoleColors: true
 #########################
 # Uptime-based Commands #
 #########################
