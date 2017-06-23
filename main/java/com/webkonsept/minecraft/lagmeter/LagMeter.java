@@ -817,7 +817,7 @@ public class LagMeter extends JavaPlugin{
 				double[] mem = this.getMemory();
 				this.sendMessage(sender, Severity.INFO, String.format("%,.2f MB/%,.2f MB used (%.2f%% free)", mem[0], mem[1], mem[3]));
 
-				this.sendMessage(sender, Severity.INFO, String.format("%,d players online", Bukkit.getOnlinePlayers().size()));
+				this.sendMessage(sender, Severity.INFO, String.format("%,d players online", Bukkit.getServer().getOnlinePlayers().size()));
 
 				if (this.displayChunks) {
 					this.sendMessage(sender, Severity.INFO, String.format("%,d", this.getChunksLoaded()));
