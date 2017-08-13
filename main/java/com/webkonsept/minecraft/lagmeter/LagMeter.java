@@ -488,7 +488,7 @@ public class LagMeter extends JavaPlugin{
 					this.sendMessage(sender, Severity.INFO, "*           *Help for LagMeter [2/2]*           *");
 					this.sendMessage(sender, Severity.INFO, ChatColor.DARK_GREEN + "/lagmeter|/lm" + ChatColor.GREEN + " <help|?> [page]" + ChatColor.GOLD + " - This command. Gives the user a list of commands that they are able to use in this plugin.");
 					if(this.permit(sender, "lagmeter.command.ping") || this.permit(sender, "lagmeter.command.lping")){
-						this.sendMessage(sender, Severity.INFO, ChatColor.DARK_GREEN + "/ping|/lping" + ChatColor.GREEN + " [hops] " + ChatColor.GOLD + " - Pings google.com from the server. Specify an amount of hops to specify more packets." + ChatColor.RED + " Warning: server-intensive above 4 hops.");
+						this.sendMessage(sender, Severity.INFO, ChatColor.DARK_GREEN + "/ping|/lping" + ChatColor.GREEN + " [hops] " + ChatColor.GOLD + " - Pings google.com from the server. Specify an amount of hops to specify more packets. Note: this can take a long time (especially if there is high latency), as it sends a ping to an external resource.");
 					}
 				}else{
 					this.sendMessage(sender, Severity.WARNING, "Invalid page number.");
@@ -1045,8 +1045,7 @@ public class LagMeter extends JavaPlugin{
 						if(s.contains(windowsPingSummary)){
 							output = s.substring(s.indexOf(windowsPingSummary) + windowsPingSummary.length());
 							break;
-						}
-						if(s.contains(unixPingSummary)){
+						}else if(s.contains(unixPingSummary)){
 							output = s.substring(unixPingSummary.length()).split("/")[5];
 							break;
 						}
