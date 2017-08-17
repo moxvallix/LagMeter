@@ -1027,6 +1027,7 @@ public class LagMeter extends JavaPlugin{
 		this.getServer().getScheduler().runTaskAsynchronously(this, new Runnable(){
 			@Override
 			public void run(){
+				StringBuilder fullOutput = new StringBuilder();
 				try{
 					BufferedReader result;
 					BufferedReader errorStream;
@@ -1038,7 +1039,9 @@ public class LagMeter extends JavaPlugin{
 					p = new ProcessBuilder(processCmd).start();
 					result = new BufferedReader(new InputStreamReader(p.getInputStream()));
 					errorStream = new BufferedReader(new InputStreamReader(p.getErrorStream()));
+
 					while((s = result.readLine()) != null){
+						fullOutput.append(s);
 						if(s.trim().length() != 0){
 							output = s;
 						}
@@ -1046,7 +1049,12 @@ public class LagMeter extends JavaPlugin{
 							output = s.substring(s.indexOf(windowsPingSummary) + windowsPingSummary.length());
 							break;
 						}else if(s.contains(unixPingSummary)){
-							output = s.substring(unixPingSummary.length()).split("/")[5];
+							String[] split = s.substring(unixPingSummary.length()).split("(/|(?:\\s=\\s))");
+							if(split.length >= 5){
+								output = split[4];
+							}else{
+								output = "Unexpected failure while pinging; result was: "+s;
+							}
 							break;
 						}
 					}
@@ -1062,7 +1070,8 @@ public class LagMeter extends JavaPlugin{
 					result.close();
 					p.destroy();
 				}catch(final IOException e){
-					new SyncSendMessage(sender, Severity.INFO, "Error running ping command.").runTask(LagMeter.this);
+					new SyncSendMessage(sender, Severity.SEVERE, "Error running ping command.").runTask(LagMeter.this);
+					new SyncSendMessage(sender, Severity.INFO, "Unexpected failure; full output was: "+fullOutput.toString());
 					e.printStackTrace();
 				}
 			}
