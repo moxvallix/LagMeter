@@ -1049,9 +1049,9 @@ public class LagMeter extends JavaPlugin{
 							output = s.substring(s.indexOf(windowsPingSummary) + windowsPingSummary.length());
 							break;
 						}else if(s.contains(unixPingSummary)){
-							String[] split = s.substring(unixPingSummary.length()).split("(/|(?:\\s=\\s))");
-							if(split.length >= 5){
-								output = split[4];
+							String[] split = s.substring(unixPingSummary.length()).split("/");
+							if(split.length >= 2){
+								output = split[1]+"ms";
 							}else{
 								output = "Unexpected failure while pinging; result was: "+s;
 							}
@@ -1071,7 +1071,7 @@ public class LagMeter extends JavaPlugin{
 					p.destroy();
 				}catch(final IOException e){
 					new SyncSendMessage(sender, Severity.SEVERE, "Error running ping command.").runTask(LagMeter.this);
-					new SyncSendMessage(sender, Severity.INFO, "Unexpected failure; full output was: "+fullOutput.toString());
+					new SyncSendMessage(sender, Severity.INFO, "Full output was: "+fullOutput.toString()).runTask(LagMeter.this);
 					e.printStackTrace();
 				}
 			}
