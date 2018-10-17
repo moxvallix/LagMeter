@@ -71,6 +71,7 @@ public class LagMeter extends JavaPlugin{
 	private boolean repeatingUptimeCommands;
 	private boolean lagmapsEnabled;
 	private boolean stripConsoleColors;
+	public boolean isPingEnabled;
 	private List<String> uptimeCommands;
 	private String highLagCommand, lowMemCommand;
 	private static LagMeter p;
@@ -285,26 +286,6 @@ public class LagMeter extends JavaPlugin{
 	 */
 	public int getPollingDelay(){
 		return this.pollingDelay;
-	}
-
-	private String getHops(final CommandSender sender, final String[] args){
-		if(args.length > 0){
-			if(this.permit(sender, "lagmeter.commands.ping.unlimited")){
-				try{
-					if(Integer.parseInt(args[0]) > 10){
-						this.sendMessage(sender, Severity.WARNING, "This might take a while...");
-					}
-					return args[0];
-				}catch(final NumberFormatException e){
-					this.sendMessage(sender, Severity.WARNING, "You entered an invalid amount of hops; therefore, 1 will be used instead. "+e.getMessage());
-					return "1";
-				}
-			}else{
-				this.sendMessage(sender, Severity.WARNING, "You don't have access to specifying ping hops!");
-				return "1";
-			}
-		}else
-			return "1";
 	}
 
 	/**
@@ -803,10 +784,8 @@ public class LagMeter extends JavaPlugin{
 				this.sendChunks(sender);
 			}else if(command.getName().equalsIgnoreCase("lentities") || command.getName().equalsIgnoreCase("lmobs")){
 				this.sendEntities(sender);
-			}else if(command.getName().equalsIgnoreCase("ping")){
-				this.ping(sender, args);
-			}else if(command.getName().equalsIgnoreCase("lping")) {
-				this.ping(sender, args);
+//            }else if(command.getName().equalsIgnoreCase("ping") || command.getName().equalsIgnoreCase("lping")){
+//                this.ping(sender, args);
 			}else if(command.getName().equalsIgnoreCase("lms")) {
 				try {
 					this.sendMessage(sender, Severity.INFO, String.format("%.2f", this.getTPS()));
@@ -913,6 +892,15 @@ public class LagMeter extends JavaPlugin{
 		this.maps = new HashMap<String, MapView>();
 		this.oldRenderers = new HashMap<String, List<MapRenderer>>();
 		this.renderer = new LagMapRenderer(this.mapRenderInterval);
+
+        PingCommand pingExecutor = new PingCommand(this, this.isPingEnabled);
+        getServer().getPluginCommand("ping").setExecutor(pingExecutor);
+        if(this.isPingEnabled) {
+            getServer().getPluginCommand("lping").setExecutor(pingExecutor);
+        }else{
+            getServer().getPluginCommand("lping").setExecutor(new PingCommand(this, true));
+        }
+
 		super.onEnable();
 	}
 
@@ -1004,79 +992,6 @@ public class LagMeter extends JavaPlugin{
 		return this.permit((CommandSender)player, perm);
 	}
 
-	/**
-	 * This method pings google.com, telling the player what the result is.
-	 *
-	 * @param sender The CommandSender object to output to.
-	 * @param args   <br />
-	 *               <ul>
-	 *               [0]: hops
-	 *               </ul>
-	 */
-	public void ping(final CommandSender sender, final String[] args){
-		final List<String> processCmd = new ArrayList<String>();
-		final String hops = this.getHops(sender, args);
-		final String domain = ((sender instanceof Player) ? this.getPlayerIP(sender.getName()) : "google.com");
-		if((domain == null) || domain.isEmpty())
-			return;
-		processCmd.add("ping");
-		processCmd.add(System.getProperty("os.name").startsWith("Windows") ? "-n" : "-c");
-		processCmd.add(hops);
-		processCmd.add(domain);
-
-		this.getServer().getScheduler().runTaskAsynchronously(this, new Runnable(){
-			@Override
-			public void run(){
-				StringBuilder fullOutput = new StringBuilder();
-				try{
-					BufferedReader result;
-					BufferedReader errorStream;
-					Process p;
-					String s;
-					String output = null;
-					final String windowsPingSummary = "Average = ";
-					final String unixPingSummary = "rtt min/avg/max/mdev = ";
-					p = new ProcessBuilder(processCmd).start();
-					result = new BufferedReader(new InputStreamReader(p.getInputStream()));
-					errorStream = new BufferedReader(new InputStreamReader(p.getErrorStream()));
-
-					while((s = result.readLine()) != null){
-						fullOutput.append(s);
-						if(s.trim().length() != 0){
-							output = s;
-						}
-						if(s.contains(windowsPingSummary)){
-							output = s.substring(s.indexOf(windowsPingSummary) + windowsPingSummary.length());
-							break;
-						}else if(s.contains(unixPingSummary)){
-							String[] split = s.substring(unixPingSummary.length()).split("/");
-							if(split.length >= 2){
-								output = split[1]+"ms";
-							}else{
-								output = "Unexpected failure while pinging; result was: "+s;
-							}
-							break;
-						}
-					}
-					if(output != null){
-						new SyncSendMessage(sender, Severity.INFO, "Average response time for the server for " + hops + " ping hop(s) to " + domain + ": " + output).runTask(LagMeter.this);
-					}else{
-						new SyncSendMessage(sender, Severity.INFO, "Error running ping command.").runTask(LagMeter.this);
-					}
-					while((s = errorStream.readLine()) != null){
-						new SyncSendMessage(sender, Severity.WARNING, s).runTask(LagMeter.this);
-					}
-					errorStream.close();
-					result.close();
-					p.destroy();
-				}catch(final IOException e){
-					new SyncSendMessage(sender, Severity.SEVERE, "Error running ping command.").runTask(LagMeter.this);
-					new SyncSendMessage(sender, Severity.INFO, "Full output was: "+fullOutput.toString()).runTask(LagMeter.this);
-					e.printStackTrace();
-				}
-			}
-		});
-	}
 
 	/**
 	 * Registers a listener for when LagMeter finds that the server's TPS has
@@ -1419,6 +1334,7 @@ public class LagMeter extends JavaPlugin{
 		this.mapRenderInterval = yml.getInt("LagMaps.Interval", 5);
 		this.pollingDelay = yml.getInt("Commands.Lag.PollingDelay", 35);
 		this.stripConsoleColors = yml.getBoolean("stripConsoleColors", true);
+		this.isPingEnabled = yml.getBoolean("Commands.Ping.enabled", true);
 	}
 
 	/**

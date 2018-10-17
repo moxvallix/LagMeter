@@ -48,6 +48,9 @@ Commands:
         #Default: false
         displayChunks: false
     Ping:
+        #Whether or not to allow usage of the ping command. Set to false to disable the command and let another plugin
+        #handle this command. Note that when set to true, players will still need the permission to use it.
+        enabled: true
         #Where the server should ping when the /ping and /lping commands are used. This can be a domain name or an IP; it doesn't matter which it is.
         #Default: google.com
         destinationDomain: google.com
