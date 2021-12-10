@@ -1,0 +1,115 @@
+name: LagMeter
+main: com.moxvallix.LagMeter
+version: 1.19.0
+api-version: 1.18
+thread: http://dev.bukkit.org/server-mods/lagmeter/
+database: false
+description: Lets you check the server lag, in ticks-per-second
+dev-url: http://dev.bukkit.org/server-mods/lagmeter/
+commands:
+    lag:
+        description: Check current lag
+        usage: /<command>
+    mem:
+        description: Check current memory usage
+        usage: /<command>
+    lagmem:
+        description: Check both current memory usage and current lag
+        usage: /<command>
+    lm:
+        description: Check both current memory usage and current lag. Shortcut of lagmem.
+        usage: /<command>
+    lchunks:
+        description: Shows chunks loaded per world, along with a combined total.
+        usage: /<command>
+    lentities:
+        description: Shows entities per world, along with a combined total.
+        usage: /<command>
+    lmobs:
+        description: Alternate command to /lentities. Shows entities per world, along with a combined total.
+        usage: /<command>
+    lmp:
+        description: Shows TPS, memory, and players online.
+        usage: /<command>
+    lagmeter:
+        description: Shows the version. Sub-commands of help and reload have obvious functions.
+        usage: /<command>
+    uptime:
+        description: Shows how long the server has been online.
+        usage: /<command>
+    ping:
+        description: Pings or, if the console, google.com, from the server.
+        usage: /<command> [amount of packets]
+    lping:
+        description: Pings the sender, or, if the console, google.com, from the server.
+        usage: /<command> [amount of packets]
+    lagmap:
+        description: Changes the map in the player's hand to an automatically-updating lag and memory meter, or toggles the LagMap back to a normal map.
+        usage: /<command>
+    lms:
+        description: Provides all of the functionality of the other commands, but with output trimmed down to be terse.
+        usage: /<command>
+permissions:
+    lagmeter.*:
+        description: Gives full access
+        children:
+            lagmeter.command.lag: true
+            lagmeter.command.mem: true
+            lagmeter.command.lagmem: true
+            lagmeter.command.lm: true
+            lagmeter.command.ping: true
+            lagmeter.command.lping: true
+            lagmeter.command.lms: true
+    lagmeter.command.lag:
+        description: Gives access to the /lag command
+        default: op
+    lagmeter.command.mem:
+        description: Gives access to the /mem command
+        default: op
+    lagmeter.command.lagmem:
+        description: Gives access to the combination /lagmem command
+        default: op
+    lagmeter.command.lm:
+        description: Gives access to the combination /lm command, which is a shorter version of /lagmem.
+        default: op
+    lagmeter.command.lchunks:
+        description: Gives access to the /lchunks command, which shows the amount of chunks loaded per world, and the amount total.
+        default: op
+    lagmeter.command.lmp:
+        description: Gives access to the /lmp command, which shows TPS, memory, and players online.
+        default: op
+    lagmeter.command.uptime:
+        description: Gives access to the /uptime command, which shows how long the server has been online.
+        default: op
+    lagmeter.command.lentities:
+        description: Node for the command for showing entities on the server.
+        children:
+            lagmeter.command.lmobs: true
+        default: op
+    lagmeter.command.lagmeter.help:
+        description: Gives access to the /lm help command, which shows commands the sender has access to.
+        default: op
+    lagmeter.command.lagmeter.reload:
+        description: Gives access to the /lm reload command, which reloads the plugin configuration.
+        default: op
+    lagmeter.help:
+        description: Gives access to the /lm help command, which shows commands the sender has access to.
+        default: op
+    lagmeter.reload:
+        description: Gives access to the /lm reload command, which reloads the plugin configuration.
+        default: op
+    lagmeter.notify.lag:
+        description: Allows the player/group to receive lag notifications.
+        default: op
+    lagmeter.notify.mem:
+        description: Allows the player/group to receive memory notifications.
+        default: op
+    lagmeter.commands.lagmap:
+        description: Allows the player or group to use LagMaps, which update with the TPS and memory usage automatically.
+        default: op
+    lagmeter.commands.lms:
+        description: Allows the player or group to use the shortened lagmeter command. Not particularly useful outside of receiving terse output.
+        default: op
+generators: [bukget]
+categories: [INFO]
+authors: [TheLunarFrog, DemmyDemon, Moxvallix]
